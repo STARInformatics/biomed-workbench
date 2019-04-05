@@ -4,10 +4,22 @@
 
 This project resides in [this Github project repository](https://github.com/STARInformatics/biomed-workbench).
 
-First, ensure that you have the git client installed (here we assume a Debian-based Linux distribution like Ubuntu):
+Here, we assume that we are using a Debian Linux flavor (like Ubuntu) to run the application. Adjust accordingly to
+your preferences.
+
+First, it is generally wise to get the latest releases of your existing software (like python). To do this, you can 
+run the followiung:
+
+```
+sudo apt update
+sudo apt upgrade --autoremove
+```
+
+Rebooting the system after such an upgrade is generally advisable.
+
+Next, ensure that you have the git client installed:
 
 ``` 
-sudo apt update
 sudo apt install git
 ```
 
@@ -27,6 +39,27 @@ git clone https://github.com/STARInformatics/biomed-workbench
 ```
 
 It is recommended that you have Python release 3.6.* or higher installed on your system, accessible by the application.
+Generally,  we recommend release 3.7.*. This can be obtained as follows:
+
+```  
+sudo apt install python3.7 python3.7-venv
+
+```
+
+After installation of this updated release, the symbolic links to the _python3_ and _python_ binaries may need to be 
+manually updated (here assuned to be in ```/usr/bin```; double check these locations with the 
+_which_ and _ls_ unix commands):
+
+``` 
+cd /usr/bin
+sudo  unlink python3
+sudo  unlink python3m
+sudo  unlink python
+sudo link -s /usr/bin/python3.7 python3
+sudo link -s /usr/bin/python3.7m python3m
+sudo link -s /usr/bin/python3.7 python
+
+```
 
 A Unix-style _Makefile_ is provided to configure and run the workbench web application.
 
