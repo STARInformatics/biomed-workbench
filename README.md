@@ -85,7 +85,8 @@ cd  /opt/bkw/biomedical-workbench
 make project_settings
 ```
 
-will likely simply  tell you where your virtual environment is assumed to be located (default 'venv';  see the section 
+will likely simply  tell you where your python3 path and  virtual environment are assumed to be located 
+(defaults '/usr/bin/python3.7' and  'venv';  see the section 
 **Customizing the Build** below, if you wish to change this location). 
 
 If the virtual environment is not already created, you can create it as follows:
