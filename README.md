@@ -31,6 +31,16 @@ which  git
 sudo apt install git
 ```
 
+THen, ensure that you have a Unix **make** installed:
+
+```
+# check where make is installed
+which  make
+
+# if the previous command returns an empty result then...
+sudo apt install make
+```
+
 
 It is generally wise to get all of the latest releases of your existing software (like python). To do this, you can 
 run the following:
