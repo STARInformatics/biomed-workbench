@@ -54,7 +54,9 @@ git config --global credential.helper cache
 Then, you can clone the project. A convenient location for the code is in a folder under **/opt/bkw**:
 
 ``` 
-cd /opt/bkw
+cd /opt
+sudo mkdir bkw
+sudo chown ubuntu:ubuntu bkw     # substitute your username on the system, if not ubuntu
 git clone https://github.com/STARInformatics/biomed-workbench
 ```
 
