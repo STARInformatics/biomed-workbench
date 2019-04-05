@@ -14,11 +14,15 @@ sudo apt update
 ```
 
 It is recommended that you have Python release 3.6.* or higher installed on your system, accessible by the application.
-Generally,  we recommend release 3.7.*. This can be obtained as follows:
 
-```  
-sudo apt install python3.7 python3.7-venv
+Ensure that **virtualenv** is installed:
 
+```
+# check where virtualenv is installed
+which  virtualenv
+
+# if the previous command returns an empty result then...
+sudo apt install virtualenv
 ```
 
 Next, ensure that you have the **git** client installed:
