@@ -131,7 +131,8 @@ Assuming that the server's firewall lets this port through, you should see a def
 
 To override this to point to your new workbench web site, you'll need to add some proxy directives. If you have
 a subdomain name to point to your server's public IP address, say **bkw.mydomain.com**,  create the following file
-under the /
+in a file the /etc/nginx/sites-available/bkw (you may need to use 'sudo' to create this file. It is ok to
+leave it owned by 'root').  
 
 ```
 #
@@ -156,6 +157,22 @@ server {
        }
 }
                       
+```
+
+Symlink it into  'sites-enabled':
+
+``` 
+cd /etc/nginx/sites-enabled
+ln -s ../sites-available/bkw bkw
+
+# Sanity check: make sure NGINX can read it without error
+sudo nginx -t
+```
+
+then restart the nginx daemon process:
+
+``` 
+sudo systemctl restart nginx
 ```
 
 ## Adding HTTPS (SSL) Service
