@@ -80,7 +80,8 @@ the following _make_ target can be run once to create one (this target only runs
 
 FIrst, you can check your project settings:
 
-```  
+```
+cd  /opt/bkw/biomedical-workbench  
 make project_settings
 ```
 
