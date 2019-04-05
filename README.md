@@ -73,18 +73,6 @@ git clone https://github.com/STARInformatics/biomed-workbench
 
 A Unix-style _Makefile_ is provided to configure and run the workbench web application.
 
-First, check if the _make_ command is installed:
-
-``` 
-which make
-```
-
-should show you a path something like ```/user/bin/make```. If nothing is returned, then install it:
-
-``` 
-sudo apt install make
-```
-
 It is recommended to install the Biomedical Workbench within a 
 [Python "Virtual Environment"](https://docs.python.org/3/tutorial/venv.html). 
 If not provided within your development environment (some IDE's like PyCharm can provide one), 
