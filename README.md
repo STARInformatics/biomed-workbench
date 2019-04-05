@@ -177,6 +177,8 @@ sudo systemctl restart nginx
 
 ## Adding HTTPS (SSL) Service
 
+The 'Certbot' tool maybe used to apply HTTPS to a running NGINX HTTP-enabled web site 
+(see https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx).
 
 ``` 
 sudo apt-get update
