@@ -46,30 +46,6 @@ sudo apt install python3.7 python3.7-venv
 
 ```
 
-After installation of this updated release, the symbolic links to the _python3_ and _python_ binaries may need to be 
-manually updated (here assuned to be in ```/usr/bin```; double check these locations with the 
-_which_ and _ls_ unix commands):
-
-``` 
-cd /usr/bin
-sudo  unlink python3
-sudo  unlink python3m
-sudo link -s /usr/bin/python3.7 python3
-sudo link -s /usr/bin/python3.7m python3m
-```
-
-You may now get an error message:
-
-```ModuleNotFoundError: No module named 'apt_pkg' ```
-
-requiring the following hacky clean-up:
-
-``` 
-cd /usr/lib/python3/dist-packages
-sudo ln -s apt_pkg.cpython-{36m,37m}-x86_64-linux-gnu.so
-sudo apt install python3-pip
-```
-
 A Unix-style _Makefile_ is provided to configure and run the workbench web application.
 
 First, check if the _make_ command is installed:
