@@ -209,3 +209,10 @@ make venv -e VENV=py36
 make install -e VENV=py36
 make run  -e VENV=py36
 ```
+Go to http://localhost:5000/
+
+
+### API
+
+Perform a keyword search for MONDO identifiers:
+[http://localhost:5000/api/disease/uteri cancer?size=10](http://localhost:5000/api/disease/uteri cancer?size=10)
