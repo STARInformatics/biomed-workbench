@@ -11,5 +11,5 @@ run:
 	${VENV}/bin/python3 -m server
 
 project_settings:
-	@echo "Python 3 binary to b e used is '${PYTHON3}'"
+	@echo "Python3 binary to be used is '${PYTHON3}'"
 	@echo "Python Virtual Environment specified to be located in the subdirectory '${VENV}'"
