@@ -23,6 +23,8 @@ def load_mondo():
                 if MONDO in node['id']:
                     if 'lbl' not in node:
                         continue
+                    if get(node, 'meta', 'deprecated') is True:
+                        continue
                     synonoms = [syn['val'].lower() for syn in get(node, 'meta', 'synonyms', default=[])]
                     curie = node['id'].replace(MONDO, 'MONDO:')
                     # import pudb; pu.db
@@ -59,7 +61,10 @@ def search(keywords:List[str]) -> List[dict]:
     def exact_term_order(node):
         synonoms = node['synonoms'] + [node['name']]
         k = ' '.join(keywords)
-        return -sum(synonom.count(k) for synonom in synonoms)
+        s = -sum(synonom.count(k) for synonom in synonoms)
+        if node['name'] == k:
+            s -= 1
+        return s
 
     results = sorted(results, key=keyword_order)
     results = sorted(results, key=exact_term_order)
