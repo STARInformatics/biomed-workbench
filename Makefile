@@ -1,7 +1,7 @@
 VENV?=venv
 
 venv:
-	python -m venv ${VENV}
+	python3 -m venv ${VENV}
 
 install:
 	${VENV}/bin/pip3 install -r requirements.txt
