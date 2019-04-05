@@ -2,23 +2,16 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>A first page</title>
+    <title>Biomed Workbench</title>
+    <!-- <link rel="stylesheet" type="text/css" href="static/css/index.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
-	<h1>Welcome to the Biomedical Knowledge Workbench</h1>
-	<h3>Under Construction</h3>
-    <!-- We will put our React component inside this div. -->
-    <div id="list_container"></div>
-
-    <!-- Load React. -->
-    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-
-    <!-- Load our React component. -->
-    
-	<script src="static/js/list_view.js" type="text/babel"></script>
-    
+	
+    <div id="root"></div>
+    <script type="text/babel" src="static/js/app.js"></script>
   </body>
 </html>
