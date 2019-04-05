@@ -1,7 +1,7 @@
 VENV?=venv
 
 venv:
-	virtualenv -p python3.6 ${VENV}
+	python -m venv ${VENV}
 
 install:
 	${VENV}/bin/pip3 install -r requirements.txt
@@ -9,5 +9,5 @@ install:
 run:
 	${VENV}/bin/python3 -m server
 
-echo:
+parameters:
 	@echo "Virtual Environment specified in subfolder '${VENV}'"

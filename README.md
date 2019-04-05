@@ -2,21 +2,23 @@
 
 ## Getting Started
 
+It is recommended that you have Python release 3.6.* or higher installed on your system, accessible by the application.
+
 A Unix-style _Makefile_ is provided to configure and run the workbench web application.
 
 ### Configuration
 
 It is recommended to install the Biomedical Workbench within a 
-[Python "Virtual Environment"](https://docs.python.org/3/tutorial/venv.html).
-If not provided within your development environment (some IDE's like PyCharm can provide one), you
-may run the following _make_ target once to create one:
+[Python "Virtual Environment"](https://docs.python.org/3/tutorial/venv.html). 
+If not provided within your development environment (some IDE's like PyCharm can provide one), 
+the following _make_ target can be run once to create one (this target only runs with Python 3.6 or better)
 
 
 ``` 
 make venv
 ```
 
-will create the virtual environment in  'venc' by default (see below for build customization)
+will create the virtual environment in  'venv' by default (see below for build customization)
 
 
 ### Installation
