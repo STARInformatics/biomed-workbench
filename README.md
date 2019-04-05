@@ -4,26 +4,46 @@
 
 This project resides in [this Github project repository](https://github.com/STARInformatics/biomed-workbench).
 
-Here, we assume that we are using a Debian Linux flavor (like Ubuntu) to run the application. Adjust accordingly to
-your preferences.
+Here, we assume that we are using a Debian Linux flavor (like Ubuntu) to run the application. Adjust the commands 
+accordingly to your chosen operating system.
 
-First, it is generally wise to get the latest releases of your existing software (like python). To do this, you can 
-run the followiung:
+First, some software may need to be updated and installed. In preparation, update your local package index as follows:
 
 ```
 sudo apt update
-sudo apt upgrade --autoremove
 ```
 
-Rebooting the system after such an upgrade is generally advisable.
+It is recommended that you have Python release 3.6.* or higher installed on your system, accessible by the application.
+Generally,  we recommend release 3.7.*. This can be obtained as follows:
 
-Next, ensure that you have the git client installed:
+```  
+sudo apt install python3.7 python3.7-venv
 
-``` 
+```
+
+Next, ensure that you have the **git** client installed:
+
+```
+# check where git is installed
+which  git
+
+# if the previous command returns an empty result then...
 sudo apt install git
 ```
 
-Next, you should configure git with your Git repository metadata and, perhaps, activate credential management (we use 'cache' mode here to avoid storing credentials in plain text on disk)
+
+It is generally wise to get all of the latest releases of your existing software (like python). To do this, you can 
+run the following:
+
+```
+sudo apt upgrade --autoremove
+```
+
+Rebooting the system after such an upgrade is generally advisable. Afterwards, log back into the system to continue.
+
+## Building the Project
+
+Configure git with your Git repository metadata and, perhaps, activate credential management (we use 'cache' mode here to avoid storing credentials in plain text on disk)
 
 ``` 
 git config --global user.name "your-git-account"
@@ -36,14 +56,6 @@ Then, you can clone the project. A convenient location for the code is in a fold
 ``` 
 cd /opt/bkw
 git clone https://github.com/STARInformatics/biomed-workbench
-```
-
-It is recommended that you have Python release 3.6.* or higher installed on your system, accessible by the application.
-Generally,  we recommend release 3.7.*. This can be obtained as follows:
-
-```  
-sudo apt install python3.7 python3.7-venv
-
 ```
 
 A Unix-style _Makefile_ is provided to configure and run the workbench web application.
