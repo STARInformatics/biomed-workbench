@@ -110,11 +110,11 @@ make install
 ## Running the Workbench
 
 After configuring the system, the following command runs the workbench, making it accessible 
-at the local URL http://127.0.0.1:5000/:
+at the local URL http://127.0.0.1:5000/ (with error log stored in  ```~/bkw.log```)
 
 
 ```
-make run
+make  run  >~/bkw.log 2>&1  &
 ```
 
 ##  Publishing the Site to the Outside World
