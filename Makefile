@@ -9,5 +9,5 @@ install:
 run:
 	${VENV}/bin/python3 -m server
 
-parameters:
-	@echo "Virtual Environment specified in subfolder '${VENV}'"
+project_settings:
+	@echo "Python Virtual Environment specified to be located in the subdirectory '${VENV}'"

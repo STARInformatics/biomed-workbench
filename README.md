@@ -45,16 +45,26 @@ sudo apt install make
 It is recommended to install the Biomedical Workbench within a 
 [Python "Virtual Environment"](https://docs.python.org/3/tutorial/venv.html). 
 If not provided within your development environment (some IDE's like PyCharm can provide one), 
-the following _make_ target can be run once to create one (this target only runs with Python 3.6 or better)
+the following _make_ target can be run once to create one (this target only runs with Python 3.6 or better).
+
+FIrst, you can check your project settings:
+
+```  
+make project_settings
+```
+
+will likely simply  tell you where your virtual environment is assumed to be located (default 'venv';  see the section 
+**Customizing the Build** below, if you wish to change this location). 
+
+If the virtual environment is not already created, you can create it as follows:
+
 
 ``` 
 make venv
 ```
 
-will create the virtual environment in  'venv' by default (see below for build customization)
 
-
-The following _make_ target installs the system dependencies:
+The following _make_ target installs the Python project dependencies into the specified environment:
 
 ```
 make install
@@ -62,7 +72,8 @@ make install
 
 ## Running the Workbench
 
-The following command runs the workbench at the local URL http://127.0.0.1:5000/:
+After configuring the system, the following command runs the workbench, making it accessible 
+at the local URL http://127.0.0.1:5000/:
 
 
 ```
