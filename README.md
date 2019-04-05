@@ -57,6 +57,7 @@ Then, you can clone the project. A convenient location for the code is in a fold
 cd /opt
 sudo mkdir bkw
 sudo chown ubuntu:ubuntu bkw     # substitute your username on the system, if not ubuntu
+cd bkw
 git clone https://github.com/STARInformatics/biomed-workbench
 ```
 
