@@ -15,6 +15,10 @@ def index():
 def graph():
     return render_template('graph.html')
 
+@app.route("/demo")
+def demo():
+    return render_template('demo.html')
+
 @app.route("/hello")
 def helloworld():
     return "Hello World!"
