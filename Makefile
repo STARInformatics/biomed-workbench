@@ -8,7 +8,7 @@ install:
 	${VENV}/bin/pip3 install -r requirements.txt
 
 run:
-	venv/bin/python3 -m server
+	venv/bin/python3 -m backend
 
 download:
 	mkdir -p server/data
