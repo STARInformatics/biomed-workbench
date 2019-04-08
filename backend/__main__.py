@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request
+from flask_cors import CORS, cross_origin
 import os
 import json
 
@@ -28,6 +29,7 @@ def hello(name):
     return f"Hello {name}!"
 
 @app.route('/api/disease/<string:keywords>')
+@cross_origin()
 def disease(keywords):
     size = request.args.get('size')
     if size is not None:

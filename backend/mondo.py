@@ -15,7 +15,7 @@ def get(d:dict, *keys:str, default=None):
 @lru_cache()
 def load_mondo():
     path = os.path.dirname(os.path.abspath(__name__))
-    with open(f'{path}/server/data/mondo.json', 'r') as f:
+    with open(f'{path}/backend/data/mondo.json', 'r') as f:
         d = json.load(f)
         results = {}
         for graph in d['graphs']:
