@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, Response
 from flask_cors import CORS, cross_origin
 import os
 import json
@@ -32,11 +32,17 @@ def hello(name):
 @cross_origin()
 def disease(keywords):
     size = request.args.get('size')
+
+    diseases = search(keywords)
+
     if size is not None:
         size = int(size)
-        return jsonify(search(keywords)[:size])
-    else:
-        return jsonify(search(keywords))
+        diseases = diseases[:size]
+
+    data = json.dumps(diseases)
+    response = Response(data, status=200, mimetype='application/json')
+    return response
+    # return jsonify(search(keywords))
 
 @app.errorhandler(404)
 def page_not_found(error):
