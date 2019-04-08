@@ -18,7 +18,7 @@ download:
 	# wget https://www.ebi.ac.uk/biomodels/model/download/BIOMD0000000724.5?filename=Theinmozhi_2018.xml -O server/data/Theinmozhi_2018.xml
 
 run:
-	${VENV}/bin/python3 -m server
+	${VENV}/bin/python3 -m backend
 
 project_settings:
 	@echo "Python Virtual Environment specified to be located in the subdirectory '${VENV}'"
