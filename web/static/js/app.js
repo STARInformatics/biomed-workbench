@@ -1,7 +1,5 @@
-'use strict';
-
 function ListItem(props) {
-	return <li>{props.value}</li>;
+	return <li className="list-group-item">{props.value}</li>;
 }
 
 function ListItems(props) {
@@ -11,45 +9,75 @@ function ListItems(props) {
 					value={item.name} />					
 	);
 	return (
-		<ul>
+		<ul className="list-group">
 			{listItems}
 		</ul>
 	);
 }
 
-function ListView(props) {
+function MondoList(props) {
 	const mondoList = props.mondoList;
-	const geneList = props.geneList;
-	const biomodelList = props.biomodelList;
 	return (
-		<div className="ListView">
-			<div className="MondoList">
-				<h3> Disease Index </h3>
-				<ListItems items={mondoList} />
-			</div>
-			<div className="GeneList">
-				<h3> Gene List </h3>
-				<ListItems items={geneList} />
-			</div>
-			<div className="BiomodelList">
-				<h3> Biomodel List </h3>
-				<ListItems items={biomodelList} />
-			</div>
+		<div className="container">
+			<h5> Disease Index </h5>
+			<ListItems items={mondoList} />
 		</div>
 	);
 }
 
+function GeneList(props) {
+	const geneList = props.geneList;
+	return (
+		<div className="container">
+			<h5> Gene List </h5>
+			<ListItems items={geneList} />
+		</div>
+	);
+}
+function BioModelList(props) {
+	const biomodelList = props.biomodelList;
+	return (
+		<div className="container">
+			<h5> Biomodel List </h5>
+			<ListItems items={biomodelList} />
+		</div>
+	);
+}
+
+
 class SearchBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {searchText : ''}
+    this.state = {
+		searchText : '',
+		mondoList: [
+				{id: 1, name: 'cancer'},
+				{id: 2, name: 'diabetes'}
+			],
+			geneList: [
+				{id: 1, name: 'geneA'},
+				{id: 2, name: 'geneB'},
+				{id: 3, name: 'geneC'}
+			],
+
+			biomodelList: [
+				{id: 1, name: 'biomodelA'},
+				{id: 2, name: 'biomodelB'},
+				{id: 3, name: 'biomodelC'},
+				{id: 4, name: 'biomodelD'}
+			]
+		}
     this.handleClick = this.handleClick.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
   }
 
-  handleClick(e) {
-    alert(this.state.searchText);
-  }
+	handleClick(e) {
+		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
+			.then(response => response.json())
+			.then(data => this.setState({ mondoList: data }));				
+	}
+	
+			
 
   handleTextChange(e) {
     this.setState({searchText : e.target.value})
@@ -57,7 +85,7 @@ class SearchBar extends React.Component {
 
   render() {
     return (
-      <div className="topnav">
+      <div className="container">
         <input
           type="text"
           onChange={this.handleTextChange}
@@ -69,43 +97,38 @@ class SearchBar extends React.Component {
           onClick={this.handleClick}>
           <i className="fa fa-search"></i>
         </button>
+		<div className="row">
+			<div className="col-sm-4">
+				<MondoList mondoList={this.state.mondoList} />
+			</div>
+			<div className="col-sm-4">
+				<GeneList geneList={this.state.geneList} />
+			</div>
+			<div className="col-sm-4">
+				<BioModelList biomodelList={this.state.biomodelList} />
+			</div>
+		</div>
       </div>
     );
   }
 }
 
-function App(props) {
-	const mondoList = props.mondoList;
-	const geneList = props.geneList;
-	const biomodelList = props.biomodelList;
-	return(
-		<div className="app">
-			<SearchBar/>
-			<ListView mondoList={mondoList} geneList={geneList} biomodelList={biomodelList} />
-		</div>
-	);
+class App extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+	render() {
+		return(
+			<div className="app">
+				<SearchBar/>				
+			</div>
+	
+		)
+	}
 }
-
-const mondoList = [
-	{id: 1, name: 'cancer'},
-	{id: 2, name: 'diabetes'}
-];
-
-const geneList = [
-	{id: 1, name: 'geneA'},
-	{id: 2, name: 'geneB'},
-	{id: 3, name: 'geneC'}
-];
-
-const biomodelList = [
-	{id: 1, name: 'biomodelA'},
-	{id: 2, name: 'biomodelB'},
-	{id: 3, name: 'biomodelC'},
-	{id: 4, name: 'biomodelD'}
-];
 
 
 ReactDOM.render(
-  <App mondoList={mondoList} geneList={geneList} biomodelList={biomodelList} />,
+  <App />,
   document.getElementById('root')
 );
