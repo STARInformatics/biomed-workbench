@@ -1,0 +1,5 @@
+pandas
+ontobio
+html3
+requests
+mygene
