@@ -7,13 +7,17 @@ class ListItem extends React.Component {
 		super(props);
 		this.handleClick = this.handleClick.bind(this);
 	}
-	handleClick(e) {
-		alert('You just choose '.concat(this.props.value));
+	handleClick() {
+		this.props.onClick(this.props.index);
 	}
+		
+
 	render() {
-		if (this.props.enableClick === true) {
-			return <a href="#" onClick={this.handleClick} className="list-group-item list-group-item-action">
-					{this.props.value}
+		if (this.props.isClickEnabled === true) {
+		return <a href="#" 
+					className="list-group-item list-group-item-action"
+					onClick={this.handleClick}>
+						{this.props.value}
 				</a>;
 		}
 		else {
@@ -24,48 +28,50 @@ class ListItem extends React.Component {
 	}
 }
 
-function ListItems(props) {
-	const items = props.items;
-	const enableClick = props.enableClick;
-	const listItems = items.map((item) =>
-		<ListItem key={item.id}
-					value={item.name} enableClick={enableClick}/>					
-	);
-	return (
-		<div className="list-group">
-			{listItems}
-		</div>
-	);
-}
-
 function MondoList(props) {
 	const mondoList = props.mondoList;
-	const enableClick = props.enableClick;
+	const isClickEnabled = props.isClickEnabled;
+	const listItems = mondoList.map((item) =>
+		<ListItem 
+			key={item.id}
+			index={item.id}
+			value={item.name} 
+			isClickEnabled={isClickEnabled}
+			onClick={props.onClick}/>					
+	);
 	return (
 		<div className="container">
 			<h5> Disease Index </h5>
-			<ListItems items={mondoList} enableClick={enableClick}/>
+			{listItems}
 		</div>
 	);
 }
 
 function GeneList(props) {
 	const geneList = props.geneList;
-	const enableClick = props.enableClick;
+	const isClickEnabled = props.isClickEnabled;
+	const listItems = geneList.map((item) =>
+		<ListItem key={item.gene_id}
+					value={item.gene_symbol} isClickEnabled={isClickEnabled}/>					
+	);
 	return (
 		<div className="container">
 			<h5> Gene List </h5>
-			<ListItems items={geneList} enableClick={enableClick}/>
+			{listItems}
 		</div>
 	);
 }
 function BioModelList(props) {
 	const biomodelList = props.biomodelList;
-	const enableClick = props.enableClick;
+	const isClickEnabled = props.isClickEnabled;
+	const listItems = biomodelList.map((item) =>
+		<ListItem key={item.id}
+					value={item.name} isClickEnabled={isClickEnabled}/>					
+	);
 	return (
 		<div className="container">
 			<h5> Biomodel List </h5>
-			<ListItems items={biomodelList} enableClick={enableClick}/>
+			{listItems}
 		</div>
 	);
 }
@@ -106,41 +112,53 @@ class App extends Component {
 				{id: 1, name: 'No Result'}
 			],
 			geneList: [
-				{id: 1, name: 'No Result'}
+				{gene_id: 1, gene_symbol: 'No Result'}
 			],
 
 			biomodelList: [
 				{id: 1, name: 'No Result'}
 			],
-			mondoEnableClick: false,
-			geneEnableClick: false,
-			bioEnableClick: false
+			mondoisClickEnabled: false,
+			geneisClickEnabled: false,
+			bioisClickEnabled: false,
+			mondoSelected: '',
 			
 		}
-		this.handleSearch = this.handleSearch.bind(this);
+		this.handleMondoSearch = this.handleMondoSearch.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
+		this.handleMondoClick = this.handleMondoClick.bind(this);
 	}
-	handleSearch(e) {
+	handleMondoSearch(e) {
 		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
 			.then(response => response.json())
-			.then(data => this.setState({ mondoList: data, mondoEnableClick: true }));
+			.then(data => this.setState({ mondoList: data, mondoisClickEnabled: true }));
 	}
 	handleTextChange(e) {
 		this.setState({searchText : e.target.value});
 	}
+	
+	handleMondoClick(mondoItem) {
+		fetch('http://127.0.0.1:5000/api/disease-to-gene/'.concat(mondoItem).concat('?size=5'))
+			.then(response => response.json())
+			.then(data => this.setState({ geneList: data, geneisClickEnabled: true }));
+	}	
+
 	render() {
 		return (
 			<div className="container">
-			<SearchBar handleSearch={this.handleSearch} handleTextChange={this.handleTextChange}/>		
+			<SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>		
 			<div className="row">
 				<div className="col-sm-3">
-					<MondoList mondoList={this.state.mondoList} enableClick={this.state.mondoEnableClick} />
+					<MondoList 
+						mondoList={this.state.mondoList} 
+						isClickEnabled={this.state.mondoisClickEnabled}
+						onClick={this.handleMondoClick}/>
 				</div>
 				<div className="col-sm-3">
-					<GeneList geneList={this.state.geneList} enableClick={this.state.geneEnableClick} />
+					<GeneList geneList={this.state.geneList} isClickEnabled={this.state.geneisClickEnabled} />
 				</div>
 				<div className="col-sm-3">
-					<BioModelList biomodelList={this.state.biomodelList} enableClick={this.state.bioEnableClick} />
+					<BioModelList biomodelList={this.state.biomodelList} isClickEnabled={this.state.bioisClickEnabled} />
 				</div>
 			</div>
 		  </div>
