@@ -4,6 +4,7 @@ import os
 import json
 
 from .mondo import search
+from .workflow import diseaseLookUp
 
 path = os.path.dirname(os.path.abspath(__name__))
 app = Flask(__name__, root_path=f'{path}/web')
@@ -43,6 +44,30 @@ def disease(keywords):
     response = Response(data, status=200, mimetype='application/json')
     return response
     # return jsonify(search(keywords))
+
+@app.route('/api/disease-to-gene/<string:mondo_id>')
+@cross_origin()
+def gene_lookup(mondo_id):
+    size = request.args.get('size')
+
+    input_object, disease_associated_genes, input_curie_set = diseaseLookUp(mondo_id)
+    df = disease_associated_genes
+
+    records = []
+
+    for d in df.to_dict(orient='record'):
+        records.append({
+            'disease_id' : d['input_id'],
+            'gene_id' : d['hit_id'],
+            'gene_symbol' : d['hit_symbol'],
+            'relation' : d['relation']
+        })
+
+    if size is not None:
+        size = int(size)
+        records = records[:size]
+
+    return jsonify(records)
 
 @app.errorhandler(404)
 def page_not_found(error):
