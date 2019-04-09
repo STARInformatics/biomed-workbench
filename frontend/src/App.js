@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import './css/searchbar.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 class ListItem extends React.Component {
@@ -13,10 +12,14 @@ class ListItem extends React.Component {
 	}
 	render() {
 		if (this.props.enableClick === true) {
-			return <li onClick={this.handleClick} className="list-group-item">{this.props.value}</li>;
+			return <a href="#" onClick={this.handleClick} className="list-group-item list-group-item-action">
+					{this.props.value}
+				</a>;
 		}
 		else {
-			return <li className="list-group-item">{this.props.value}</li>;
+			return <a href="#" className="list-group-item list-group-item-action disabled">
+					{this.props.value}
+				</a>;
 		}
 	}
 }
@@ -29,9 +32,9 @@ function ListItems(props) {
 					value={item.name} enableClick={enableClick}/>					
 	);
 	return (
-		<ul className="list-group">
+		<div className="list-group">
 			{listItems}
-		</ul>
+		</div>
 	);
 }
 
@@ -69,71 +72,79 @@ function BioModelList(props) {
 
 class SearchBar extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = {
-		searchText : '',
-		mondoList: [
-			{id: 1, name: 'No Result'}
-		],
-		geneList: [
-			{id: 1, name: 'No Result'}
-		],
-
-		biomodelList: [
-			{id: 1, name: 'No Result'}
-		],
-		enableClick: false
-	}
-    this.handleClick = this.handleClick.bind(this);
-    this.handleTextChange = this.handleTextChange.bind(this);
-  }
-
-  handleClick(e) {
-		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
-			.then(response => response.json())
-			.then(data => this.setState({ mondoList: data, enableClick: true }));
-	}
-
-  handleTextChange(e) {
-    this.setState({searchText : e.target.value})
+    super(props);    
   }
 
   render() {
     return (
-      <div className="container">
-        <input
-          type="text"
-		  className="form-control"
-          onChange={this.handleTextChange}
-          placeholder="Search.."
-          id="search"
-        />
-        <button
-          type="submit"
-          onClick={this.handleClick}>
-          <i className="fa fa-search"></i>
-        </button>
-		<div className="row">
-			<div className="col-sm-4">
-				<MondoList mondoList={this.state.mondoList} enableClick={this.state.enableClick} />
-			</div>
-			<div className="col-sm-4">
-				<GeneList geneList={this.state.geneList} enableClick={this.state.enableClick} />
-			</div>
-			<div className="col-sm-4">
-				<BioModelList biomodelList={this.state.biomodelList} enableClick={this.state.enableClick} />
-			</div>
-		</div>
-      </div>
+		<form class="form-inline">
+			<input
+				type="search"
+				className="form-control mr-sm-2"
+				onChange={this.props.handleTextChange}
+				placeholder="Search.."
+				aria-label="Search"
+				id="search"
+			/>
+			<button
+				type="submit"
+				onClick={this.props.handleSearch}
+				className="btn btn-outline-success my-2 my-sm-0">
+				Search
+			</button>
+		</form>
     );
   }
 }
 
 class App extends Component {
-  render() {
-    return (
-		<SearchBar/>
-    );
+	constructor(props) {
+		super(props);
+		this.state = {
+			searchText : '',
+			mondoList: [
+				{id: 1, name: 'No Result'}
+			],
+			geneList: [
+				{id: 1, name: 'No Result'}
+			],
+
+			biomodelList: [
+				{id: 1, name: 'No Result'}
+			],
+			mondoEnableClick: false,
+			geneEnableClick: false,
+			bioEnableClick: false
+			
+		}
+		this.handleSearch = this.handleSearch.bind(this);
+		this.handleTextChange = this.handleTextChange.bind(this);
+	}
+	handleSearch(e) {
+		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
+			.then(response => response.json())
+			.then(data => this.setState({ mondoList: data, mondoEnableClick: true }));
+	}
+	handleTextChange(e) {
+		this.setState({searchText : e.target.value});
+	}
+	render() {
+		return (
+			<div className="container">
+			<SearchBar handleSearch={this.handleSearch} handleTextChange={this.handleTextChange}/>		
+			<div className="row">
+				<div className="col-sm-3">
+					<MondoList mondoList={this.state.mondoList} enableClick={this.state.mondoEnableClick} />
+				</div>
+				<div className="col-sm-3">
+					<GeneList geneList={this.state.geneList} enableClick={this.state.geneEnableClick} />
+				</div>
+				<div className="col-sm-3">
+					<BioModelList biomodelList={this.state.biomodelList} enableClick={this.state.bioEnableClick} />
+				</div>
+			</div>
+		  </div>
+		);
   }
 }
 
