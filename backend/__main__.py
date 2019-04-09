@@ -1,13 +1,22 @@
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask, render_template, jsonify, request, Response, send_file
 from flask_cors import CORS, cross_origin
 import os
 import json
+import requests
 
 from .mondo import search
 from .workflow import diseaseLookUp
 
 path = os.path.dirname(os.path.abspath(__name__))
-app = Flask(__name__, root_path=f'{path}/web')
+app = Flask(__name__)
+
+def get(d:dict, *keys, default=None):
+    try:
+        for key in keys:
+            d = d[key]
+        return d
+    except:
+        return default
 
 @app.route("/")
 def index():
@@ -69,9 +78,47 @@ def gene_lookup(mondo_id):
 
     return jsonify(records)
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template('error/404.html'), 404
+known_pathways = [filename.replace('.sbgn', '') for filename in os.listdir('backend/data/human')]
+
+@app.route('/api/gene-to-pathway/<string:gene_id>')
+@cross_origin()
+def pathway_lookup(gene_id):
+    response = requests.post(
+        'https://reactome.org/AnalysisService/identifiers/projection/?page=1',
+        data=gene_id.strip(),
+        headers={'Content-Type' : 'text/plain'},
+    )
+
+    d = response.json()
+
+    records = []
+    for pathway in d['pathways']:
+        pathway_id = get(pathway, 'stId')
+        if pathway_id not in known_pathways:
+            continue
+        records.append({
+            'pathway_id' : pathway_id,
+            'species' : get(pathway, 'species', 'name'),
+            'name' : get(pathway, 'name')
+        })
+    return jsonify(records)
+
+@app.route('/api/pathway-to-sbgn/<string:pathway_id>')
+@cross_origin()
+def get_xml(pathway_id):
+    with open('{}/{}.sbgn'.format(os.path.join('backend', 'data', 'sbgn'), pathway_id), mode='r') as f:
+        response = Response(f.read(), status=200, mimetype='application/xml')
+        return response
+
+@app.route('/api/pathway-to-png/<string:pathway_id>')
+@cross_origin()
+def get_png(pathway_id):
+    filename = '{}/{}.png'.format(os.path.join('data', 'diagrams'), pathway_id)
+    return send_file(filename, mimetype='image/png')
+
+# @app.errorhandler(404)
+# def page_not_found(error):
+#     return render_template('error/404.html'), 404
 
 if __name__ == "__main__":
     app.run()
