@@ -80,7 +80,7 @@ function BioModelList(props) {
 	const biomodelList = props.biomodelList;
 	const isClickEnabled = props.isClickEnabled;
 	const listItems = biomodelList.map((item) =>
-		<ListItem key={item.pathway_id}
+		<ListItem key={item.name}
 			index={item.pathway_id}
 			value={item.name}
 			onClick={props.onClick}
@@ -125,14 +125,14 @@ class App extends Component {
 			imgSrc : null,
 			searchText : '',
 			mondoList: [
-				{id: 1, name: 'No Result'}
+				{id: 1, name: 'No Search'}
 			],
 			geneList: [
-				{gene_id: 1, gene_symbol: 'No Result'}
+				{gene_id: 1, gene_symbol: 'No Search'}
 			],
 
 			biomodelList: [
-				{id: 1, name: 'No Result'}
+				{pathway_id: 1, name: 'No Search'}
 			],
 			mondoisClickEnabled: false,
 			geneisClickEnabled: false,
@@ -143,14 +143,24 @@ class App extends Component {
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.handleMondoClick = this.handleMondoClick.bind(this);
-    this.handleGeneClick = this.handleGeneClick.bind(this);
+        this.handleGeneClick = this.handleGeneClick.bind(this);
 		this.handlePathwayClick = this.handlePathwayClick.bind(this);
 	}
 
 	handleMondoSearch(e) {
 		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
 			.then(response => response.json())
-			.then(data => this.setState({ mondoList: data, mondoisClickEnabled: true }));
+			.then(data => {
+                if (data.length ===0 || data === undefined) {
+                    const newData = [
+                        {id: 1, name: 'No Result'}
+                    ]
+                    this.setState({ mondoList: newData, mondoisClickEnabled: false });
+                }
+                else {
+                    this.setState({ mondoList: data, mondoisClickEnabled: true });
+                }
+            });
 	}
 
 	handleTextChange(e) {
@@ -160,13 +170,33 @@ class App extends Component {
 	handleMondoClick(mondoItem) {
 		fetch('http://127.0.0.1:5000/api/disease-to-gene/'.concat(mondoItem).concat('?size=5'))
 			.then(response => response.json())
-			.then(data => this.setState({ geneList: data, geneisClickEnabled: true }));
+			.then(data => {
+                if (data.length ===0 || data === undefined) {
+                    const newData = [
+                        {gene_id: 1, gene_symbol: 'No Result'}
+                    ]
+                    this.setState({ geneListlList: newData, geneisClickEnabled: false });
+                }
+                else {
+                    this.setState({ geneList: data, geneisClickEnabled: true });
+                }
+            });
 	}
 
   handleGeneClick(geneItem) {
       fetch('http://127.0.0.1:5000/api/gene-to-pathway/'.concat(geneItem).concat('?size=5'))
 		.then(response => response.json())
-		.then(data => this.setState({ biomodelList: data, bioisClickEnabled: true }));
+		.then(data => {
+            if (data.length ===0 || data === undefined) {
+                const newData = [
+                    {pathway_id: 1, name: 'No Result'}
+                ]
+                this.setState({ biomodelList: newData, bioisClickEnabled: false });
+            }
+            else {
+                this.setState({ biomodelList: data, bioisClickEnabled: true });
+            }
+        });
   }
 
 	handlePathwayClick(index) {
