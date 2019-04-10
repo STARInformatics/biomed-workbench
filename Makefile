@@ -13,7 +13,7 @@ run:
 download:
 	mkdir -p backend/data/diagrams
 	mkdir -p backend/data/sbgn
-	wget http://purl.obolibrary.org/obo/mondo.json -O server/data/mondo.json
+	wget http://purl.obolibrary.org/obo/mondo.json -O backend/data/mondo.json
 	wget https://reactome.org/download/current/diagrams.png.tgz -O backend/data/diagrams.png.tgz
 	tar -xvzf backend/data/diagrams.png.tgz --directory backend/data/diagrams
 	wget https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz -O backend/data/homo_sapiens.sbgn.tar.gz
