@@ -4,8 +4,14 @@ venv:
 	virtualenv -p python3.6 ${VENV}
 
 install:
+	#
+	# Configure Python Flask back end
+	#
 	ls ${VENV} || virtualenv -p python3.6 ${VENV}
 	${VENV}/bin/pip3 install -r requirements.txt
+	#
+	# Configure node.js web application
+	#
 	cd frontend; npm install
 
 data:
