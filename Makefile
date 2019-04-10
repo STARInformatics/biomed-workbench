@@ -16,6 +16,8 @@ data:
 	wget https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz -O backend/data/homo_sapiens.sbgn.tar.gz
 	tar -xvzf backend/data/homo_sapiens.sbgn.tar.gz --directory backend/data/sbgn
 
+.PHONY: web
+
 service:
 	nohup ${VENV}/bin/python3 -m backend >logs/service_`date`.log 2>&1 &
 
