@@ -2,6 +2,16 @@ import React, { Component } from 'react';
 import './App.css';
 import 'font-awesome/css/font-awesome.min.css';
 
+class ImageView extends React.Component {
+	render() {
+		return (
+			<div>
+			<img src={this.props.src}/>
+			</div>
+		)
+	}
+}
+
 class ListItem extends React.Component {
 	constructor(props) {
 		super(props);
@@ -112,6 +122,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			imgSrc : null,
 			searchText : '',
 			mondoList: [
 				{id: 1, name: 'No Result'}
@@ -160,12 +171,13 @@ class App extends Component {
 
 	handlePathwayClick(index) {
 		console.log(index)
-
+		this.setState({imgSrc : "http://localhost:5000/api/pathway-to-png/" + index})
 	}
 
 	render() {
 		return (
 			<div className="container">
+			<ImageView src={this.state.imgSrc} />
 			<SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
 			<div className="row">
 				<div className="col-sm-3">
