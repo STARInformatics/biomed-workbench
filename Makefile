@@ -7,9 +7,6 @@ install:
 	ls ${VENV} || virtualenv -p python3.6 ${VENV}
 	${VENV}/bin/pip3 install -r requirements.txt
 
-run:
-	venv/bin/python3 -m backend
-
 data:
 	mkdir -p backend/data/diagrams
 	mkdir -p backend/data/sbgn
@@ -19,8 +16,13 @@ data:
 	wget https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz -O backend/data/homo_sapiens.sbgn.tar.gz
 	tar -xvzf backend/data/homo_sapiens.sbgn.tar.gz --directory backend/data/sbgn
 
-run:
-	${VENV}/bin/python3 -m backend
+service:
+	nohup ${VENV}/bin/python3 -m backend &
+
+web:
+	cd frontend
+	npm install
+	nohup npm start &
 
 project_settings:
 	@echo "Python Virtual Environment specified to be located in the subdirectory '${VENV}'"
