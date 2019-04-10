@@ -52,7 +52,7 @@ function MondoList(props) {
 	);
 	return (
 		<div className="container">
-			<h5> Disease Index </h5>
+			<h6> Disease Index </h6>
 			{listItems}
 		</div>
 	);
@@ -71,7 +71,7 @@ function GeneList(props) {
 	);
 	return (
 		<div className="container">
-			<h5> Gene List </h5>
+			<h6> Gene List </h6>
 			{listItems}
 		</div>
 	);
@@ -89,7 +89,7 @@ function BioModelList(props) {
 	);
 	return (
 		<div className="container">
-			<h5> Biomodel List </h5>
+			<h6> Biomodel List </h6>
 			{listItems}
 		</div>
 	);
@@ -209,26 +209,20 @@ class App extends Component {
 			<div className="container">
 			<ImageView src={this.state.imgSrc} />
 			<SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
-			<div className="row">
-				<div className="col-sm-3">
+			<div className="col-sm-3">
 					<MondoList
 						mondoList={this.state.mondoList}
 						isClickEnabled={this.state.mondoisClickEnabled}
 						onClick={this.handleMondoClick}/>
-				</div>
-				<div className="col-sm-3">
 					<GeneList
                         geneList={this.state.geneList}
                         isClickEnabled={this.state.geneisClickEnabled}
                         onClick={this.handleGeneClick}/>
-				</div>
-				<div className="col-sm-3">
 					<BioModelList
 						biomodelList={this.state.biomodelList}
 						isClickEnabled={this.state.bioisClickEnabled}
 						onClick={this.handlePathwayClick}
 					/>
-				</div>
 			</div>
 		  </div>
 		);
