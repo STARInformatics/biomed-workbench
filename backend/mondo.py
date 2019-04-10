@@ -15,13 +15,15 @@ def get(d:dict, *keys:str, default=None):
 @lru_cache()
 def load_mondo():
     path = os.path.dirname(os.path.abspath(__name__))
-    with open(f'{path}/server/data/mondo.json', 'r') as f:
+    with open(f'{path}/backend/data/mondo.json', 'r') as f:
         d = json.load(f)
         results = {}
         for graph in d['graphs']:
             for node in graph['nodes']:
                 if MONDO in node['id']:
                     if 'lbl' not in node:
+                        continue
+                    if get(node, 'meta', 'deprecated') is True:
                         continue
                     synonoms = [syn['val'].lower() for syn in get(node, 'meta', 'synonyms', default=[])]
                     curie = node['id'].replace(MONDO, 'MONDO:')
@@ -59,7 +61,10 @@ def search(keywords:List[str]) -> List[dict]:
     def exact_term_order(node):
         synonoms = node['synonoms'] + [node['name']]
         k = ' '.join(keywords)
-        return -sum(synonom.count(k) for synonom in synonoms)
+        s = -sum(synonom.count(k) for synonom in synonoms)
+        if node['name'] == k:
+            s -= 1
+        return s
 
     results = sorted(results, key=keyword_order)
     results = sorted(results, key=exact_term_order)
