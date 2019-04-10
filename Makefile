@@ -6,6 +6,7 @@ venv:
 install:
 	ls ${VENV} || virtualenv -p python3.6 ${VENV}
 	${VENV}/bin/pip3 install -r requirements.txt
+	cd frontend; npm install
 
 data:
 	mkdir -p backend/data/diagrams
@@ -22,7 +23,7 @@ service:
 	nohup ${VENV}/bin/python3 -m backend >logs/service_`date`.log 2>&1 &
 
 web:
-	cd frontend; npm install; nohup npm start >logs/web_`date`.log 2>&1 &
+	cd frontend; nohup npm start >../logs/web_`date`.log 2>&1 &
 
 project_settings:
 	@echo "Python Virtual Environment specified to be located in the subdirectory '${VENV}'"
