@@ -10,7 +10,7 @@ install:
 run:
 	venv/bin/python3 -m backend
 
-download:
+data:
 	mkdir -p backend/data/diagrams
 	mkdir -p backend/data/sbgn
 	wget http://purl.obolibrary.org/obo/mondo.json -O backend/data/mondo.json
