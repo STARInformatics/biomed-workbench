@@ -20,23 +20,14 @@ def get(d:dict, *keys, default=None):
 
 @app.route("/")
 def index():
-    return render_template('index.html')
-
-@app.route("/graph")
-def graph():
-    return render_template('graph.html')
-
-@app.route("/demo")
-def demo():
-    return render_template('demo.html')
-
-@app.route("/hello")
-def helloworld():
-    return "Hello World!"
-
-@app.route("/hello/<string:name>")
-def hello(name):
-    return f"Hello {name}!"
+    endpoints = [
+        'http://localhost:5000/api/disease/diabetes mellitus',
+        'http://localhost:5000/api/disease-to-gene/MONDO:0009401',
+        'http://localhost:5000/api/gene-to-pathway/HGNC:406',
+        'http://localhost:5000/api/pathway-to-sbgn/R-HSA-389661',
+        'http://localhost:5000/api/pathway-to-png/R-HSA-389661',
+        ]
+    return 'API workflow example:<br>' + '<br>'.join('<a href="{}">{}</a>'.format(e, e) for e in endpoints)
 
 @app.route('/api/disease/<string:keywords>')
 @cross_origin()
@@ -78,7 +69,9 @@ def gene_lookup(mondo_id):
 
     return jsonify(records)
 
-known_pathways = [filename.replace('.sbgn', '') for filename in os.listdir('backend/data/human')]
+known_pathways = set()
+known_pathways.update(filename.replace('.sbgn', '') for filename in os.listdir(os.path.join('backend', 'data', 'sbgn')))
+known_pathways.update(filename.replace('.png', '') for filename in os.listdir(os.path.join('backend', 'data', 'diagrams')))
 
 @app.route('/api/gene-to-pathway/<string:gene_id>')
 @cross_origin()
@@ -106,14 +99,15 @@ def pathway_lookup(gene_id):
 @app.route('/api/pathway-to-sbgn/<string:pathway_id>')
 @cross_origin()
 def get_xml(pathway_id):
-    with open('{}/{}.sbgn'.format(os.path.join('backend', 'data', 'sbgn'), pathway_id), mode='r') as f:
+    filename = os.path.join('backend', 'data', 'sbgn', pathway_id) + '.sbgn'
+    with open(filename, mode='r') as f:
         response = Response(f.read(), status=200, mimetype='application/xml')
         return response
 
 @app.route('/api/pathway-to-png/<string:pathway_id>')
 @cross_origin()
 def get_png(pathway_id):
-    filename = '{}/{}.png'.format(os.path.join('data', 'diagrams'), pathway_id)
+    filename = os.path.join('data', 'diagrams', pathway_id) + '.png'
     return send_file(filename, mimetype='image/png')
 
 # @app.errorhandler(404)
