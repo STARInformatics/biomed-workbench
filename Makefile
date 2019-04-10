@@ -17,12 +17,12 @@ data:
 	tar -xvzf backend/data/homo_sapiens.sbgn.tar.gz --directory backend/data/sbgn
 
 service:
-	nohup ${VENV}/bin/python3 -m backend &
+	nohup ${VENV}/bin/python3 -m backend >logs/service_`date`.log 2>&1 &
 
 web:
 	cd frontend
 	npm install
-	nohup npm start &
+	nohup npm start >logs/web_`date`.log 2>&1 &
 
 project_settings:
 	@echo "Python Virtual Environment specified to be located in the subdirectory '${VENV}'"
