@@ -51,8 +51,12 @@ function GeneList(props) {
 	const geneList = props.geneList;
 	const isClickEnabled = props.isClickEnabled;
 	const listItems = geneList.map((item) =>
-		<ListItem key={item.gene_id}
-					value={item.gene_symbol} isClickEnabled={isClickEnabled}/>					
+		<ListItem 
+            key={item.gene_symbol}
+            index={item.gene_id}
+			value={item.gene_symbol}
+            onClick={props.onClick}
+            isClickEnabled={isClickEnabled}/>					
 	);
 	return (
 		<div className="container">
@@ -83,7 +87,7 @@ class SearchBar extends React.Component {
 
   render() {
     return (
-		<form class="form-inline">
+		<form className="form-inline">
 			<input
 				type="search"
 				className="form-control mr-sm-2"
@@ -127,6 +131,8 @@ class App extends Component {
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.handleMondoClick = this.handleMondoClick.bind(this);
+        this.handleGeneClick = this.handleGeneClick.bind(this);
+        
 	}
 	handleMondoSearch(e) {
 		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
@@ -141,7 +147,12 @@ class App extends Component {
 		fetch('http://127.0.0.1:5000/api/disease-to-gene/'.concat(mondoItem).concat('?size=5'))
 			.then(response => response.json())
 			.then(data => this.setState({ geneList: data, geneisClickEnabled: true }));
-	}	
+	}
+    handleGeneClick(geneItem) {
+        fetch('http://127.0.0.1:5000/api/gene-to-pathway/'.concat(geneItem).concat('?size=5'))
+			.then(response => response.json())
+			.then(data => this.setState({ biomodelList: data, bioisClickEnabled: true }));
+    }
 
 	render() {
 		return (
@@ -155,7 +166,10 @@ class App extends Component {
 						onClick={this.handleMondoClick}/>
 				</div>
 				<div className="col-sm-3">
-					<GeneList geneList={this.state.geneList} isClickEnabled={this.state.geneisClickEnabled} />
+					<GeneList 
+                        geneList={this.state.geneList} 
+                        isClickEnabled={this.state.geneisClickEnabled} 
+                        onClick={this.handleGeneClick}/>
 				</div>
 				<div className="col-sm-3">
 					<BioModelList biomodelList={this.state.biomodelList} isClickEnabled={this.state.bioisClickEnabled} />
