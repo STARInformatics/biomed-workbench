@@ -35,7 +35,7 @@ which  git
 sudo apt install git
 ```
 
-THen, ensure that you have a Unix **make** installed:
+Then, ensure that you have a Unix **make** installed:
 
 ```
 # check where make is installed
@@ -43,6 +43,16 @@ which  make
 
 # if the previous command returns an empty result then...
 sudo apt install make
+```
+
+Finally, ensure that you have **npm** installed:
+
+```
+# check where make is installed
+which npm
+
+# if the previous command returns an empty result then...
+sudo apt install npm
 ```
 
 
@@ -109,12 +119,20 @@ make install
 
 ## Running the Workbench
 
-After configuring the system, the following command runs the workbench, making it accessible 
-at the local URL http://127.0.0.1:5000/ (with error log stored in  ```~/bkw.log```)
-
+After configuring the system, the following command runs the back end data service as a background process, 
+making it accessible at the local URL http://127.0.0.1:5000/ 
+(with error log stored in  ```logs/service_<datestamp>.log```)
 
 ```
-make  run  >~/bkw.log 2>&1  &
+make service
+```
+
+The following command runs the front end web application as a background process
+at the local URL http://127.0.0.1:5000/ 
+(with error log stored in  ```logs/web_<datestamp>.log```)
+
+```
+make web
 ```
 
 ##  Publishing the Site to the Outside World
