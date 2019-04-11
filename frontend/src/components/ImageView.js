@@ -1,11 +1,20 @@
 import React from 'react';
 
+const imageViewStyle = {
+    overflow: "auto",
+    height: "550px",
+    outline: "solid #F5F5F5"
+}
+
 export default class ImageView extends React.Component {
 	render() {
 		return (
-			<div>
-                <img src={this.props.src}/>
-			</div>
+            <div className="container-fluid">
+                <h6> Biomodel View </h6>
+                <div style={imageViewStyle}>                
+                    <img src={this.props.src}/>
+                </div>
+            </div>
 		)
 	}
 }
