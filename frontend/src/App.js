@@ -1,162 +1,12 @@
 import React, { Component } from 'react';
+import SearchBar from './components/SearchBar.js'
+import ImageView, {ImageDescription} from './components/ImageView.js'
+import ListItem, {MondoList, GeneList, BioModelList} from './components/ListItem.js'
+
 import './App.css';
+
 import 'font-awesome/css/font-awesome.min.css';
 
-// Inline CSS Style
-const scrollStyle = {
-    overflowY: "auto", 
-    height: "150px",
-    marginBottom: "15px",
-    backgroundColor: "#F5F5F5"
-};
-
-const searchBarStyle = {
-    marginTop: "20px",
-    marginBottom: "20px",
-}
-
-//Declaration of components
-class ImageView extends React.Component {
-	render() {
-		return (
-			<div>
-                <img src={this.props.src}/>
-			</div>
-		)
-	}
-}
-
-class ImageDescription extends React.Component {
-    constructor(props) {
-		super(props);
-    }
-    render() {
-        return (
-            <div>
-                <h6>Gene/Drugs Details </h6>
-                <p>{this.props.text} </p>
-            </div>
-        )
-    }
-}
-
-class ListItem extends React.Component {
-	constructor(props) {
-		super(props);
-		this.handleClick = this.handleClick.bind(this);
-	}
-
-	handleClick() {
-		this.props.onClick(this.props.index);
-	}
-
-
-	render() {
-		if (this.props.isClickEnabled === true) {
-		return <a href="#"
-					className="list-group-item list-group-item-action"
-					onClick={this.handleClick}>
-						{this.props.value}
-				</a>;
-		}
-		else {
-			return <a href="#" className="list-group-item list-group-item-action disabled">
-					{this.props.value}
-				</a>;
-		}
-	}
-}
-
-
-    
-function MondoList(props) {
-	const mondoList = props.mondoList;
-	const isClickEnabled = props.isClickEnabled;
-	const listItems = mondoList.map((item) =>
-		<ListItem
-			key={item.id}
-			index={item.id}
-			value={item.name}
-			isClickEnabled={isClickEnabled}
-			onClick={props.onClick}/>
-	);
-	return (
-		<div className="container">
-			<h6> Disease Index </h6>
-			<div style={scrollStyle}>
-                {listItems}
-            </div>
-		</div>
-	);
-}
-
-function GeneList(props) {
-	const geneList = props.geneList;
-	const isClickEnabled = props.isClickEnabled;
-	const listItems = geneList.map((item) =>
-		<ListItem
-            key={item.gene_symbol}
-            index={item.gene_id}
-			value={item.gene_symbol}
-            onClick={props.onClick}
-            isClickEnabled={isClickEnabled}/>
-	);
-	return (
-		<div className="container">
-			<h6> Gene List </h6>
-            <div style={scrollStyle}>
-                {listItems}
-            </div>
-		</div>
-	);
-}
-function BioModelList(props) {
-	const biomodelList = props.biomodelList;
-	const isClickEnabled = props.isClickEnabled;
-	const listItems = biomodelList.map((item) =>
-		<ListItem key={item.name}
-			index={item.pathway_id}
-			value={item.name}
-			onClick={props.onClick}
-			isClickEnabled={isClickEnabled}
-		/>
-	);
-	return (
-		<div className="container">
-			<h6> Biomodel List </h6>
-            <div style={scrollStyle}>
-                {listItems}
-            </div>
-		</div>
-	);
-}
-
-class SearchBar extends React.Component {
-  render() {
-    return (
-        <div style={searchBarStyle}>
-            <form className="form-inline">
-                <input
-                    type="search"
-                    className="form-control mr-sm-2"
-                    onChange={this.props.handleTextChange}
-                    placeholder="Search.."
-                    aria-label="Search"
-                    id="search"
-                />
-                <button
-                    type="button"
-                    onClick={this.props.handleSearch}
-                    className="btn btn-outline-success my-2 my-sm-0">
-                    Search
-                </button>
-            </form>
-        </div>
-    );
-  }
-}
-
-//Main Component
 class App extends Component {
 	constructor(props) {
 		super(props);
@@ -270,6 +120,7 @@ class App extends Component {
                     <div className="col-sm-3">
                         <ImageDescription text={this.state.geneDescription} />
                     </div>
+
                 </div>
             </div>
 		);
