@@ -5,7 +5,7 @@
 This project resides in [this Github project repository](https://github.com/STARInformatics/biomed-workbench).
 
 Here, we assume that we are using a Debian Linux flavor (like Ubuntu) to run the application. Adjust the commands 
-accordingly to your chosen operating system.
+accordingly to your chosen operating system (e.g. Microsoft Windows procedures will be different).
 
 First, some software may need to be updated and installed. In preparation, update your local package index as follows:
 
@@ -13,19 +13,37 @@ First, some software may need to be updated and installed. In preparation, updat
 sudo apt update
 ```
 
-It is recommended that you have Python release 3.6.* or higher installed on your system, accessible by the application.
+It is recommended that you have Python release 3.6.* or higher installed on your system, accessible by the application. 
+Install it if necessary (Ubuntu Linux often already has it installed).
+
+Ensure that **pip3** is installed:
+
+```
+# check where pip3 is installed
+which pip3
+
+# if the previous command returns an empty result then...
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python get-pip.py
+```
 
 Ensure that **virtualenv** is installed:
 
 ```
 # check where virtualenv is installed
-which  virtualenv
+which virtualenv
 
-# if the previous command returns an empty result then...
+# if the previous command returns an empty result then...you may need 'sudo' if installed centrally
+pip3 install virtualenv
+```
+
+Optionally, under Linux, package installation may also be used:
+
+```
 sudo apt install virtualenv
 ```
 
-Next, ensure that you have the **git** client installed:
+Net, ensure that you have the **git** client installed:
 
 ```
 # check where git is installed
@@ -102,15 +120,15 @@ will report the assumed base service url and the assumed location of your virtua
 (defaults 'http://localhost:5000' and 'venv';  see the section 
 **Customizing the Build** below, if you wish to change this location).
 
-##  Customizing the System
+##  Customizing the Installation
 
 The default subdirectory name for the "virtual environment" is _venv_.  To override this default location,
 you can set the environment variable **VENV**, namely:
 
 ```
-# Specify the subdiretory location 'py37' 
+# Specify the subdiretory location 'py36' 
 # for the Python virtual environment
-export VENV=py37
+export VENV=py36
 ```
 
 before running any of the above _make_ targets. Alternately, you may override the location of the Python
@@ -128,31 +146,28 @@ Similarly, if you are hosting the application behind a web service proxy (see be
 communicate the site particulars to the system. In particular, the following environment variables should be
 set (exported?) before configuring the system:
 
-* BKW_BASE_URL
-* BKW_API_PATH
+* BKW_BASE_URL # defaults to "http://localhost:5000"
+* BKW_API_PATH # defaults to empty
 
-For example:
+The default values will indicate that the web application root page and API are both hosted at *http://localhost:5000*. 
+These values may be changed. For example, setting them as follows:
 
 ``` 
 export BKW_BASE_URL=https://bkw.mydomain.com
 export BKW_API_PATH=/service
 ```
 
-Will indicate that the web application root page is hosted at *https://bkw.mydomain.com* and that the web
+will indicate that the web application root page is hosted at *https://bkw.mydomain.com* and that the web
 service API will be found at *https://bkw.mydomain.com/service*.  Follow the directives of your particular OS
-to ensure that these environment variables are persistently visible whenever you start up the application. For
-example, with Ubuntu Linux, you may wish to create a bash script under the ```/etc/profile.d/``` subdirectory 
+to ensure that these environment variables are persistently visible whenever you start up the application. 
+
+For example, with Ubuntu Linux, you may wish to create a bash script under the ```/etc/profile.d/``` subdirectory 
 to set and exports them. 
 
 ## Configuring the System 
 
-If the virtual environment is not already created, you can create it as follows:
-
-``` 
-make venv
-```
-
-The following _make_ target installs the project library dependencies into the specified environment:
+The following _make_ target configures the build environment (as necessary) and installs the project library 
+dependencies into that environment:
 
 ```
 make install
