@@ -44,6 +44,9 @@ function BioModelList(props) {
 	);
 }
 
+const BKW_BASE_URL = process.env.BKW_BASE_URL || 'http://localhost:5000';
+const BKW_API_PATH = process.env.BKW_API_PATH || '';
+const SERVICE_URL  = BKW_BASE_URL + BKW_API_PATH;
 
 class SearchBar extends React.Component {
   constructor(props) {
@@ -70,9 +73,6 @@ class SearchBar extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
   }
-	BKW_BASE_URL = process.env.BKW_BASE_URL || 'http://localhost:5000';
-	BKW_API_PATH = process.env.BKW_API_PATH || '';
-	SERVICE_URL  = BKW_BASE_URL + BKW_API_PATH;
 
 	handleClick(e) {
 		fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText).concat('?size=5'))
