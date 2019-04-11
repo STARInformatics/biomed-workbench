@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+
 import SearchBar from './components/SearchBar.js'
 import ImageView from './components/ImageView.js'
 import ListItem, {MondoList, GeneList, BioModelList} from './components/ListItem.js'
-import './App.css';
-import 'font-awesome/css/font-awesome.min.css';
 
+import './App.css';
+
+import 'font-awesome/css/font-awesome.min.css';
 
 class App extends Component {
 	constructor(props) {
@@ -36,7 +38,7 @@ class App extends Component {
 	}
 
 	handleMondoSearch(e) {
-		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
+		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText))
 			.then(response => response.json())
 			.then(data => {
                 if (data.length ===0 || data === undefined) {
@@ -56,7 +58,7 @@ class App extends Component {
 	}
 
 	handleMondoClick(mondoItem) {
-		fetch('http://127.0.0.1:5000/api/disease-to-gene/'.concat(mondoItem).concat('?size=5'))
+		fetch('http://127.0.0.1:5000/api/disease-to-gene/'.concat(mondoItem))
 			.then(response => response.json())
 			.then(data => {
                 if (data.length ===0 || data === undefined) {
@@ -95,30 +97,24 @@ class App extends Component {
 	render() {
 		return (
 			<div className="container">
-			<ImageView src={this.state.imgSrc} />
-			<SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
-			<div className="row">
-				<div className="col-sm-3">
-					<MondoList
-						mondoList={this.state.mondoList}
-						isClickEnabled={this.state.mondoisClickEnabled}
-						onClick={this.handleMondoClick}/>
-				</div>
-				<div className="col-sm-3">
-					<GeneList
-                        geneList={this.state.geneList}
-                        isClickEnabled={this.state.geneisClickEnabled}
-                        onClick={this.handleGeneClick}/>
-				</div>
-				<div className="col-sm-3">
-					<BioModelList
-						biomodelList={this.state.biomodelList}
-						isClickEnabled={this.state.bioisClickEnabled}
-						onClick={this.handlePathwayClick}
-					/>
-				</div>
-			</div>
-		  </div>
+                <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
+                <div className="col-sm-3">
+                        <MondoList
+                            mondoList={this.state.mondoList}
+                            isClickEnabled={this.state.mondoisClickEnabled}
+                            onClick={this.handleMondoClick}/>
+                        <GeneList
+                            geneList={this.state.geneList}
+                            isClickEnabled={this.state.geneisClickEnabled}
+                            onClick={this.handleGeneClick}/>
+                        <BioModelList
+                            biomodelList={this.state.biomodelList}
+                            isClickEnabled={this.state.bioisClickEnabled}
+                            onClick={this.handlePathwayClick}
+                        />
+                </div>
+                <ImageView src={this.state.imgSrc} />
+            </div>
 		);
   }
 }

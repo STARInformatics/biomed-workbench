@@ -1,5 +1,12 @@
 import React from 'react';
 
+const scrollStyle = {
+    overflowY: "auto",
+    height: "150px",
+    marginBottom: "15px",
+    backgroundColor: "#F5F5F5"
+};
+
 export default class ListItem extends React.Component {
 	constructor(props) {
 		super(props);
@@ -27,6 +34,8 @@ export default class ListItem extends React.Component {
 	}
 }
 
+
+
 export function MondoList(props) {
 	const mondoList = props.mondoList;
 	const isClickEnabled = props.isClickEnabled;
@@ -40,8 +49,10 @@ export function MondoList(props) {
 	);
 	return (
 		<div className="container">
-			<h5> Disease Index </h5>
-			{listItems}
+			<h6> Disease Index </h6>
+			<div style={scrollStyle}>
+                {listItems}
+            </div>
 		</div>
 	);
 }
@@ -59,12 +70,13 @@ export function GeneList(props) {
 	);
 	return (
 		<div className="container">
-			<h5> Gene List </h5>
-			{listItems}
+			<h6> Gene List </h6>
+            <div style={scrollStyle}>
+                {listItems}
+            </div>
 		</div>
 	);
 }
-
 export function BioModelList(props) {
 	const biomodelList = props.biomodelList;
 	const isClickEnabled = props.isClickEnabled;
@@ -78,8 +90,10 @@ export function BioModelList(props) {
 	);
 	return (
 		<div className="container">
-			<h5> Biomodel List </h5>
-			{listItems}
+			<h6> Biomodel List </h6>
+            <div style={scrollStyle}>
+                {listItems}
+            </div>
 		</div>
 	);
 }
