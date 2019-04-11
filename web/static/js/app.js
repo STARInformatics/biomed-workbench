@@ -44,8 +44,8 @@ function BioModelList(props) {
 	);
 }
 
-const BASE_URL = process.env.BKW_BASE_URL || 'http://localhost:5000';
-const API_PATH = process.env.BKW_API_PATH || '';
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
+const API_PATH = process.env.REACT_APP_API_PATH || '';
 const SERVICE_URL  = BASE_URL + API_PATH;
 
 class SearchBar extends React.Component {
