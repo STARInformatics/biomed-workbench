@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
-import GraphView from './components/GraphView.js'
 import SearchBar from './components/SearchBar.js'
-import ImageView from './components/ImageView.js'
+import ImageView, {ImageDescription} from './components/ImageView.js'
 import ListItem, {MondoList, GeneList, BioModelList} from './components/ListItem.js'
 import sbgnStylesheet from 'cytoscape-sbgn-stylesheet'
 import cytoscape from 'cytoscape';
@@ -39,6 +38,7 @@ class App extends Component {
 			geneisClickEnabled: false,
 			bioisClickEnabled: false,
 			mondoSelected: '',
+            geneDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis varius ex.'
 		}
 
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
@@ -107,31 +107,39 @@ class App extends Component {
 
 	render() {
 		return (
-			<div className="container">
-        <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
-        <div className="col-sm-3">
-          <MondoList
-              mondoList={this.state.mondoList}
-              isClickEnabled={this.state.mondoisClickEnabled}
-              onClick={this.handleMondoClick}/>
-          <GeneList
-              geneList={this.state.geneList}
-              isClickEnabled={this.state.geneisClickEnabled}
-              onClick={this.handleGeneClick}/>
-          <BioModelList
-              biomodelList={this.state.biomodelList}
-              isClickEnabled={this.state.bioisClickEnabled}
-              onClick={this.handlePathwayClick}
-          />
-        </div>
-        <ImageView src={this.state.imgSrc} />
-				<CytoscapeComponent
-					elements={elements}
-					cy={cy => this.cy = cy}
-					// stylesheet={sbgnStylesheet(cytoscape)}
-					style={ { width: '600px', height: '600px' } }
-				/>
-	    </div>
+			<div className="container-fluid">
+                <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
+                <div className="row">
+                    <div className="col-sm-3">
+                            <MondoList
+                                mondoList={this.state.mondoList}
+                                isClickEnabled={this.state.mondoisClickEnabled}
+                                onClick={this.handleMondoClick}/>
+                            <GeneList
+                                geneList={this.state.geneList}
+                                isClickEnabled={this.state.geneisClickEnabled}
+                                onClick={this.handleGeneClick}/>
+                            <BioModelList
+                                biomodelList={this.state.biomodelList}
+                                isClickEnabled={this.state.bioisClickEnabled}
+                                onClick={this.handlePathwayClick}
+                            />
+                    </div>
+                    <div className="col-sm-6">
+                        <ImageView src={this.state.imgSrc} />
+                    </div>
+                    <div className="col-sm-3">
+                        <ImageDescription text={this.state.geneDescription} />
+                    </div>
+										<CytoscapeComponent
+											elements={elements}
+											cy={cy => this.cy = cy}
+											// stylesheet={sbgnStylesheet(cytoscape)}
+											style={ { width: '600px', height: '600px' } }
+										/>
+
+                </div>
+            </div>
 		);
   }
 }
