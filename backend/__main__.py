@@ -18,15 +18,18 @@ def get(d:dict, *keys, default=None):
     except:
         return default
 
+# Set the hostname
+BKW_BASE_URL = os.getenv('BKW_BASE_URL', "http://localhost:5000")
+
 @app.route("/")
 def index():
     endpoints = [
-        'http://localhost:5000/api/disease/diabetes mellitus',
-        'http://localhost:5000/api/disease-to-gene/MONDO:0009401',
-        'http://localhost:5000/api/gene-to-pathway/HGNC:406',
-        'http://localhost:5000/api/pathway-to-sbgn/R-HSA-389661',
-        'http://localhost:5000/api/pathway-to-png/R-HSA-389661',
-        ]
+        BKW_BASE_URL+'/api/disease/diabetes mellitus',
+        BKW_BASE_URL+'/api/disease-to-gene/MONDO:0009401',
+        BKW_BASE_URL+'/api/gene-to-pathway/HGNC:406',
+        BKW_BASE_URL+'/api/pathway-to-sbgn/R-HSA-389661',
+        BKW_BASE_URL+'/api/pathway-to-png/R-HSA-389661',
+    ]
     return 'API workflow example:<br>' + '<br>'.join('<a href="{}">{}</a>'.format(e, e) for e in endpoints)
 
 @app.route('/api/disease/<string:keywords>')

@@ -201,7 +201,7 @@ class App extends Component {
 
 	handlePathwayClick(index) {
 		console.log(index)
-		this.setState({imgSrc : "http://localhost:5000/api/pathway-to-png/" + index})
+		this.setState({imgSrc : process.env.PUBLIC_URL+"/api/pathway-to-png/" + index})
 	}
 
 	render() {
