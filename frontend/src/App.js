@@ -33,7 +33,7 @@ class App extends Component {
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.handleMondoClick = this.handleMondoClick.bind(this);
-        this.handleGeneClick = this.handleGeneClick.bind(this);
+		this.handleGeneClick = this.handleGeneClick.bind(this);
 		this.handlePathwayClick = this.handlePathwayClick.bind(this);
 	}
 
