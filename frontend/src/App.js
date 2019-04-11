@@ -118,8 +118,8 @@ class SearchBar extends React.Component {
   }
 }
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
-const API_PATH = process.env.REACT_APP_API_PATH || '';
+const BASE_URL =  'https://bkw.starinformatics.com';  //process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
+const API_PATH =  '/service';  //process.env.REACT_APP_API_PATH || '';
 const SERVICE_URL  = BASE_URL + API_PATH;
 
 class App extends Component {
