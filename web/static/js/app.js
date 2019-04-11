@@ -70,9 +70,12 @@ class SearchBar extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleTextChange = this.handleTextChange.bind(this);
   }
+	BKW_BASE_URL = process.env.BKW_BASE_URL || 'http://localhost:5000';
+	BKW_API_PATH = process.env.BKW_API_PATH || '';
+	SERVICE_URL  = BKW_BASE_URL + BKW_API_PATH;
 
 	handleClick(e) {
-		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
+		fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText).concat('?size=5'))
 			.then(response => response.json())
 			.then(data => this.setState({ mondoList: data }));				
 	}
