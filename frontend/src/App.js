@@ -118,6 +118,10 @@ class SearchBar extends React.Component {
   }
 }
 
+const BKW_BASE_URL = process.env.BKW_BASE_URL || 'http://localhost:5000';
+const BKW_API_PATH = process.env.BKW_API_PATH || '';
+const SERVICE_URL  = BKW_BASE_URL + BKW_API_PATH;
+
 class App extends Component {
 	constructor(props) {
 		super(props);
@@ -146,10 +150,6 @@ class App extends Component {
         this.handleGeneClick = this.handleGeneClick.bind(this);
 		this.handlePathwayClick = this.handlePathwayClick.bind(this);
 	}
-
-	BKW_BASE_URL = process.env.BKW_BASE_URL || 'http://localhost:5000';
-	BKW_API_PATH = process.env.BKW_API_PATH || '';
-	SERVICE_URL  = BKW_BASE_URL + BKW_API_PATH;
 
 	handleMondoSearch(e) {
 		fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText).concat('?size=5'))
