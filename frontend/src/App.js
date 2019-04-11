@@ -2,6 +2,20 @@ import React, { Component } from 'react';
 import './App.css';
 import 'font-awesome/css/font-awesome.min.css';
 
+// Inline CSS Style
+const scrollStyle = {
+    overflowY: "auto", 
+    height: "150px",
+    marginBottom: "15px",
+    backgroundColor: "#F5F5F5"
+};
+
+const searchBarStyle = {
+    marginTop: "20px",
+    marginBottom: "20px",
+}
+
+//Declaration of components
 class ImageView extends React.Component {
 	render() {
 		return (
@@ -39,6 +53,8 @@ class ListItem extends React.Component {
 	}
 }
 
+
+    
 function MondoList(props) {
 	const mondoList = props.mondoList;
 	const isClickEnabled = props.isClickEnabled;
@@ -53,7 +69,9 @@ function MondoList(props) {
 	return (
 		<div className="container">
 			<h6> Disease Index </h6>
-			{listItems}
+			<div style={scrollStyle}>
+                {listItems}
+            </div>
 		</div>
 	);
 }
@@ -72,7 +90,9 @@ function GeneList(props) {
 	return (
 		<div className="container">
 			<h6> Gene List </h6>
-			{listItems}
+            <div style={scrollStyle}>
+                {listItems}
+            </div>
 		</div>
 	);
 }
@@ -90,7 +110,9 @@ function BioModelList(props) {
 	return (
 		<div className="container">
 			<h6> Biomodel List </h6>
-			{listItems}
+            <div style={scrollStyle}>
+                {listItems}
+            </div>
 		</div>
 	);
 }
@@ -98,26 +120,29 @@ function BioModelList(props) {
 class SearchBar extends React.Component {
   render() {
     return (
-		<form className="form-inline">
-			<input
-				type="search"
-				className="form-control mr-sm-2"
-				onChange={this.props.handleTextChange}
-				placeholder="Search.."
-				aria-label="Search"
-				id="search"
-			/>
-			<button
-				type="button"
-				onClick={this.props.handleSearch}
-				className="btn btn-outline-success my-2 my-sm-0">
-				Search
-			</button>
-		</form>
+        <div style={searchBarStyle}>
+            <form className="form-inline">
+                <input
+                    type="search"
+                    className="form-control mr-sm-2"
+                    onChange={this.props.handleTextChange}
+                    placeholder="Search.."
+                    aria-label="Search"
+                    id="search"
+                />
+                <button
+                    type="button"
+                    onClick={this.props.handleSearch}
+                    className="btn btn-outline-success my-2 my-sm-0">
+                    Search
+                </button>
+            </form>
+        </div>
     );
   }
 }
 
+//Main Component
 class App extends Component {
 	constructor(props) {
 		super(props);
@@ -148,7 +173,7 @@ class App extends Component {
 	}
 
 	handleMondoSearch(e) {
-		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
+		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText))
 			.then(response => response.json())
 			.then(data => {
                 if (data.length ===0 || data === undefined) {
@@ -168,7 +193,7 @@ class App extends Component {
 	}
 
 	handleMondoClick(mondoItem) {
-		fetch('http://127.0.0.1:5000/api/disease-to-gene/'.concat(mondoItem).concat('?size=5'))
+		fetch('http://127.0.0.1:5000/api/disease-to-gene/'.concat(mondoItem))
 			.then(response => response.json())
 			.then(data => {
                 if (data.length ===0 || data === undefined) {
@@ -206,25 +231,25 @@ class App extends Component {
 
 	render() {
 		return (
-			<div className="container">
-			<ImageView src={this.state.imgSrc} />
-			<SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
-			<div className="col-sm-3">
-					<MondoList
-						mondoList={this.state.mondoList}
-						isClickEnabled={this.state.mondoisClickEnabled}
-						onClick={this.handleMondoClick}/>
-					<GeneList
-                        geneList={this.state.geneList}
-                        isClickEnabled={this.state.geneisClickEnabled}
-                        onClick={this.handleGeneClick}/>
-					<BioModelList
-						biomodelList={this.state.biomodelList}
-						isClickEnabled={this.state.bioisClickEnabled}
-						onClick={this.handlePathwayClick}
-					/>
-			</div>
-		  </div>
+			<div className="container">			
+                <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>			
+                <div className="col-sm-3">
+                        <MondoList
+                            mondoList={this.state.mondoList}
+                            isClickEnabled={this.state.mondoisClickEnabled}
+                            onClick={this.handleMondoClick}/>
+                        <GeneList
+                            geneList={this.state.geneList}
+                            isClickEnabled={this.state.geneisClickEnabled}
+                            onClick={this.handleGeneClick}/>
+                        <BioModelList
+                            biomodelList={this.state.biomodelList}
+                            isClickEnabled={this.state.bioisClickEnabled}
+                            onClick={this.handlePathwayClick}
+                        />
+                </div>
+                <ImageView src={this.state.imgSrc} />
+            </div>
 		);
   }
 }
