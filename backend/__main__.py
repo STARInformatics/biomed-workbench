@@ -105,11 +105,7 @@ def pathway_lookup(gene_id):
 @cross_origin()
 def get_xml(pathway_id):
     filename = os.path.join('backend', 'data', 'sbgn', pathway_id) + '.sbgn'
-    sbgn = utils.read_from_file(filename)
-    import pudb; pu.db
-    f_png = tempfile.NamedTemporaryFile(suffix=".png")
-    render.render_sbgn(sbgn, image_file=f_png.name, file_format="png")    
-    with Image(f_png.name, width=500) as f:
+    with open(filename, mode='r') as f:
         response = Response(f.read(), status=200, mimetype='application/xml')
         return response
 
