@@ -5,8 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-// Echo the value of PUBLIC_URL
-console.log('public url: ', process.env.PUBLIC_URL)
+import process;
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

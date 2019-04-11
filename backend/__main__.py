@@ -20,15 +20,17 @@ def get(d:dict, *keys, default=None):
 
 # Set the hostname
 BKW_BASE_URL = os.getenv('BKW_BASE_URL', "http://localhost:5000")
+BKW_API_PATH = os.getenv('BKW_API_PATH', "")
+SERVICE_URL = BKW_BASE_URL + BKW_API_PATH
 
 @app.route("/")
 def index():
     endpoints = [
-        BKW_BASE_URL+'/api/disease/diabetes mellitus',
-        BKW_BASE_URL+'/api/disease-to-gene/MONDO:0009401',
-        BKW_BASE_URL+'/api/gene-to-pathway/HGNC:406',
-        BKW_BASE_URL+'/api/pathway-to-sbgn/R-HSA-389661',
-        BKW_BASE_URL+'/api/pathway-to-png/R-HSA-389661',
+        SERVICE_URL+'/api/disease/diabetes mellitus',
+        SERVICE_URL+'/api/disease-to-gene/MONDO:0009401',
+        SERVICE_URL+'/api/gene-to-pathway/HGNC:406',
+        SERVICE_URL+'/api/pathway-to-sbgn/R-HSA-389661',
+        SERVICE_URL+'/api/pathway-to-png/R-HSA-389661',
     ]
     return 'API workflow example:<br>' + '<br>'.join('<a href="{}">{}</a>'.format(e, e) for e in endpoints)
 

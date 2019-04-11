@@ -91,26 +91,68 @@ It is recommended to install the Biomedical Workbench within a
 If not provided within your development environment (some IDE's like PyCharm can provide one), 
 the following _make_ target can be run once to create one (this target only runs with Python 3.6 or better).
 
-FIrst, you can check your project settings:
+First, you can check your project settings:
 
 ```
 cd  /opt/bkw/biomedical-workbench  
 make project_settings
 ```
 
-will likely simply  tell you where your python3 path and  virtual environment are assumed to be located 
-(defaults '/usr/bin/python3.7' and  'venv';  see the section 
-**Customizing the Build** below, if you wish to change this location). 
+will report the assumed base service url and the assumed location of your virtual environment
+(defaults 'http://localhost:5000' and 'venv';  see the section 
+**Customizing the Build** below, if you wish to change this location).
+
+##  Customizing the System
+
+The default subdirectory name for the "virtual environment" is _venv_.  To override this default location,
+you can set the environment variable **VENV**, namely:
+
+```
+# Specify the subdiretory location 'py37' 
+# for the Python virtual environment
+export VENV=py37
+```
+
+before running any of the above _make_ targets. Alternately, you may override the location of the Python
+virtual environment location the 'install' and 'service' make targets (Note: target 'web' doesn't use the environment)
+
+```
+# Creates and uses the Python virtual environment under subdirectory 'py36'
+make venv -e VENV=py36
+make install -e VENV=py36
+make service  -e VENV=py36
+make web
+```
+
+Similarly, if you are hosting the application behind a web service proxy (see below), it will be necessary to 
+communicate the site particulars to the system. In particular, the following environment variables should be
+set (exported?) before configuring the system:
+
+* BKW_BASE_URL
+* BKW_API_PATH
+
+For example:
+
+``` 
+export BKW_BASE_URL=https://bkw.mydomain.com
+export BKW_API_PATH=/service
+```
+
+Will indicate that the web application root page is hosted at *https://bkw.mydomain.com* and that the web
+service API will be found at *https://bkw.mydomain.com/service*.  Follow the directives of your particular OS
+to ensure that these environment variables are persistently visible whenever you start up the application. For
+example, with Ubuntu Linux, you may wish to create a bash script under the ```/etc/profile.d/``` subdirectory 
+to set and exports them. 
+
+## Configuring the System 
 
 If the virtual environment is not already created, you can create it as follows:
-
 
 ``` 
 make venv
 ```
 
-
-The following _make_ target installs the Python project dependencies into the specified environment:
+The following _make_ target installs the project library dependencies into the specified environment:
 
 ```
 make install
@@ -121,7 +163,7 @@ make install
 ### Back End Data and Analysis Service
 
 After configuring the system, the following command runs the back end data service as a background process, 
-making it accessible at the local URL http://127.0.0.1:5000/ 
+making it accessible by default at the local URL http://127.0.0.1:5000/ 
 (with error log stored in  ```logs/service_<datestamp>.log```)
 
 ```
@@ -250,27 +292,3 @@ sudo apt-get update
 sudo apt-get install certbot python-certbot-nginx
 
 ```
-
-##  Customizing the Build
-
-The default location for the "virtual environment" is _venv_.  To override this default location,
-you can set the environment variable **VENV**, namely:
-
-```
-# Specify the subdiretory location 'py37' 
-# for the Python virtual environment
-export VENV=py37
-```
-
-before running any of the above _make_ targets. Alternately, you may override the location of the Python
-virtual environment location the 'install' and 'service' make targets (Note: target 'web' doesn't use the environment)
-
-
-```
-# Creates and uses the Python virtual environment under subdirectory 'py36'
-make venv -e VENV=py36
-make install -e VENV=py36
-make service  -e VENV=py36
-make web
-```
-Go to http://localhost:5000/ for the back end service; http://localhost:3000/ for the web front end.
