@@ -55,7 +55,6 @@ which npm
 sudo apt install npm
 ```
 
-
 It is generally wise to get all of the latest releases of your existing software (like python). To do this, you can 
 run the following:
 
@@ -119,6 +118,8 @@ make install
 
 ## Running the Workbench
 
+### Back End Data and Analysis Service
+
 After configuring the system, the following command runs the back end data service as a background process, 
 making it accessible at the local URL http://127.0.0.1:5000/ 
 (with error log stored in  ```logs/service_<datestamp>.log```)
@@ -127,9 +128,23 @@ making it accessible at the local URL http://127.0.0.1:5000/
 make service
 ```
 
+Once running, REST URL's can access the data, e.g. perform a keyword search for MONDO identifiers:
+
+[http://localhost:5000/api/disease/uteri%20cancer?size=10](http://localhost:5000/api/disease/uteri%20cancer?size=10)
+
+The service can also return several other data types:
+
+```
+http://localhost:5000/api/disease-to-gene/MONDO:0009401
+http://localhost:5000/api/gene-to-pathway/HGNC:406
+http://localhost:5000/api/pathway-to-sbgn/R-HSA-389661
+http://localhost:5000/api/pathway-to-png/R-HSA-389661
+```
+
+### Front End Web Application
+
 The following command runs the front end web application as a background process
-at the local URL http://127.0.0.1:5000/ 
-(with error log stored in  ```logs/web_<datestamp>.log```)
+at the local URL http://127.0.0.1:3000/ (with error log stored in  ```logs/web_<datestamp>.log```)
 
 ```
 make web
@@ -165,19 +180,47 @@ server {
 
        server_name bkw.mydomain.com;
 
+       # Points to the React node.js web application
        location / {
-       
-        proxy_set_header X-Forwarded-Host        $host;
-        proxy_set_header X-Forwarded-Server      $host;
-        proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host        $host;
+            proxy_set_header X-Forwarded-Server      $host;
+            proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
 
-        proxy_pass       http://localhost:5000/;               
+            proxy_pass http://localhost:3000/;               
+       }
+       
+       # OPTIONAL: points to the web services on the Python Flask back end
+       # A "sample" set of services is posted on the default index.html page
+       location /service/ {
+            proxy_set_header X-Forwarded-Host        $host;
+            proxy_set_header X-Forwarded-Server      $host;
+            proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+    
+            proxy_pass http://localhost:5000/;               
        }
 }
                       
 ```
 
-Symlink it into  'sites-enabled':
+Note that the NGINX Location /service/ configuration is optional and 
+resolves to a page of sample backend web service API calls:
+
+``` 
+API workflow example:
+http://localhost:5000/api/disease/diabetes mellitus
+http://localhost:5000/api/disease-to-gene/MONDO:0009401
+http://localhost:5000/api/gene-to-pathway/HGNC:406
+http://localhost:5000/api/pathway-to-sbgn/R-HSA-389661
+http://localhost:5000/api/pathway-to-png/R-HSA-389661
+```
+
+for which you need to change 'localhost:5000' to your actual hostname, namely, something like:
+
+``` 
+http://bkw.mydomain.com/service/api/disease/diabetes%20mellitus
+```
+
+Once you have created the above NGINX configuration file in sites-available, symlink it into 'sites-enabled':
 
 ``` 
 cd /etc/nginx/sites-enabled
@@ -219,20 +262,15 @@ you can set the environment variable **VENV**, namely:
 export VENV=py37
 ```
 
-before running any of the above _make_ targets. Alternately, you may override the location on each 
-of the make targets by adding the environment variable there,  e.g.
+before running any of the above _make_ targets. Alternately, you may override the location of the Python
+virtual environment location the 'install' and 'service' make targets (Note: target 'web' doesn't use the environment)
 
 
 ```
-# Creates and uses the virtual environment under subdirectory 'py36'
+# Creates and uses the Python virtual environment under subdirectory 'py36'
 make venv -e VENV=py36
 make install -e VENV=py36
-make run  -e VENV=py36
+make service  -e VENV=py36
+make web
 ```
-Go to http://localhost:5000/
-
-
-### API
-
-Perform a keyword search for MONDO identifiers:
-[http://localhost:5000/api/disease/uteri%20cancer?size=10](http://localhost:5000/api/disease/uteri%20cancer?size=10)
+Go to http://localhost:5000/ for the back end service; http://localhost:3000/ for the web front end.
