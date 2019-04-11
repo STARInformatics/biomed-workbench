@@ -20,10 +20,24 @@ class ImageView extends React.Component {
 	render() {
 		return (
 			<div>
-			<img src={this.props.src}/>
+                <img src={this.props.src}/>
 			</div>
 		)
 	}
+}
+
+class ImageDescription extends React.Component {
+    constructor(props) {
+		super(props);
+    }
+    render() {
+        return (
+            <div>
+                <h6>Gene/Drugs Details </h6>
+                <p>{this.props.text} </p>
+            </div>
+        )
+    }
 }
 
 class ListItem extends React.Component {
@@ -163,6 +177,7 @@ class App extends Component {
 			geneisClickEnabled: false,
 			bioisClickEnabled: false,
 			mondoSelected: '',
+            geneDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis varius ex.'
 		}
 
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
@@ -231,24 +246,31 @@ class App extends Component {
 
 	render() {
 		return (
-			<div className="container">			
-                <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>			
-                <div className="col-sm-3">
-                        <MondoList
-                            mondoList={this.state.mondoList}
-                            isClickEnabled={this.state.mondoisClickEnabled}
-                            onClick={this.handleMondoClick}/>
-                        <GeneList
-                            geneList={this.state.geneList}
-                            isClickEnabled={this.state.geneisClickEnabled}
-                            onClick={this.handleGeneClick}/>
-                        <BioModelList
-                            biomodelList={this.state.biomodelList}
-                            isClickEnabled={this.state.bioisClickEnabled}
-                            onClick={this.handlePathwayClick}
-                        />
+			<div className="container-fluid">			
+                <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>	
+                <div className="row">
+                    <div className="col-sm-3">
+                            <MondoList
+                                mondoList={this.state.mondoList}
+                                isClickEnabled={this.state.mondoisClickEnabled}
+                                onClick={this.handleMondoClick}/>
+                            <GeneList
+                                geneList={this.state.geneList}
+                                isClickEnabled={this.state.geneisClickEnabled}
+                                onClick={this.handleGeneClick}/>
+                            <BioModelList
+                                biomodelList={this.state.biomodelList}
+                                isClickEnabled={this.state.bioisClickEnabled}
+                                onClick={this.handlePathwayClick}
+                            />
+                    </div>
+                    <div className="col-sm-6">
+                        <ImageView src={this.state.imgSrc} />
+                    </div>
+                    <div className="col-sm-3">
+                        <ImageDescription text={this.state.geneDescription} />
+                    </div>
                 </div>
-                <ImageView src={this.state.imgSrc} />
             </div>
 		);
   }
