@@ -1,4 +1,6 @@
 VENV?=venv
+BKW_BASE_URL?=http://localhost:5000
+BKW_API_PATH?=
 
 venv:
 	virtualenv -p python3.6 ${VENV}
@@ -29,7 +31,11 @@ service:
 	nohup ${VENV}/bin/python3 -m backend >logs/service_`date`.log 2>&1 &
 
 web:
-	cd frontend; nohup npm start >../logs/web_`date`.log 2>&1 &
+	cd frontend; \
+      nohup \
+      BKW_BASE_URL=${BKW_BASE_URL} \
+      BKW_API_PATH=${BKW_API_PATH} \
+      npm start >../logs/web_`date`.log 2>&1 &
 
 project_settings:
 	@echo "Python Virtual Environment specified to be located in the subdirectory '${VENV}'"
