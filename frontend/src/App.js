@@ -42,7 +42,7 @@ class App extends React.Component {
 			bioisClickEnabled: false,
 			mondoSelected: '',
             geneDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis varius ex.'
-		}
+		};
 
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
@@ -51,21 +51,20 @@ class App extends React.Component {
 		this.handlePathwayClick = this.handlePathwayClick.bind(this);
 	}
 
-	handleMondoSearch(e) {
-		fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText))
+	handleMondoSearch = () => {
+		return fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText))
 			.then(response => response.json())
 			.then(data => {
-                if (data.length ===0 || data === undefined) {
-                    const newData = [
-                        {id: 1, name: 'No Result'}
-                    ]
-                    this.setState({ mondoList: newData, mondoisClickEnabled: false });
-                }
-                else {
-                    this.setState({ mondoList: data, mondoisClickEnabled: true });
-                }
-            });
-	}
+				if (data === undefined || data.length === 0) {
+					const newData = [
+						{id: 1, name: 'No Result'}
+					];
+					this.setState({mondoList: newData, mondoisClickEnabled: false});
+				} else {
+					this.setState({mondoList: data, mondoisClickEnabled: true});
+				}
+			});
+	};
 
 	handleTextChange(e) {
 		this.setState({searchText : e.target.value});
@@ -75,10 +74,10 @@ class App extends React.Component {
 		fetch(SERVICE_URL.concat('/api/disease-to-gene/').concat(mondoItem))
 			.then(response => response.json())
 			.then(data => {
-                if (data.length ===0 || data === undefined) {
+                if (data === undefined || data.length === 0) {
                     const newData = [
                         {gene_id: 1, gene_symbol: 'No Result'}
-                    ]
+                    ];
                     this.setState({ geneListlList: newData, geneisClickEnabled: false });
                 }
                 else {
@@ -91,10 +90,10 @@ class App extends React.Component {
       fetch('http://127.0.0.1:5000/api/gene-to-pathway/'.concat(geneItem).concat('?size=5'))
 		.then(response => response.json())
 		.then(data => {
-            if (data.length ===0 || data === undefined) {
+            if (data === undefined || data.length === 0) {
                 const newData = [
                     {pathway_id: 1, name: 'No Result'}
-                ]
+                ];
                 this.setState({ biomodelList: newData, bioisClickEnabled: false });
             }
             else {
@@ -104,8 +103,8 @@ class App extends React.Component {
   }
 
 	handlePathwayClick(index) {
-		console.log(index)
-		this.setState({imgSrc : "http://localhost:5000/api/pathway-to-png/" + index})
+		console.log(index);
+		this.setState({imgSrc : "http://localhost:5000/api/pathway-to-png/" + index});
 
 		fetch('http://127.0.0.1:5000/api/pathway-to-sbgn/' + index)
 		  .then(response => {
