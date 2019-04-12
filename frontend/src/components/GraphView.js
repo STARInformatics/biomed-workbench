@@ -1,6 +1,7 @@
 import React from 'react';
 import cytoscape from 'cytoscape';
 import sbgnStylesheet from 'cytoscape-sbgn-stylesheet'
+import convert from 'sbgnml-to-cytoscape'
 
 class GraphView extends React.Component{
     // https://stackoverflow.com/q/38626167
@@ -10,18 +11,19 @@ class GraphView extends React.Component{
     }
 
     renderCytoscapeElement(){
-        this.cy = cytoscape({
-            container: document.getElementById('cy'),
-            boxSelectionEnabled: false,
-            autounselectify: true,
-						style: sbgnStylesheet(cytoscape),
-            elements: this.props.elements,
-            layout: {
-                name: 'breadthfirst',
-                directed: true,
-                padding: 10
-            }
-        });
+      var elements = convert(this.props.sbgn)
+      this.cy = cytoscape({
+          container: document.getElementById('cy'),
+          boxSelectionEnabled: false,
+          autounselectify: true,
+					style: sbgnStylesheet(cytoscape),
+          elements: elements,
+          layout: {
+              name: 'breadthfirst',
+              directed: true,
+              padding: 10
+          }
+      });
     }
 
     componentDidMount(){

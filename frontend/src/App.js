@@ -15,6 +15,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			sbgn: xml,
 			imgSrc : null,
 			searchText : '',
 			mondoList: [
@@ -95,7 +96,16 @@ class App extends React.Component {
 
 	handlePathwayClick(index) {
 		console.log(index)
+
 		this.setState({imgSrc : "http://localhost:5000/api/pathway-to-png/" + index})
+
+		fetch('http://127.0.0.1:5000/api/pathway-to-sbgn/' + index)
+		  .then(response => {
+		    return response.text().then((text)=>{
+		      console.log(text);
+		      this.setState({sbgn: text});
+		    });
+		  });
 	}
 
 	render() {
@@ -124,7 +134,7 @@ class App extends React.Component {
                     <div className="col-sm-3">
                         <ImageDescription text={this.state.geneDescription} />
                     </div>
-										<GraphView elements={elements}/>
+										<GraphView sbgn={this.state.sbgn} />
 
                 </div>
             </div>
