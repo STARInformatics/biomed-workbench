@@ -134,15 +134,15 @@ make service  -e VENV=py36
 make web
 ```
 
-Similarly, if you are hosting the application behind a web service proxy (see below), it will be necessary to 
-communicate the site particulars to the system. In particular, the following environment variables should be
-set (exported?) before configuring the system:
+Similarly, if you are hosting the application behind a web service proxy (see NGINX discussion below), it will be 
+necessary to  communicate the site particulars to the system. In particular, the following environment variables 
+should be set (exported?) to the anticipated hostname and service API path _before_ fully configuring the system:
 
 * BKW_BASE_URL # defaults to "http://localhost:5000"
 * BKW_API_PATH # defaults to empty
 
-The default values will indicate that the web application root page and API are both hosted at *http://localhost:5000*. 
-These values may be changed. For example, setting them as follows:
+The default values point the web application root page and API are both hosted at *http://localhost:5000*. 
+However, these values may be changed. For example, setting them as follows:
 
 ``` 
 export BKW_BASE_URL=https://bkw.mydomain.com
@@ -186,13 +186,14 @@ make install
 
 ### Back End Data and Analysis Service
 
-After configuring the system, the following command runs the back end data service as a background process, 
-making it accessible by default at the local URL http://127.0.0.1:5000/ 
-(with error log stored in  ```logs/service_<datestamp>.log```)
+After configuring the system, the following command runs the back end data service as a background process.
 
 ```
 make service
 ```
+
+After which it is accessible by default at the URL http://127.0.0.1:5000/). 
+The log stored in  ```logs/service_<datestamp>.log```.
 
 Once running, REST URL's can access the data, e.g. perform a keyword search for MONDO identifiers:
 
@@ -301,6 +302,9 @@ then restart the nginx daemon process:
 ``` 
 sudo systemctl restart nginx
 ```
+
+Note that after making this change to the default hostname, you need to ensure that the *BKW_BASE_URL* and 
+*BKW_API_PATH* environment variables are reset accordingly (see above).
 
 ## Adding HTTPS (SSL) Service
 
