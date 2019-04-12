@@ -44,6 +44,9 @@ function BioModelList(props) {
 	);
 }
 
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
+const API_PATH = process.env.REACT_APP_API_PATH || '';
+const SERVICE_URL  = BASE_URL + API_PATH;
 
 class SearchBar extends React.Component {
   constructor(props) {
@@ -72,7 +75,7 @@ class SearchBar extends React.Component {
   }
 
 	handleClick(e) {
-		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText).concat('?size=5'))
+		fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText).concat('?size=5'))
 			.then(response => response.json())
 			.then(data => this.setState({ mondoList: data }));				
 	}

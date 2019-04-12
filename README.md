@@ -35,7 +35,7 @@ which  git
 sudo apt install git
 ```
 
-THen, ensure that you have a Unix **make** installed:
+Then, ensure that you have a Unix **make** installed:
 
 ```
 # check where make is installed
@@ -45,6 +45,15 @@ which  make
 sudo apt install make
 ```
 
+Finally, ensure that you have **npm** installed:
+
+```
+# check where make is installed
+which npm
+
+# if the previous command returns an empty result then...
+sudo apt install npm
+```
 
 It is generally wise to get all of the latest releases of your existing software (like python). To do this, you can 
 run the following:
@@ -82,26 +91,68 @@ It is recommended to install the Biomedical Workbench within a
 If not provided within your development environment (some IDE's like PyCharm can provide one), 
 the following _make_ target can be run once to create one (this target only runs with Python 3.6 or better).
 
-FIrst, you can check your project settings:
+First, you can check your project settings:
 
 ```
 cd  /opt/bkw/biomedical-workbench  
 make project_settings
 ```
 
-will likely simply  tell you where your python3 path and  virtual environment are assumed to be located 
-(defaults '/usr/bin/python3.7' and  'venv';  see the section 
-**Customizing the Build** below, if you wish to change this location). 
+will report the assumed base service url and the assumed location of your virtual environment
+(defaults 'http://localhost:5000' and 'venv';  see the section 
+**Customizing the Build** below, if you wish to change this location).
+
+##  Customizing the System
+
+The default subdirectory name for the "virtual environment" is _venv_.  To override this default location,
+you can set the environment variable **VENV**, namely:
+
+```
+# Specify the subdiretory location 'py37' 
+# for the Python virtual environment
+export VENV=py37
+```
+
+before running any of the above _make_ targets. Alternately, you may override the location of the Python
+virtual environment location the 'install' and 'service' make targets (Note: target 'web' doesn't use the environment)
+
+```
+# Creates and uses the Python virtual environment under subdirectory 'py36'
+make venv -e VENV=py36
+make install -e VENV=py36
+make service  -e VENV=py36
+make web
+```
+
+Similarly, if you are hosting the application behind a web service proxy (see below), it will be necessary to 
+communicate the site particulars to the system. In particular, the following environment variables should be
+set (exported?) before configuring the system:
+
+* BKW_BASE_URL
+* BKW_API_PATH
+
+For example:
+
+``` 
+export BKW_BASE_URL=https://bkw.mydomain.com
+export BKW_API_PATH=/service
+```
+
+Will indicate that the web application root page is hosted at *https://bkw.mydomain.com* and that the web
+service API will be found at *https://bkw.mydomain.com/service*.  Follow the directives of your particular OS
+to ensure that these environment variables are persistently visible whenever you start up the application. For
+example, with Ubuntu Linux, you may wish to create a bash script under the ```/etc/profile.d/``` subdirectory 
+to set and exports them. 
+
+## Configuring the System 
 
 If the virtual environment is not already created, you can create it as follows:
-
 
 ``` 
 make venv
 ```
 
-
-The following _make_ target installs the Python project dependencies into the specified environment:
+The following _make_ target installs the project library dependencies into the specified environment:
 
 ```
 make install
@@ -109,12 +160,36 @@ make install
 
 ## Running the Workbench
 
-After configuring the system, the following command runs the workbench, making it accessible 
-at the local URL http://127.0.0.1:5000/ (with error log stored in  ```~/bkw.log```)
+### Back End Data and Analysis Service
 
+After configuring the system, the following command runs the back end data service as a background process, 
+making it accessible by default at the local URL http://127.0.0.1:5000/ 
+(with error log stored in  ```logs/service_<datestamp>.log```)
 
 ```
-make  run  >~/bkw.log 2>&1  &
+make service
+```
+
+Once running, REST URL's can access the data, e.g. perform a keyword search for MONDO identifiers:
+
+[http://localhost:5000/api/disease/uteri%20cancer?size=10](http://localhost:5000/api/disease/uteri%20cancer?size=10)
+
+The service can also return several other data types:
+
+```
+http://localhost:5000/api/disease-to-gene/MONDO:0009401
+http://localhost:5000/api/gene-to-pathway/HGNC:406
+http://localhost:5000/api/pathway-to-sbgn/R-HSA-389661
+http://localhost:5000/api/pathway-to-png/R-HSA-389661
+```
+
+### Front End Web Application
+
+The following command runs the front end web application as a background process
+at the local URL http://127.0.0.1:3000/ (with error log stored in  ```logs/web_<datestamp>.log```)
+
+```
+make web
 ```
 
 ##  Publishing the Site to the Outside World
@@ -147,19 +222,47 @@ server {
 
        server_name bkw.mydomain.com;
 
+       # Points to the React node.js web application
        location / {
-       
-        proxy_set_header X-Forwarded-Host        $host;
-        proxy_set_header X-Forwarded-Server      $host;
-        proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Host        $host;
+            proxy_set_header X-Forwarded-Server      $host;
+            proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
 
-        proxy_pass       http://localhost:5000/;               
+            proxy_pass http://localhost:3000/;               
+       }
+       
+       # OPTIONAL: points to the web services on the Python Flask back end
+       # A "sample" set of services is posted on the default index.html page
+       location /service/ {
+            proxy_set_header X-Forwarded-Host        $host;
+            proxy_set_header X-Forwarded-Server      $host;
+            proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+    
+            proxy_pass http://localhost:5000/;               
        }
 }
                       
 ```
 
-Symlink it into  'sites-enabled':
+Note that the NGINX Location /service/ configuration is optional and 
+resolves to a page of sample backend web service API calls:
+
+``` 
+API workflow example:
+http://localhost:5000/api/disease/diabetes mellitus
+http://localhost:5000/api/disease-to-gene/MONDO:0009401
+http://localhost:5000/api/gene-to-pathway/HGNC:406
+http://localhost:5000/api/pathway-to-sbgn/R-HSA-389661
+http://localhost:5000/api/pathway-to-png/R-HSA-389661
+```
+
+for which you need to change 'localhost:5000' to your actual hostname, namely, something like:
+
+``` 
+http://bkw.mydomain.com/service/api/disease/diabetes%20mellitus
+```
+
+Once you have created the above NGINX configuration file in sites-available, symlink it into 'sites-enabled':
 
 ``` 
 cd /etc/nginx/sites-enabled
@@ -177,6 +280,8 @@ sudo systemctl restart nginx
 
 ## Adding HTTPS (SSL) Service
 
+The 'Certbot' tool maybe used to apply HTTPS to a running NGINX HTTP-enabled web site 
+(see https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx).
 
 ``` 
 sudo apt-get update
@@ -187,32 +292,3 @@ sudo apt-get update
 sudo apt-get install certbot python-certbot-nginx
 
 ```
-
-##  Customizing the Build
-
-The default location for the "virtual environment" is _venv_.  To override this default location,
-you can set the environment variable **VENV**, namely:
-
-```
-# Specify the subdiretory location 'py37' 
-# for the Python virtual environment
-export VENV=py37
-```
-
-before running any of the above _make_ targets. Alternately, you may override the location on each 
-of the make targets by adding the environment variable there,  e.g.
-
-
-```
-# Creates and uses the virtual environment under subdirectory 'py36'
-make venv -e VENV=py36
-make install -e VENV=py36
-make run  -e VENV=py36
-```
-Go to http://localhost:5000/
-
-
-### API
-
-Perform a keyword search for MONDO identifiers:
-[http://localhost:5000/api/disease/uteri cancer?size=10](http://localhost:5000/api/disease/uteri cancer?size=10)
