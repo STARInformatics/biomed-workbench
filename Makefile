@@ -3,11 +3,14 @@ PYTHON3_PATH?=${VENV}/bin/python3
 PIP3_PATH?=${VENV}/bin/pip3
 VIRTUALENV_PATH?=${VENV}/bin/virtualenv
 
+venv:
+	ls ${VENV} || ${VIRTUALENV_PATH} -p python3.6 ${VENV}
+	source ${VENV}/bin/activate
+
 install:
 	#
 	# Configure Python Flask back end
 	#
-	ls ${VENV} || ${VIRTUALENV_PATH} -p python3.6 ${VENV}
 	${PIP3_PATH} install -r requirements.txt
 	#
 	# Configure node.js web application
