@@ -309,7 +309,7 @@ Note that after making this change to the default hostname, you need to ensure t
 ## Adding HTTPS (SSL) Service
 
 The 'Certbot' tool maybe used to apply HTTPS to a running NGINX HTTP-enabled web site 
-(see https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx).
+(see https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx). The software may be installed as follows:
 
 ``` 
 sudo apt-get update
@@ -318,5 +318,10 @@ sudo add-apt-repository universe
 sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
 sudo apt-get install certbot python-certbot-nginx
+```
 
+After installing the software, it may be run (assuming that we've already set up the NGINX, as described above):
+
+``` 
+sudo certbot --nginx
 ```
