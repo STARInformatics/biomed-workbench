@@ -1,11 +1,13 @@
 VENV?=venv
 PYTHON3_PATH?=${VENV}/bin/python3
 PIP3_PATH?=${VENV}/bin/pip3
-VIRTUALENV_PATH?=${VENV}/bin/virtualenv
 
-venv:
-	ls ${VENV} || ${VIRTUALENV_PATH} -p python3.6 ${VENV}
-	source ${VENV}/bin/activate
+# Externalized to README manual action by user.
+#VIRTUALENV_PATH?=${VENV}/bin/virtualenv
+#
+#venv:
+#	ls ${VENV} || ${VIRTUALENV_PATH} -p python3.6 ${VENV}
+#	source ${VENV}/bin/activate
 
 install:
 	#
@@ -38,5 +40,5 @@ project_settings:
 	@echo "Python Virtual Environment (VENV) specified to be located in the subdirectory '${VENV}'"
 	@echo "Path to python3 ('PYTHON3_PATH') is specified to be located at path '${PYTHON3_PATH}'"
 	@echo "Path to pip3 ('PIP3_PATH') is specified to be located at path '${PIP3_PATH}'"
-	@echo "Path to virtualenv ('VIRTUALENV_PATH') is specified to be located at path '${VIRTUALENV_PATH}'"
+	#@echo "Path to virtualenv ('VIRTUALENV_PATH') is specified to be located at path '${VIRTUALENV_PATH}'"
 	@echo "Override the these environment variables as needed, according to your site installation particulars"

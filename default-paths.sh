@@ -24,5 +24,8 @@ echo "PYTHON3_PATH set to ${PYTHON3_PATH}"
 export PIP3_PATH=`command -v pip3`
 echo "PIP3_PATH set to ${PIP3_PATH}"
 
-export VIRTUALENV_PATH=`command -v virtualenv`
-echo "VIRTUALENV_PATH set to ${VIRTUALENV_PATH}"
+#
+# Not run in Makefile anymore
+#
+#export VIRTUALENV_PATH=`command -v virtualenv`
+#echo "VIRTUALENV_PATH set to ${VIRTUALENV_PATH}"

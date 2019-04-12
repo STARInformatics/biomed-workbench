@@ -114,10 +114,14 @@ cd bkw
 git clone https://github.com/STARInformatics/biomed-workbench
 ```
 
-Here, we install the Biomedical Workbench within a 
+### Python Virtual Environment
+
+Here, we recommend that the Biomedical Workbench back end service be install and run within a 
 [Python "Virtual Environment"](https://docs.python.org/3/tutorial/venv.html).
  
-If not provided within your development environment (some IDE's like PyCharm can provide one), one will be created.
+If not already configured within your development environment (some IDE's like PyCharm can deploy one), then you 
+will need to create one.
+
 The default subdirectory name for the "virtual environment" is _venv_.  To override this default location,
 you can set the environment variable **VENV**.  For example, to specify the virtual environment location 'py36':
 
@@ -134,8 +138,29 @@ make service  -e VENV=py36
 make web
 ```
 
-Similarly, if you are hosting the application behind a web service proxy (see NGINX discussion below), it will be 
-necessary to  communicate the site particulars to the system. In particular, the following environment variables 
+To create a Python virtual environment, run the following:
+
+``` 
+virtualenv -p python3.6 ${VENV}
+```
+
+The virtual environment needs to be activated before proceeding further with the building and operation of the system:
+
+``` 
+source ${VENV}/bin/activate
+```
+
+The virtual environment may be deactivated as follows:
+
+``` 
+deactivate
+```
+
+### Configuring to Run the Application Behind a Hostname
+
+If you are planning to host the application behind a web service proxy (see NGINX discussion below) configured to 
+point to a specified hostname and using a preferred internet protocol, then it will be necessary to  communicate 
+the site particulars to the application. In particular, the following environment variables 
 should be set (exported?) to the anticipated hostname and service API path _before_ fully configuring the system:
 
 * BKW_BASE_URL # defaults to "http://localhost:5000"
