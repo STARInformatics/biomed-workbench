@@ -1,13 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import SearchBar from './components/SearchBar.js'
+import GraphView from './components/GraphView.js'
 import ImageView, {ImageDescription} from './components/ImageView.js'
 import ListItem, {MondoList, GeneList, BioModelList} from './components/ListItem.js'
-import sbgnStylesheet from 'cytoscape-sbgn-stylesheet'
-import cytoscape from 'cytoscape';
-
-import ReactDOM from 'react-dom';
-import CytoscapeComponent from 'react-cytoscapejs';
 
 import {elements, xml} from './components/demo.js'
 
@@ -15,10 +11,7 @@ import './App.css';
 
 import 'font-awesome/css/font-awesome.min.css';
 
-let convert = require('sbgnml-to-cytoscape');
-let cyGraph = convert(xml);
-
-class App extends Component {
+class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -131,41 +124,12 @@ class App extends Component {
                     <div className="col-sm-3">
                         <ImageDescription text={this.state.geneDescription} />
                     </div>
-										<CytoscapeComponent
-											elements={elements}
-											cy={cy => this.cy = cy}
-											// stylesheet={sbgnStylesheet(cytoscape)}
-											style={ { width: '600px', height: '600px' } }
-										/>
+										<GraphView elements={elements}/>
 
                 </div>
             </div>
 		);
   }
 }
-
-const obj = sbgnStylesheet(cytoscape)
-
-for(var propt in obj){
-    console.log(propt + ': ' + obj[propt].selector);
-}
-
-console.log(sbgnStylesheet(cytoscape));
-console.log([
-    {
-      selector: 'node',
-      style: {
-        width: 20,
-        height: 20,
-        shape: 'rectangle'
-      }
-    },
-    {
-      selector: 'edge',
-      style: {
-        width: 15
-      }
-    }
-  ]);
 
 export default App;
