@@ -3,9 +3,9 @@ import React from 'react';
 import SearchBar from './components/SearchBar.js'
 import GraphView from './components/GraphView.js'
 import ImageView, {ImageDescription} from './components/ImageView.js'
-import ListItem, {MondoList, GeneList, BioModelList} from './components/ListItem.js'
+import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
 
-import {elements, xml} from './components/demo.js'
+import {xml} from './components/demo.js'
 
 import './App.css';
 
@@ -24,6 +24,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			sbgn: xml,
 			imgSrc : null,
 			searchText : '',
 			mondoList: [
@@ -87,7 +88,7 @@ class App extends React.Component {
 	}
 
   handleGeneClick(geneItem) {
-      fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
+      fetch('http://127.0.0.1:5000/api/gene-to-pathway/'.concat(geneItem).concat('?size=5'))
 		.then(response => response.json())
 		.then(data => {
             if (data.length ===0 || data === undefined) {
@@ -104,7 +105,15 @@ class App extends React.Component {
 
 	handlePathwayClick(index) {
 		console.log(index)
-		this.setState({imgSrc : process.env.PUBLIC_URL+"/api/pathway-to-png/" + index})
+		this.setState({imgSrc : "http://localhost:5000/api/pathway-to-png/" + index})
+
+		fetch('http://127.0.0.1:5000/api/pathway-to-sbgn/' + index)
+		  .then(response => {
+		    return response.text().then((text)=>{
+		      console.log(text);
+		      this.setState({sbgn: text});
+		    });
+		  });
 	}
 
 	render() {
@@ -139,7 +148,7 @@ class App extends React.Component {
                     <div className="col-sm-3">
                         <ImageDescription text={this.state.geneDescription} />
                     </div>
-										<GraphView elements={elements}/>
+										<GraphView sbgn={this.state.sbgn} />
 
                 </div>
             </div>
