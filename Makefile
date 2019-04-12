@@ -1,14 +1,19 @@
 VENV?=venv
+PYTHON3_PATH?=${VENV}/bin/python3
+PIP3_PATH?=${VENV}/bin/pip3
 
-venv:
-	virtualenv -p python3.6 ${VENV}
+# Externalized to README manual action by user.
+#VIRTUALENV_PATH?=${VENV}/bin/virtualenv
+#
+#venv:
+#	ls ${VENV} || ${VIRTUALENV_PATH} -p python3.6 ${VENV}
+#	source ${VENV}/bin/activate
 
 install:
 	#
 	# Configure Python Flask back end
 	#
-	ls ${VENV} || virtualenv -p python3.6 ${VENV}
-	${VENV}/bin/pip3 install -r requirements.txt
+	${PIP3_PATH} install -r requirements.txt
 	#
 	# Configure node.js web application
 	#
@@ -23,13 +28,17 @@ data:
 	wget https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz -O backend/data/homo_sapiens.sbgn.tar.gz
 	tar -xvzf backend/data/homo_sapiens.sbgn.tar.gz --directory backend/data/sbgn
 
-.PHONY: web
+.PHONY: web venv
 
 service:
-	nohup ${VENV}/bin/python3 -m backend >logs/service_`date`.log 2>&1 &
+	nohup ${PYTHON3_PATH} -m backend >logs/service_`date`.log 2>&1 &
 
 web:
 	cd frontend; nohup npm start >../logs/web_`date`.log 2>&1 &
 
 project_settings:
-	@echo "Python Virtual Environment specified to be located in the subdirectory '${VENV}'"
+	@echo "Python Virtual Environment (VENV) specified to be located in the subdirectory '${VENV}'"
+	@echo "Path to python3 ('PYTHON3_PATH') is specified to be located at path '${PYTHON3_PATH}'"
+	@echo "Path to pip3 ('PIP3_PATH') is specified to be located at path '${PIP3_PATH}'"
+	#@echo "Path to virtualenv ('VIRTUALENV_PATH') is specified to be located at path '${VIRTUALENV_PATH}'"
+	@echo "Override the these environment variables as needed, according to your site installation particulars"
