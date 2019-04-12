@@ -105,7 +105,6 @@ class App extends React.Component {
 	handlePathwayClick(index) {
 		console.log(index);
 		this.setState({imgSrc : SERVICE_URL.concat('/api/pathway-to-png/') + index});
-
 		fetch(SERVICE_URL.concat('/api/pathway-to-sbgn/') + index)
 		  .then(response => {
 		    return response.text().then((text)=>{
