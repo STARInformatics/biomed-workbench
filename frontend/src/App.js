@@ -3,7 +3,7 @@ import React from 'react';
 import SearchBar from './components/SearchBar.js'
 import GraphView from './components/GraphView.js'
 import ImageView, {ImageDescription} from './components/ImageView.js'
-import ListItem, {MondoList, GeneList, BioModelList} from './components/ListItem.js'
+import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
 
 import {elements, xml} from './components/demo.js'
 
@@ -79,7 +79,7 @@ class App extends React.Component {
 	}
 
   handleGeneClick(geneItem) {
-      fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
+      fetch('http://127.0.0.1:5000/'.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
 		.then(response => response.json())
 		.then(data => {
             if (data.length ===0 || data === undefined) {
