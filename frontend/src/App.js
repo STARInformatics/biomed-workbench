@@ -1,122 +1,22 @@
 import React, { Component } from 'react';
+
+import SearchBar from './components/SearchBar.js'
+import ImageView, {ImageDescription} from './components/ImageView.js'
+import ListItem, {MondoList, GeneList, BioModelList} from './components/ListItem.js'
+import sbgnStylesheet from 'cytoscape-sbgn-stylesheet'
+import cytoscape from 'cytoscape';
+
+import ReactDOM from 'react-dom';
+import CytoscapeComponent from 'react-cytoscapejs';
+
+import {elements, xml} from './components/demo.js'
+
 import './App.css';
+
 import 'font-awesome/css/font-awesome.min.css';
 
-class ImageView extends React.Component {
-	render() {
-		return (
-			<div>
-			<img src={this.props.src}/>
-			</div>
-		)
-	}
-}
-
-class ListItem extends React.Component {
-	constructor(props) {
-		super(props);
-		this.handleClick = this.handleClick.bind(this);
-	}
-
-	handleClick() {
-		this.props.onClick(this.props.index);
-	}
-
-
-	render() {
-		if (this.props.isClickEnabled === true) {
-		return <a href="#"
-					className="list-group-item list-group-item-action"
-					onClick={this.handleClick}>
-						{this.props.value}
-				</a>;
-		}
-		else {
-			return <a href="#" className="list-group-item list-group-item-action disabled">
-					{this.props.value}
-				</a>;
-		}
-	}
-}
-
-function MondoList(props) {
-	const mondoList = props.mondoList;
-	const isClickEnabled = props.isClickEnabled;
-	const listItems = mondoList.map((item) =>
-		<ListItem
-			key={item.id}
-			index={item.id}
-			value={item.name}
-			isClickEnabled={isClickEnabled}
-			onClick={props.onClick}/>
-	);
-	return (
-		<div className="container">
-			<h6> Disease Index </h6>
-			{listItems}
-		</div>
-	);
-}
-
-function GeneList(props) {
-	const geneList = props.geneList;
-	const isClickEnabled = props.isClickEnabled;
-	const listItems = geneList.map((item) =>
-		<ListItem
-            key={item.gene_symbol}
-            index={item.gene_id}
-			value={item.gene_symbol}
-            onClick={props.onClick}
-            isClickEnabled={isClickEnabled}/>
-	);
-	return (
-		<div className="container">
-			<h6> Gene List </h6>
-			{listItems}
-		</div>
-	);
-}
-function BioModelList(props) {
-	const biomodelList = props.biomodelList;
-	const isClickEnabled = props.isClickEnabled;
-	const listItems = biomodelList.map((item) =>
-		<ListItem key={item.name}
-			index={item.pathway_id}
-			value={item.name}
-			onClick={props.onClick}
-			isClickEnabled={isClickEnabled}
-		/>
-	);
-	return (
-		<div className="container">
-			<h6> Biomodel List </h6>
-			{listItems}
-		</div>
-	);
-}
-
-class SearchBar extends React.Component {
-  render() {
-    return (
-		<form className="form-inline">
-			<input
-				type="search"
-				className="form-control mr-sm-2"
-				onChange={this.props.handleTextChange}
-				placeholder="Search.."
-				aria-label="Search"
-				id="search"
-			/>
-			<button
-				type="button"
-				onClick={this.props.handleSearch}
-				className="btn btn-outline-success my-2 my-sm-0">
-				Search
-			</button>
-		</form>
-    );
-  }
-}
+let convert = require('sbgnml-to-cytoscape');
+let cyGraph = convert(xml);
 
 const BASE_URL =  'https://bkw.starinformatics.com';  //process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 const API_PATH =  '/service';  //process.env.REACT_APP_API_PATH || '';
@@ -142,12 +42,13 @@ class App extends Component {
 			geneisClickEnabled: false,
 			bioisClickEnabled: false,
 			mondoSelected: '',
+            geneDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis varius ex.'
 		}
 
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.handleMondoClick = this.handleMondoClick.bind(this);
-        this.handleGeneClick = this.handleGeneClick.bind(this);
+		this.handleGeneClick = this.handleGeneClick.bind(this);
 		this.handlePathwayClick = this.handlePathwayClick.bind(this);
 	}
 
@@ -172,7 +73,7 @@ class App extends Component {
 	}
 
 	handleMondoClick(mondoItem) {
-		fetch(SERVICE_URL.concat('/api/disease-to-gene/').concat(mondoItem).concat('?size=5'))
+		fetch(SERVICE_URL.concat('/api/disease-to-gene/').concat(mondoItem)
 			.then(response => response.json())
 			.then(data => {
                 if (data.length ===0 || data === undefined) {
@@ -210,27 +111,65 @@ class App extends Component {
 
 	render() {
 		return (
-			<div className="container">
-			<ImageView src={this.state.imgSrc} />
-			<SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
-			<div className="col-sm-3">
-					<MondoList
-						mondoList={this.state.mondoList}
-						isClickEnabled={this.state.mondoisClickEnabled}
-						onClick={this.handleMondoClick}/>
-					<GeneList
-                        geneList={this.state.geneList}
-                        isClickEnabled={this.state.geneisClickEnabled}
-                        onClick={this.handleGeneClick}/>
-					<BioModelList
-						biomodelList={this.state.biomodelList}
-						isClickEnabled={this.state.bioisClickEnabled}
-						onClick={this.handlePathwayClick}
-					/>
-			</div>
-		  </div>
+			<div className="container-fluid">
+                <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
+                <div className="row">
+                    <div className="col-sm-3">
+                            <MondoList
+                                mondoList={this.state.mondoList}
+                                isClickEnabled={this.state.mondoisClickEnabled}
+                                onClick={this.handleMondoClick}/>
+                            <GeneList
+                                geneList={this.state.geneList}
+                                isClickEnabled={this.state.geneisClickEnabled}
+                                onClick={this.handleGeneClick}/>
+                            <BioModelList
+                                biomodelList={this.state.biomodelList}
+                                isClickEnabled={this.state.bioisClickEnabled}
+                                onClick={this.handlePathwayClick}
+                            />
+                    </div>
+                    <div className="col-sm-6">
+                        <ImageView src={this.state.imgSrc} />
+                    </div>
+                    <div className="col-sm-3">
+                        <ImageDescription text={this.state.geneDescription} />
+                    </div>
+										<CytoscapeComponent
+											elements={elements}
+											cy={cy => this.cy = cy}
+											// stylesheet={sbgnStylesheet(cytoscape)}
+											style={ { width: '600px', height: '600px' } }
+										/>
+
+                </div>
+            </div>
 		);
   }
 }
+
+const obj = sbgnStylesheet(cytoscape)
+
+for(var propt in obj){
+    console.log(propt + ': ' + obj[propt].selector);
+}
+
+console.log(sbgnStylesheet(cytoscape));
+console.log([
+    {
+      selector: 'node',
+      style: {
+        width: 20,
+        height: 20,
+        shape: 'rectangle'
+      }
+    },
+    {
+      selector: 'edge',
+      style: {
+        width: 15
+      }
+    }
+  ]);
 
 export default App;
