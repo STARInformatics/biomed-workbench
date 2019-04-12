@@ -29,9 +29,6 @@ export default class ImageView extends React.Component {
 }
 
 export class ImageDescription extends React.Component {
-    constructor(props) {
-		super(props);
-    }
     render() {
         return (
             <div>

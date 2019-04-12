@@ -5,7 +5,7 @@ import GraphView from './components/GraphView.js'
 import ImageView, {ImageDescription} from './components/ImageView.js'
 import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
 
-import {elements, xml} from './components/demo.js'
+import {xml} from './components/demo.js'
 
 import './App.css';
 
