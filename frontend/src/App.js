@@ -79,7 +79,7 @@ class App extends React.Component {
 	}
 
   handleGeneClick(geneItem) {
-      fetch('http://127.0.0.1:5000/'.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
+      fetch('http://127.0.0.1:5000/api/gene-to-pathway/'.concat(geneItem).concat('?size=5'))
 		.then(response => response.json())
 		.then(data => {
             if (data.length ===0 || data === undefined) {

@@ -10,6 +10,18 @@ class GraphView extends React.Component{
         this.renderCytoscapeElement = this.renderCytoscapeElement.bind(this);
     }
 
+    componentDidUpdate(prevProps, prevState) {
+      var elements = convert(this.props.sbgn)
+      this.cy.json({
+        elements : elements,
+        layout: {
+            name: 'breadthfirst',
+            directed: true,
+            padding: 10
+        }
+      })
+    }
+
     renderCytoscapeElement(){
       var elements = convert(this.props.sbgn)
       this.cy = cytoscape({
