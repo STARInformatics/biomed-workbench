@@ -5,7 +5,8 @@
 This project resides in [this Github project repository](https://github.com/STARInformatics/biomed-workbench).
 
 Here, we assume that we are using a Debian Linux flavor (like Ubuntu) to run the application. Adjust the commands 
-accordingly to your chosen operating system (e.g. Microsoft Windows procedures will be different).
+accordingly to your chosen operating system (e.g. Microsoft Windows procedures will be slightly different).
+Note that under Linux, you may need to use _sudo_ to run some of these package installation commands.
 
 First, some software may need to be updated and installed. In preparation, update your local package index as follows:
 
@@ -21,8 +22,18 @@ Ensure that **pip3** is installed:
 ```
 # check where pip3 is installed
 command -v pip3
+```
 
-# if the previous command returns an empty result then...
+
+If the previous command returns an empty result then under Ubuntu Linux, you can:
+
+``` 
+sudo apt-get install python3-pip
+```
+
+Under Windows, you may need to run something like this:
+
+```
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 python get-pip.py
 ```
