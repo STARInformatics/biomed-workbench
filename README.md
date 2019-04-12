@@ -20,7 +20,7 @@ Ensure that **pip3** is installed:
 
 ```
 # check where pip3 is installed
-which pip3
+command -v pip3
 
 # if the previous command returns an empty result then...
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -31,7 +31,7 @@ Ensure that **virtualenv** is installed:
 
 ```
 # check where virtualenv is installed
-which virtualenv
+command -v virtualenv
 
 # if the previous command returns an empty result then...you may need 'sudo' if installed centrally
 pip3 install virtualenv
@@ -47,17 +47,18 @@ Net, ensure that you have the **git** client installed:
 
 ```
 # check where git is installed
-which  git
+command -v  git
 
 # if the previous command returns an empty result then...
 sudo apt install git
 ```
 
-Then, ensure that you have a Unix **make** installed:
+A Unix-style _Makefile_ is provided to configure and run the workbench web application.
+Thus, you need to ensure that you have a version of the Unix **make** installed:
 
 ```
 # check where make is installed
-which  make
+command -v  make
 
 # if the previous command returns an empty result then...
 sudo apt install make
@@ -67,7 +68,7 @@ Finally, ensure that you have **npm** installed:
 
 ```
 # check where make is installed
-which npm
+command -v npm
 
 # if the previous command returns an empty result then...
 sudo apt install npm
@@ -102,41 +103,21 @@ cd bkw
 git clone https://github.com/STARInformatics/biomed-workbench
 ```
 
-A Unix-style _Makefile_ is provided to configure and run the workbench web application.
-
-It is recommended to install the Biomedical Workbench within a 
-[Python "Virtual Environment"](https://docs.python.org/3/tutorial/venv.html). 
-If not provided within your development environment (some IDE's like PyCharm can provide one), 
-the following _make_ target can be run once to create one (this target only runs with Python 3.6 or better).
-
-First, you can check your project settings:
-
-```
-cd  /opt/bkw/biomedical-workbench  
-make project_settings
-```
-
-will report the assumed base service url and the assumed location of your virtual environment
-(defaults 'http://localhost:5000' and 'venv';  see the section 
-**Customizing the Build** below, if you wish to change this location).
-
-##  Customizing the Installation
-
+Here, we install the Biomedical Workbench within a 
+[Python "Virtual Environment"](https://docs.python.org/3/tutorial/venv.html).
+ 
+If not provided within your development environment (some IDE's like PyCharm can provide one), one will be created.
 The default subdirectory name for the "virtual environment" is _venv_.  To override this default location,
-you can set the environment variable **VENV**, namely:
+you can set the environment variable **VENV**.  For example, to specify the virtual environment location 'py36':
 
-```
-# Specify the subdiretory location 'py36' 
-# for the Python virtual environment
+``` 
 export VENV=py36
 ```
 
-before running any of the above _make_ targets. Alternately, you may override the location of the Python
+before running any of the system _make_ targets. Alternately, you may override the location of the Python
 virtual environment location the 'install' and 'service' make targets (Note: target 'web' doesn't use the environment)
 
 ```
-# Creates and uses the Python virtual environment under subdirectory 'py36'
-make venv -e VENV=py36
 make install -e VENV=py36
 make service  -e VENV=py36
 make web
@@ -162,7 +143,24 @@ service API will be found at *https://bkw.mydomain.com/service*.  Follow the dir
 to ensure that these environment variables are persistently visible whenever you start up the application. 
 
 For example, with Ubuntu Linux, you may wish to create a bash script under the ```/etc/profile.d/``` subdirectory 
-to set and exports them. 
+to set and exports them.
+
+To set these environment variables other than VENV (under a Unix-like system) the first time around, 
+we provide a _default-paths.sh_ in the root directory of the project which may be source'd to set these variables in 
+the current terminal or shell. The usage is:
+
+``` 
+source ./default-paths.sh  https://bkw.mydomain.com  /service
+```
+
+Substitute your own values for BKW_BASE_URL and BKW_API_PATH as arguments (defaults assumed if omitted)
+
+You can confirm your project settings at anytime by the following:
+
+``` 
+make project_settings
+```
+ 
 
 ## Configuring the System 
 

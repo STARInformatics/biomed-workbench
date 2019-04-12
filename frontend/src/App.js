@@ -18,8 +18,10 @@ import 'font-awesome/css/font-awesome.min.css';
 let convert = require('sbgnml-to-cytoscape');
 let cyGraph = convert(xml);
 
-const BASE_URL =  'https://bkw.starinformatics.com';  //process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
-const API_PATH =  '/service';  //process.env.REACT_APP_API_PATH || '';
+//const BASE_URL =  process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
+//const API_PATH =  process.env.REACT_APP_API_PATH || '';
+const BASE_URL =  'https://bkw.starinformatics.com';
+const API_PATH =  '/service';
 const SERVICE_URL  = BASE_URL + API_PATH;
 
 class App extends Component {
@@ -73,7 +75,7 @@ class App extends Component {
 	}
 
 	handleMondoClick(mondoItem) {
-		fetch(SERVICE_URL.concat('/api/disease-to-gene/').concat(mondoItem)
+		fetch(SERVICE_URL.concat('/api/disease-to-gene/').concat(mondoItem))
 			.then(response => response.json())
 			.then(data => {
                 if (data.length ===0 || data === undefined) {
@@ -110,6 +112,12 @@ class App extends Component {
 	}
 
 	render() {
+
+	    console.log("Workbench Environmental Variables:");
+	    console.log("\tBASE_URL:\t"+BASE_URL);
+	    console.log("\tAPI_PATH:\t"+API_PATH);
+	    console.log("\tSERVICE_URL:\t"+SERVICE_URL);
+
 		return (
 			<div className="container-fluid">
                 <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>

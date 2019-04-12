@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-require('dotenv').config()
+//require('dotenv').config();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

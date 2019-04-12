@@ -4,6 +4,9 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "jquery": "^1.9.1",
+    "popper.js":"^1.14.7",
+    "typescript":"*",
     "cytoscape": "^3.5.2",
     "cytoscape-sbgn-stylesheet": "^3.0.1",
     "font-awesome": "^4.7.0",

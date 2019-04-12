@@ -1,7 +1,7 @@
 VENV?=venv
-PIP3_PATH?=${VENV}/bin/pip3
 PYTHON3_PATH?=${VENV}/bin/python3
-VIRTUALENV_PATH?=${VENV}/bin/python3
+PIP3_PATH?=${VENV}/bin/pip3
+VIRTUALENV_PATH?=${VENV}/bin/virtualenv
 
 install:
 	#
