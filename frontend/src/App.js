@@ -79,7 +79,7 @@ class App extends React.Component {
 	}
 
   handleGeneClick(geneItem) {
-      fetch('http://127.0.0.1:5000/api/gene-to-pathway/'.concat(geneItem).concat('?size=5'))
+      fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
 		.then(response => response.json())
 		.then(data => {
             if (data.length ===0 || data === undefined) {
@@ -96,7 +96,6 @@ class App extends React.Component {
 
 	handlePathwayClick(index) {
 		console.log(index)
-
 		this.setState({imgSrc : "http://localhost:5000/api/pathway-to-png/" + index})
 
 		fetch('http://127.0.0.1:5000/api/pathway-to-sbgn/' + index)
