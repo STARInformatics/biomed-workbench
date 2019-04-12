@@ -12,7 +12,7 @@ install:
 	#
 	# Configure node.js web application
 	#
-	cd frontend; cp template.env .env; npm install
+	cd frontend; cp template.env .env; npm install; npm audit fix
 
 data:
 	mkdir -p backend/data/diagrams

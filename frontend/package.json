@@ -5,13 +5,12 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "jquery": "^1.9.1",
-    "popper.js":"^1.14.7",
-    "typescript":"*",
+    "popper.js": "^1.15.0",
+    "typescript": "^3.4.3",
+    "canvas": "^2.4.1",
     "cytoscape": "^3.5.2",
     "cytoscape-sbgn-stylesheet": "^3.0.1",
     "font-awesome": "^4.7.0",
-    "jquery": "^1.9.1",
-    "popper.js": "^1.15.0",
     "react": "^16.8.6",
     "react-autosuggest": "^9.4.3",
     "react-cytoscapejs": "^1.1.0",
@@ -20,8 +19,7 @@
     "react-scripts": "2.1.8",
     "react-zmage": "^0.7.1",
     "sbgn-renderer": "^1.1.1",
-    "sbgnml-to-cytoscape": "^4.0.4",
-    "typescript": "^3.4.3"
+    "sbgnml-to-cytoscape": "^4.0.4"
   },
   "scripts": {
     "start": "react-scripts start",
