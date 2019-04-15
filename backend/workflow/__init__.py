@@ -1,53 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Batch Execution of Workflow 2 on a TSV List of Diseases
-#
-# The sample 'diseases.tsv' file contains a list of target diseases, where the first and third column are the disease name and  MONDO identifier, respectively. This workflow can read in this file and apply the workflow 2 (MOD0/1A/1B1/1E).
-
-# # Steps which may best happen before you run the workflow locally
-# * be running python3.6+  (say, in a virtual enviroment)
-# * you will need to have  `pip install jupyter` into the venv.
-# * have cloned this repo using `--recursive`
-#
-# This workflow invokes "owltools" (https://github.com/owlcollab/owltools/wiki/Install-OWLTools)
-# which is a 37M Java language tool. This needs has to be installed into a location visible to the Notebook (like ```${HOME}/bin```).  The 0.3.0 release application binary can be used (it is a bash wrapper around a Java JAR but your download tool (e.g. Mac OSX) may inadvertently give it the cryptic file extension '.dms' (No... it is **NOT** an Amiga DMS archive!)  Just rename the file (if necessary) to ```owltools```,  make it executable and move it into a suitable location like ```/anaconda3/bin``` or ```/usr/bin```.
-#
-# Alternately,
-#
-# ```curl http://build.berkeleybop.org/userContent/owltools/owltools > ~/bin/owltools && chmod +x /usr/bin/owltools```
-#
-# should do the job.
-
-# # Install Python Dependencies (including the NCATS MVP Module Library)
-
-# In[1]:
-
-
-import sys
-import shutil
-
-pyptha = sys.executable.split('/')
-pyptha[-2]= 'lib'
-pypth='/'.join(pyptha) + '*/site-packages'
-
-# Hack to get around problematic updating of distutils installed PyYAML and a slightly older pandas requiring a compatible numpy
-shutil.rmtree(pypth + '/PyYAML*', ignore_errors=True)
-shutil.rmtree(pypth + '/numpy*', ignore_errors=True)
-
-sys.path.append("../mvp-module-library")
-# Install pip requirements
-# get_ipython().system('{sys.executable} -m pip install -r requirements.txt')
-
-
-# In[2]:
-
 from .biolink_client import BioLinkWrapper
 import pandas as pd
 from os import makedirs
 from html3.html3 import XHTML
-
-
 
 def output_file(tag,title,ext):
     basepath = "./Tidbit/"+tag
@@ -293,40 +250,3 @@ if __name__ == '__main__':
 
         return rtx_ui_url
 
-    # rtx_ui_url = publish_to_rtx(std_api_response_json)
-
-    # print("Please visit the following website: https://rtx.ncats.io/?r=%s" % rtx_ui_url.json()['response_id'])
-    # print("Please visit the following link to retrieve JSON results: https://rtx.ncats.io/api/rtx/v1/response/%s" % rtx_ui_url.json()['response_id'])
-
-
-    # In[ ]:
-
-
-    # Read a table of diseases and process
-    # with open("diseases.tsv","r") as diseases:
-    #     for entry in diseases.readlines():
-    #         field = entry.split("\t")
-    #         if field[1] == "Disease":
-    #             continue
-    #
-    #         input_disease_symbol = field[1]
-    #         input_disease_mondo  = field[3]
-    #
-    #         # process
-    #         input_object, disease_associated_genes, input_curie_set = diseaseLookUp(input_disease_symbol, input_disease_mondo)
-    #
-    #         # Functinoal Simularity using Jaccard index threshold
-    #         func_sim_human = FunctionalSimilarity()
-    #         Mod1A_results = similarity( func_sim_human, input_curie_set, 0.75, input_disease_symbol, 'Mod1A', "Functionally Similar Genes" )
-    #
-    #         # Phenotypic simulatiry using OwlSim calculation threshold
-    #         pheno_sim_human = PhenotypeSimilarity()
-    #         Mod1B_results = similarity( pheno_sim_human, input_curie_set, 0.50, input_disease_symbol, 'Mod1B', "Phenotypically Similar Genes" )
-    #
-    #         # Find Interacting Genes
-    #         interactions_human = GeneInteractions()
-    #         Mod1E_results = gene_interactions( interactions_human, input_curie_set, input_disease_symbol, 'Mod1E', "Gene Interactions" )
-    #
-    #         std_api_response_json = aggregrate_results(Mod1A_results, Mod1B_results)
-    #         std_api_response_json
-    #         # publish_to_rtx( output, input_disease_symbol, input_disease_mondo, std_api_response_json )

@@ -11,6 +11,15 @@ import './App.css';
 
 import 'font-awesome/css/font-awesome.min.css';
 
+//let convert = require('sbgnml-to-cytoscape');
+//let cyGraph = convert(xml);
+
+const BASE_URL =  process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
+const API_PATH =  process.env.REACT_APP_API_PATH || '';
+//const BASE_URL =  'https://bkw.starinformatics.com';
+//const API_PATH =  '/service';
+const SERVICE_URL  = BASE_URL + API_PATH;
+
 class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -42,8 +51,8 @@ class App extends React.Component {
 		this.handlePathwayClick = this.handlePathwayClick.bind(this);
 	}
 
-	handleMondoSearch(e) {
-		fetch('http://127.0.0.1:5000/api/disease/'.concat(this.state.searchText))
+	handleMondoSearch = () => {
+		return fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText))
 			.then(response => response.json())
 			.then(data => {
 				if (data === undefined || data.length === 0) {
@@ -62,7 +71,7 @@ class App extends React.Component {
 	}
 
 	handleMondoClick(mondoItem) {
-		fetch('http://127.0.0.1:5000/api/disease-to-gene/'.concat(mondoItem))
+		fetch(SERVICE_URL.concat('/api/disease-to-gene/').concat(mondoItem))
 			.then(response => response.json())
 			.then(data => {
                 if (data === undefined || data.length === 0) {
@@ -78,7 +87,7 @@ class App extends React.Component {
 	}
 
   handleGeneClick(geneItem) {
-      fetch('http://127.0.0.1:5000/api/gene-to-pathway/'.concat(geneItem).concat('?size=5'))
+      fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
 		.then(response => response.json())
 		.then(data => {
             if (data === undefined || data.length === 0) {
@@ -95,9 +104,8 @@ class App extends React.Component {
 
 	handlePathwayClick(index) {
 		console.log(index);
-		this.setState({imgSrc : "http://localhost:5000/api/pathway-to-png/" + index});
-
-		fetch('http://127.0.0.1:5000/api/pathway-to-sbgn/' + index)
+		this.setState({imgSrc : SERVICE_URL.concat('/api/pathway-to-png/') + index});
+		fetch(SERVICE_URL.concat('/api/pathway-to-sbgn/') + index)
 		  .then(response => {
 		    return response.text().then((text)=>{
 		      console.log(text);
@@ -107,6 +115,12 @@ class App extends React.Component {
 	}
 
 	render() {
+
+	    console.log("Workbench Environmental Variables:");
+	    console.log("\tBASE_URL:\t"+BASE_URL);
+	    console.log("\tAPI_PATH:\t"+API_PATH);
+	    console.log("\tSERVICE_URL:\t"+SERVICE_URL);
+
 		return (
 			<div className="container-fluid">
                 <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
