@@ -4,6 +4,7 @@ import os
 import json
 import requests
 import tempfile
+import grequests
 
 # import libsbgn and important SBGN types
 import libsbgnpy.libsbgn as libsbgn
@@ -11,6 +12,7 @@ from libsbgnpy import libsbgn, utils, render
 
 from .mondo import search
 from .workflow import diseaseLookUp
+from .neo4j import get_statements
 
 path = os.path.dirname(os.path.abspath(__name__))
 app = Flask(__name__)
@@ -31,13 +33,19 @@ SERVICE_URL = BKW_BASE_URL + BKW_API_PATH
 @app.route("/")
 def index():
     endpoints = [
-        SERVICE_URL+'/api/disease/diabetes mellitus',
-        SERVICE_URL+'/api/disease-to-gene/MONDO:0009401',
-        SERVICE_URL+'/api/gene-to-pathway/HGNC:406',
-        SERVICE_URL+'/api/pathway-to-sbgn/R-HSA-389661',
-        SERVICE_URL+'/api/pathway-to-png/R-HSA-389661',
+        '/api/disease/diabetes mellitus',
+        '/api/disease-to-gene/MONDO:0009401',
+        '/api/gene-to-pathway/HGNC:406',
+        '/api/data/HGNC:406',
+        '/api/pathway-to-sbgn/R-HSA-389661',
+        '/api/pathway-to-png/R-HSA-389661',
     ]
-    return 'API workflow example:<br>' + '<br>'.join('<a href="{}">{}</a>'.format(e, e) for e in endpoints)
+    return 'API workflow example:<br>' + '<br>'.join('<a href="{}">{}{}</a>'.format(e, SERVICE_URL, e) for e in endpoints)
+
+@app.route('/api/data/<string:id>')
+@cross_origin()
+def get_data(id):
+    return jsonify(get_statements(id))
 
 @app.route('/api/disease/<string:keywords>')
 @cross_origin()
