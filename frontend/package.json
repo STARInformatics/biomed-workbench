@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "jquery": "^1.9.1",
+    "jquery": ">=3.0.0",
     "popper.js": "^1.15.0",
     "typescript": "^3.4.3",
     "canvas": "^2.4.1",
