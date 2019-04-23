@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@progress/kendo-react-animation": "^2.10.0",
-    "@progress/kendo-react-treeview": "^2.10.0",
     "bootstrap": "^4.3.1",
     "canvas": "^2.4.1",
     "cytoscape": "^3.5.2",
@@ -23,7 +21,6 @@
     "react-zmage": "^0.7.1",
     "sbgn-renderer": "^1.1.1",
     "sbgnml-to-cytoscape": "^4.0.4",
-    "treeview-react-bootstrap": "^0.4.6",
     "typescript": "^3.4.3"
   },
   "scripts": {
