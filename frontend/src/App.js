@@ -162,22 +162,16 @@ class App extends React.Component {
 	    console.log("\tSERVICE_URL:\t"+SERVICE_URL);
 
 		return (
-			<div className="container-fluid">
-				<div className="row">
-                	<SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
-                	<img src={starinformatics_logo} alt=""/>
-                	<img src={delphinai_logo} alt=""/>
-                </div>
+			
 
-                <div className="row">
-                    <div className="col-sm-3">
-                            <MondoList
+               
             <div style={divStyle}>
-                <div className="container-fluid">                
+                <div className="container-fluid">   
+                    <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
+             
                     <div className="row">
                         <div className="col-sm-3">
 							
-                            <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
 							<MondoList
                                 mondoList={this.state.mondoList}
 								isClickEnabled={this.state.mondoisClickEnabled}
@@ -195,29 +189,23 @@ class App extends React.Component {
                                 onClick={this.handleBiomodelClick}
                             />
 							
-                    </div>
+                    	</div>
                     
-                    <div className="col-sm-6">
-                    	<SBGNView sbgn={this.state.sbgn}  />
-                    </div>
+                    	<div className="col-sm-6">
+                    		<SBGNView sbgn={this.state.sbgn}  />
+                    	</div>
 
                     
-                    <div className="col-sm-3">
-                        <ImageDescription text={this.state.geneDescription} />
-                    </div>
+                    	<div className="col-sm-3">
+                        	<ImageDescription text={this.state.geneDescription} />
+                    	</div>
                     
-                    <ImageView src={this.state.imgSrc} />
-						<ImageView src={this.state.imgSrc} />
+                    	<div />
+							<ImageView src={this.state.imgSrc} />
+		           		</div>
 						
-		            </div>
-                    <div className="col-sm-3">
-                        <ImageDescription text={this.state.geneDescription} />
-                    </div>
-						<GraphView sbgn={this.state.sbgn} />
-
-                    </div>
+                	</div>
                 </div>
-            </div>
         );
   }
 }
