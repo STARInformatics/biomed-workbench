@@ -15,10 +15,10 @@ install:
 data:
 	mkdir -p backend/data/diagrams
 	mkdir -p backend/data/sbgn
-	wget http://purl.obolibrary.org/obo/mondo.json -O backend/data/mondo.json
-	wget https://reactome.org/download/current/diagrams.png.tgz -O backend/data/diagrams.png.tgz
+	curl -O http://purl.obolibrary.org/obo/mondo.json -O backend/data/mondo.json
+	curl -O https://reactome.org/download/current/diagrams.png.tgz -O backend/data/diagrams.png.tgz
 	tar -xvzf backend/data/diagrams.png.tgz --directory backend/data/diagrams
-	wget https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz -O backend/data/homo_sapiens.sbgn.tar.gz
+	curl -O https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz -O backend/data/homo_sapiens.sbgn.tar.gz
 	tar -xvzf backend/data/homo_sapiens.sbgn.tar.gz --directory backend/data/sbgn
 
 .PHONY: web venv

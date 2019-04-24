@@ -54,7 +54,7 @@ Optionally, under Linux, package installation may also be used:
 sudo apt install virtualenv
 ```
 
-Net, ensure that you have the **git** client installed:
+Next, ensure that you have the **git** client installed:
 
 ```
 # check where git is installed
@@ -62,6 +62,16 @@ command -v  git
 
 # if the previous command returns an empty result then...
 sudo apt install git
+```
+
+Next, ensure that you have the **curl** software installed.  Some operating  systems have it;  others, maybe not by  default:
+
+```
+# check where git is installed
+command -v curl
+
+# if the previous command returns an empty result then...
+sudo apt install curl
 ```
 
 A Unix-style _Makefile_ is provided to configure and run the workbench web application.
