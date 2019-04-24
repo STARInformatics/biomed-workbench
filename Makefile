@@ -1,6 +1,6 @@
 VENV?=venv
-PYTHON3_PATH?=${VENV}/bin/python3
-PIP3_PATH?=${VENV}/bin/pip3
+PYTHON3_PATH?=${VENV}\Scripts\python
+PIP3_PATH?=${VENV}\Scripts\pip3
 
 install:
 	#
@@ -25,10 +25,10 @@ data:
 .PHONY: web venv
 
 service:
-	nohup ${PYTHON3_PATH} -m backend >logs/service_`date`.log 2>&1 &
+	nohup "${PYTHON3_PATH}" -m backend > logs/service_`date`.log 2>&1 &
 
 web:
-	cd frontend; nohup npm start >../logs/web_`date`.log 2>&1 &
+	cd frontend; nohup npm start > ../logs/web_`date`.log 2>&1 &
 
 project_settings:
 	@echo "Python Virtual Environment (VENV) specified to be located in the subdirectory '${VENV}'"
