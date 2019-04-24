@@ -1,44 +1,19 @@
-#!/usr/bin/env python
-# coding: utf-8
+from cachetools import cached, LRUCache
+from threading import RLock
 
 from .biolink_client import BioLinkWrapper
 import pandas as pd
 from os import makedirs
 from html3.html3 import XHTML
 
-def output_file(tag,title,ext):
-    basepath = "./Tidbit/"+tag
-    filename = title.replace(" ","_")
-    filepath = basepath+"/"+filename+"."+ext
-    makedirs(basepath,exist_ok=True)
-    output = open(filepath,"w+")
-    output.info = { 'tag' : tag, 'title' : title }
-    return output
-
-def dump_html(output,body):
-    title = output.info['title']+" for "+output.info['tag']
-
-    doc = XHTML()
-
-    doc.head.title(title)
-    doc.body.h1(title)
-    doc.body.p(body.to_html())
-
-    output.write(str(doc))
-
-
-# # Mod0 Look up Disease Associated Genes
-
-# In[4]:
-
-
 from .Mod0_lookups import LookUp
+from .Mod1A_functional_sim import FunctionalSimilarity
+from .Mod1B1_phenotype_similarity import PhenotypeSimilarity
+from .Mod1E_interactions import GeneInteractions
 
-def diseaseLookUp(mondo_id):
-
-    # workflow input is a disease identifier
+@cached(cache=LRUCache(maxsize=32), lock=RLock())
+def mod0_disease_lookup(mondo_id):
     lu = LookUp()
-
     input_object = {
         'input': mondo_id,
         'parameters': {
@@ -46,207 +21,114 @@ def diseaseLookUp(mondo_id):
             'threshold': None,
         },
     }
-
     lu.load_input_object(input_object=input_object)
-
     # get genes associated with disease from Biolink
     disease_associated_genes = lu.disease_geneset_lookup()
-
     # create list of gene curies for downstream module input
     input_curie_set = disease_associated_genes[['hit_id', 'hit_symbol']].to_dict(orient='records')
-
     # show the disease associated genes
     disease_associated_genes['modules'] = 'Mod0'
+    for d in input_curie_set:
+        d['input_id'] = mondo_id
+    return input_curie_set
+
+def load_genes(model, data, threshold):
+    # Module specification
+    inputParameters = {
+        'input': data,
+        'parameters': {
+            'taxon': 'human',
+            'threshold': threshold,
+        },
+    }
+    # Load the computation parameters
+    model.load_input_object(inputParameters)
+    model.load_gene_set()
+
+def similarity(model, data, threshold=0.75):
+    load_genes(model, data, threshold)
+    model.load_associations()
+
+    # Perform the comparison
+    results = model.compute_similarity()
+    return results
+
+def mod1a_functional_similarity(data, threshold=0.75):
+    results = similarity(
+        FunctionalSimilarity(),
+        data,
+        threshold,
+    )
+    return results
+
+def mod1b1_phenotype_similarity(data, threshold=0.50):
+    results = similarity(
+        PhenotypeSimilarity(),
+        data,
+        threshold,
+    )
+    return results
+
+def mod1e_gene_interactions(data):
+    model = GeneInteractions()
+    load_genes(model, data, None)
+    results = model.get_interactions()
+    results_table = pd.DataFrame(results)
+    counts = results_table['hit_symbol'].value_counts().rename_axis('unique_values').to_frame('counts').reset_index()
+    high_counts = counts[counts['counts'] > 12]['unique_values'].tolist()
+    final_results_table = pd.DataFrame(results_table[results_table['hit_symbol'].isin(high_counts)])
+    return final_results_table.to_dict(orient='records')
+
+def module_runner(data, module_id):
+    if module_id == 'mod1a':
+        return mod1a_functional_similarity(data)
+    elif module_id == 'mod1b1':
+        return mod1b1_phenotype_similarity(data)
+    elif module_id == 'mod1e':
+        return mod1e_gene_interactions(data)
+    else:
+        raise Exception('Invalid module_id: {}'.format(moudleid))
+
+def run_workflow(mondo_id):
+    modules = [
+        mod1a_functional_similarity,
+        mod1b1_phenotype_similarity,
+        mod1e_gene_interactions,
+    ]
+
+    cpu_count = mp.cpu_count()
+    min_cpu_count = min(cpu_count, len(modules))
+    print('Using {}/{} CPUs'.format(min_cpu_count, cpu_count))
+    input_object, disease_associated_genes, genes = mod0_disease_lookup(mondo_id)
+    # pool = mp.Pool(processes=min_cpu_count)
+    with get_context("spawn").Pool() as pool:
+        processes = [pool.apply_async(module, args=(genes,)) for module in modules]
+
+        results = []
+
+        for i, p in enumerate(processes):
+            print(i)
+            results += p.get()
+            print(len(results))
+
+    results = sorted(results, key=lambda d: -d.get('score', 0))
+
+    return results
+
+# if __name__ == '__main__':
+def run():
+    from pprint import pprint
+    results = run_workflow('MONDO:0019391')
+    pprint(results[:100])
+    quit()
+
+    input_object, disease_associated_genes, input_curie_set = mod0_disease_lookup('MONDO:0019391')
+    # Mod1A_results = mod1a_jaccard_similarity(input_curie_set)
+    # Mod1B_results = mod1b1_phenotype_similarity(input_curie_set)
+    Mod1E_results = mod1e_gene_interactions(input_curie_set)
+
+    results = []
+    # results = sorted(results, key=lambda d: -d['score'])
 
-    return lu.input_object, disease_associated_genes, input_curie_set
-
-
-input_disease_symbol = "FA"
-input_disease_mondo = 'MONDO:0019391'
-
-if __name__ == '__main__':
-
-    input_object, disease_associated_genes, input_curie_set = diseaseLookUp(input_disease_mondo)
-
-    #  Echo to console
-    # print('disease_associated_genes')
-    # print(disease_associated_genes)
-
-
-
-    # # Retrieve Similar Genes
-
-    # In[ ]:
-
-
-    def load_genes(model,data,threshold):
-
-        # Module specification
-        inputParameters = {
-            'input': data,
-            'parameters': {
-                'taxon': 'human',
-                'threshold': threshold,
-            },
-        }
-
-        # Load the computation parameters
-        model.load_input_object(inputParameters)
-        model.load_gene_set()
-
-    def similarity( model, data, threshold, input_disease_symbol, module, title ):
-
-        # Initialize
-        load_genes(model,data,threshold)
-        model.load_associations()
-
-        # Perform the comparison
-        results = model.compute_similarity()
-
-        # Process the results
-        results_table = pd.DataFrame(results)
-        results_table = results_table[~results_table['hit_id'].isin(disease_associated_genes['hit_id'].tolist())].sort_values('score', ascending=False)
-        results_table['module'] = module
-
-        # save the gene list to a file under the "Tidbit" subdirectory
-        output = output_file(input_disease_symbol,title,"html")
-        dump_html(output,results_table)
-        output.close()
-
-        return results_table
-
-
-    # ## Mod1A Functional Similarity
-    # ### Find similar genes based on GO functional annotations using OntoBio Jaccard similarity
-
-    # In[ ]:
-
-
-    from .Mod1A_functional_sim import FunctionalSimilarity
-
-    # Functinoal Simularity using Jaccard index threshold
-    func_sim_human = FunctionalSimilarity()
-    Mod1A_results = similarity( func_sim_human, input_curie_set, 0.75, input_disease_symbol, 'Mod1A', "Functionally Similar Genes" )
-
-    Mod1A_results
-
-
-    # ## MOD1B Phenotype Similarity
-    # ### Find similar genes based on OwlSim calculated Phenotype Similarity
-
-    # In[ ]:
-    print('Mod1A_results')
-    print(Mod1A_results)
-
-    from .Mod1B1_phenotype_similarity import PhenotypeSimilarity
-
-    # Phenotypic simulatiry using OwlSim calculation threshold
-    pheno_sim_human = PhenotypeSimilarity()
-    Mod1B_results = similarity( pheno_sim_human, input_curie_set, 0.50, input_disease_symbol, 'Mod1B', "Phenotypically Similar Genes" )
-
-    print("Mod1B_results")
-    print(Mod1B_results)
-
-
-    # # Mod1E Protein Interaction
-
-    # In[ ]:
-
-
-    def gene_interactions( model, data, input_disease_symbol, module, title ):
-
-        # Initialize
-        load_genes(model,data,None)
-
-        results = model.get_interactions()
-
-        results_table = pd.DataFrame(results)
-
-        counts = results_table['hit_symbol'].value_counts().rename_axis('unique_values').to_frame('counts').reset_index()
-        high_counts = counts[counts['counts'] > 12]['unique_values'].tolist()
-
-        final_results_table = pd.DataFrame(results_table[results_table['hit_symbol'].isin(high_counts)])
-
-        final_results_table['module'] = module
-
-        # save the gene list to a file under the "Tidbit" subdirectory
-        output = output_file(input_disease_symbol,title,"html")
-        dump_html(output,final_results_table.head())
-        output.close()
-
-        return final_results_table
-
-
-    # # Find Interacting Genes
-    # ## Mod1E Human
-
-    # In[ ]:
-
-
-    from .Mod1E_interactions import GeneInteractions
-
-    interactions_human = GeneInteractions()
-    Mod1E_results = gene_interactions( interactions_human, input_curie_set, input_disease_symbol, 'Mod1E', "Gene Interactions" )
-
-    # Echo to console
-    print("Mod1E_results.head()")
-    print(Mod1E_results.head())
-
-
-    # # Publish Aggregate Results
-
-    # In[ ]:
-
-
-    from .StandardOutput import StandardOutput
-
-    def aggregrate_results(resultsA,resultsB):
-        all_results = pd.concat([resultsA,resultsB])
-        so = StandardOutput(results=all_results.to_dict(orient='records'), input_object=input_object)
-        return so.output_object
-
-    std_api_response_json = aggregrate_results(Mod1A_results, Mod1B_results)
-
-    # Echo to console
-    print('std_api_response_json')
-    print(std_api_response_json)
-
-
-    # In[ ]:
-
-
-    import requests
-
-    def file_index( output, input_disease_symbol, input_disease_mondo, rtx_ui_url ):
-
-        title = "Results for "+input_disease_symbol+"["+input_disease_mondo+"]"
-
-        doc = XHTML()
-
-        doc.head.title(title)
-        doc.body.h1(title)
-        ul = body.ul
-        ul.li.a("Input Disease Details",        href="Definition.json")
-        ul.li.a("Disease Associated Genes",     href="Disease_Associated_Genes.html")
-        ul.li.a("Functionally Similar Genes",   href="Functionally_Similar_Genes.html")
-        ul.li.a("Phenotypically Similar Genes", href="Phenotypically_Similar_Genes.html")
-        ul.li.a("Gene Interactions",            href="Gene_Interactions.html")
-        doc.body.p.a("RTX UI Display of Details",           href="https://rtx.ncats.io/?r=%s" % rtx_ui_url.json()['response_id'])
-        doc.body.p.a("Reasoner API formatted JSON results", href="https://rtx.ncats.io/api/rtx/v1/response/%s" % rtx_ui_url.json()['response_id'])
-
-        output.write(str(doc))
-
-    def publish_to_rtx( output, std_api_response_json, input_disease_symbol, title ):
-
-        # get the URL for these results displayed in the RTX UI
-        RTX_UI_REQUEST_URL = "https://rtx.ncats.io/api/rtx/v1/response/process"
-        to_post = {"options": ["Store", "ReturnResponseId"], "responses": [std_api_response_json]}
-        rtx_ui_url = requests.post(RTX_UI_REQUEST_URL, json=to_post)
-
-        # Write out a master index web page
-        output = output_file(input_disease_symbol,"index","html")
-        write_file_index( output, rtx_ui_url )
-        output.close()
-
-        return rtx_ui_url
-
+    for result in Mod1E_results:
+        result['module'] = 'Mod1E'
