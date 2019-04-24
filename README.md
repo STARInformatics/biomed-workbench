@@ -54,7 +54,7 @@ Optionally, under Linux, package installation may also be used:
 sudo apt install virtualenv
 ```
 
-Net, ensure that you have the **git** client installed:
+Next, ensure that you have the **git** client installed:
 
 ```
 # check where git is installed
@@ -62,6 +62,16 @@ command -v  git
 
 # if the previous command returns an empty result then...
 sudo apt install git
+```
+
+Next, ensure that you have the **curl** software installed.  Some operating  systems have it;  others, maybe not by  default:
+
+```
+# check where git is installed
+command -v curl
+
+# if the previous command returns an empty result then...
+sudo apt install curl
 ```
 
 A Unix-style _Makefile_ is provided to configure and run the workbench web application.
@@ -209,9 +219,17 @@ make install
 
 ## Running the Workbench
 
+### Configuration of Data
+
+The system depends on a local cache of core data which must be downloaded first before running the system, as follows:
+
+``` 
+make data
+```
+
 ### Back End Data and Analysis Service
 
-After configuring the system, the following command runs the back end data service as a background process.
+After configuring the system and downloading the core data, the following command runs the back end data service as a background process.
 
 ```
 make service

@@ -15,11 +15,12 @@ install:
 data:
 	mkdir -p backend/data/diagrams
 	mkdir -p backend/data/sbgn
-	wget http://purl.obolibrary.org/obo/mondo.json -O backend/data/mondo.json
-	wget https://reactome.org/download/current/diagrams.png.tgz -O backend/data/diagrams.png.tgz
-	tar -xvzf backend/data/diagrams.png.tgz --directory backend/data/diagrams
-	wget https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz -O backend/data/homo_sapiens.sbgn.tar.gz
-	tar -xvzf backend/data/homo_sapiens.sbgn.tar.gz --directory backend/data/sbgn
+	cd backend/data ; \
+	    curl -O http://purl.obolibrary.org/obo/mondo.json ; \
+	    curl -O https://reactome.org/download/current/diagrams.png.tgz ; \
+	    tar -xvzf diagrams.png.tgz --directory diagrams ; \
+	    curl -O https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz ; \
+	    tar -xvzf homo_sapiens.sbgn.tar.gz --directory sbgn
 
 .PHONY: web venv
 
@@ -33,7 +34,6 @@ project_settings:
 	@echo "Python Virtual Environment (VENV) specified to be located in the subdirectory '${VENV}'"
 	@echo "Path to python3 ('PYTHON3_PATH') is specified to be located at path '${PYTHON3_PATH}'"
 	@echo "Path to pip3 ('PIP3_PATH') is specified to be located at path '${PIP3_PATH}'"
-	#@echo "Path to virtualenv ('VIRTUALENV_PATH') is specified to be located at path '${VIRTUALENV_PATH}'"
 	@echo "Override the these environment variables as needed, according to your site installation particulars"
 
 
