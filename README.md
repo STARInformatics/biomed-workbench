@@ -209,9 +209,17 @@ make install
 
 ## Running the Workbench
 
+### Configuration of Data
+
+The system depends on a local cache of core data which must be downloaded first before running the system, as follows:
+
+``` 
+make data
+```
+
 ### Back End Data and Analysis Service
 
-After configuring the system, the following command runs the back end data service as a background process.
+After configuring the system and downloading the core data, the following command runs the back end data service as a background process.
 
 ```
 make service
