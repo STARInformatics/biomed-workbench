@@ -10,6 +10,7 @@ const imageViewStyle = {
 const scrollStyle = {
     overflowY: "auto",
     height: "150px"
+    height: "150px",
 };
 
 export default class ImageView extends React.Component {

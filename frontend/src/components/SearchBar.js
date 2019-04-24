@@ -3,6 +3,7 @@ import React from 'react';
 const searchBarStyle = {
     marginTop: "20px",
     marginLeft: "25px",
+    marginLeft: "15px",
     marginBottom: "20px",
 }
 

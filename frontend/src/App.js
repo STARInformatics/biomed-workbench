@@ -3,8 +3,14 @@ import SearchBar from './components/SearchBar.js'
 import SBGNView from './components/SBGNView.js'
 import ImageView, {ImageDescription} from './components/ImageView.js'
 import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
+
 import {xml} from './components/demo.js'
 import './App.css';
+
+import { trackPromise } from 'react-promise-tracker';
+import { usePromiseTracker } from "react-promise-tracker";
+import Loader from 'react-loader-spinner';
+
 import 'font-awesome/css/font-awesome.min.css';
 import starinformatics_logo from './logo_starinformatics.png';
 import sbgnviz from 'sbgnviz';
@@ -14,6 +20,10 @@ const BASE_URL =  process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 const API_PATH =  process.env.REACT_APP_API_PATH || '';
 const SERVICE_URL  = BASE_URL + API_PATH;
 
+const divStyle = {
+    marginTop: "30px"
+}
+
 class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -22,10 +32,32 @@ class App extends React.Component {
 			imgSrc : null,
 			searchText : '',
 			mondoList: [
-				{id: 1, name: 'No Search'}
+				{id: '1', name: 'No Search'}
+			],
+			list: [
+				{id: 'MONDO:0010863', text: 'No Search', 
+					items: [
+						{id: 'MONDO:0012919',text: 'tiny 3'},
+						{id: 'MONDO:0012921',text: 'tiny 2'}
+					]},
+				{id: 'MONDO:0011168',text: 'No Search2'}
+
 			],
 			geneList: [
-				{gene_id: 1, gene_symbol: 'No Search'}
+				{id:1, name:'genelist1', items:[
+					{gene_id: 1, gene_symbol: 'gene1'},
+					{gene_id: 2, gene_symbol: 'gene2'},
+					{gene_id: 3, gene_symbol: 'gene3'},
+				]},
+				{id:2, name:'genelist2', items:[
+					{gene_id: 2, gene_symbol: 'gene2'},
+					{gene_id: 3, gene_symbol: 'gene3'},
+				]},
+				{id:3, name:'genelist3', items:[
+					{gene_id: 1, gene_symbol: 'gene1'},
+
+				]}
+					
 			],
 
 			biomodelList: [
@@ -34,6 +66,9 @@ class App extends React.Component {
 			mondoisClickEnabled: false,
 			geneisClickEnabled: false,
 			bioisClickEnabled: false,
+			mondoisLoading:false,
+			geneisLoading:false,
+			bioisLoading:false,
 			mondoSelected: '',
             geneDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis varius ex.'
 		};
@@ -42,29 +77,32 @@ class App extends React.Component {
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.handleMondoClick = this.handleMondoClick.bind(this);
 		this.handleGeneClick = this.handleGeneClick.bind(this);
-		this.handlePathwayClick = this.handlePathwayClick.bind(this);
+		this.handleBiomodelClick = this.handleBiomodelClick.bind(this);
 	}
 
 	handleMondoSearch = () => {
-		return fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText))
-			.then(response => response.json())
-			.then(data => {
-				if (data === undefined || data.length === 0) {
-					const newData = [
-						{id: 1, name: 'No Result'}
-					];
-					this.setState({mondoList: newData, mondoisClickEnabled: false});
-				} else {
-					this.setState({mondoList: data, mondoisClickEnabled: true});
-				}
-			});
+		this.setState({mondoisLoading:true});
+			fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText))
+				.then(response => response.json())
+				.then(data => {
+					if (data === undefined || data.length === 0) {
+						const newData = [
+							{id: 1, name: 'No Result'}
+						];
+						this.setState({mondoList: newData, mondoisClickEnabled: false});
+					} else {
+						this.setState({mondoList: data, mondoisClickEnabled: true, mondoisLoading:false});
+					}
+		});
 	};
 
+	
 	handleTextChange(e) {
 		this.setState({searchText : e.target.value});
 	}
 
 	handleMondoClick(mondoItem) {
+		this.setState({geneisLoading:true});
 		fetch(SERVICE_URL.concat('/api/disease-to-gene/').concat(mondoItem))
 			.then(response => response.json())
 			.then(data => {
@@ -75,28 +113,29 @@ class App extends React.Component {
                     this.setState({ geneListlList: newData, geneisClickEnabled: false });
                 }
                 else {
-                    this.setState({ geneList: data, geneisClickEnabled: true });
+                    this.setState({ geneList: data, geneisClickEnabled: true, geneisLoading:false});
                 }
-            });
+			});
 	}
 
-  handleGeneClick(geneItem) {
-      fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
-		.then(response => response.json())
-		.then(data => {
-            if (data === undefined || data.length === 0) {
-                const newData = [
-                    {pathway_id: 1, name: 'No Result'}
-                ];
-                this.setState({ biomodelList: newData, bioisClickEnabled: false });
-            }
-            else {
-                this.setState({ biomodelList: data, bioisClickEnabled: true });
-            }
-        });
+  	handleGeneClick(geneItem) {
+		this.setState({bioisLoading:true});
+			fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
+				.then(response => response.json())
+				.then(data => {
+					if (data === undefined || data.length === 0) {
+						const newData = [
+							{pathway_id: 1, name: 'No Result'}
+						];
+						this.setState({ biomodelList: newData, bioisClickEnabled: false });
+					}
+					else {
+						this.setState({ biomodelList: data, bioisClickEnabled: true, bioisLoading:false });
+					}
+				});
   }
 
-	handlePathwayClick(index) {
+	handleBiomodelClick(index) {
 		console.log(index);
 		this.setState({imgSrc : SERVICE_URL.concat('/api/pathway-to-png/') + index});
 		fetch(SERVICE_URL.concat('/api/pathway-to-sbgn/') + index)
@@ -106,6 +145,13 @@ class App extends React.Component {
 		      this.setState({sbgn: text});
 		    });
 		  });
+			fetch(SERVICE_URL.concat('/api/pathway-to-sbgn/') + index)
+			.then(response => {
+				return response.text().then((text)=>{
+				console.log(text);
+				this.setState({sbgn: text});
+				});
+			});
 	}
 
 	render() {
@@ -126,18 +172,29 @@ class App extends React.Component {
                 <div className="row">
                     <div className="col-sm-3">
                             <MondoList
+            <div style={divStyle}>
+                <div className="container-fluid">                
+                    <div className="row">
+                        <div className="col-sm-3">
+							
+                            <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
+							<MondoList
                                 mondoList={this.state.mondoList}
-                                isClickEnabled={this.state.mondoisClickEnabled}
+								isClickEnabled={this.state.mondoisClickEnabled}
+								isLoading={this.state.mondoisLoading}
                                 onClick={this.handleMondoClick}/>
                             <GeneList
                                 geneList={this.state.geneList}
-                                isClickEnabled={this.state.geneisClickEnabled}
+								isClickEnabled={this.state.geneisClickEnabled}
+								isLoading={this.state.geneisLoading}
                                 onClick={this.handleGeneClick}/>
                             <BioModelList
                                 biomodelList={this.state.biomodelList}
-                                isClickEnabled={this.state.bioisClickEnabled}
-                                onClick={this.handlePathwayClick}
+								isClickEnabled={this.state.bioisClickEnabled}
+								isLoading={this.state.bioisLoading}
+                                onClick={this.handleBiomodelClick}
                             />
+							
                     </div>
                     
                     <div className="col-sm-6">
@@ -150,10 +207,18 @@ class App extends React.Component {
                     </div>
                     
                     <ImageView src={this.state.imgSrc} />
+						<ImageView src={this.state.imgSrc} />
+						
+		            </div>
+                    <div className="col-sm-3">
+                        <ImageDescription text={this.state.geneDescription} />
+                    </div>
+						<GraphView sbgn={this.state.sbgn} />
 
+                    </div>
                 </div>
             </div>
-		);
+        );
   }
 }
 
