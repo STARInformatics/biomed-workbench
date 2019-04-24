@@ -9,9 +9,7 @@ const imageViewStyle = {
 
 const scrollStyle = {
     overflowY: "auto",
-    height: "150px",
-    marginBottom: "15px",
-    backgroundColor: "#F5F5F5"
+    height: "150px"
 };
 
 export default class ImageView extends React.Component {

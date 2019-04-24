@@ -2,11 +2,17 @@ import React from 'react';
 
 const searchBarStyle = {
     marginTop: "20px",
-    marginLeft: "15px",
+    marginLeft: "25px",
     marginBottom: "20px",
 }
 
 class SearchBar extends React.Component {
+  handleKeyPress = event => {
+    if (event.key === 'Enter') {
+      this.props.handleSearch();
+    }
+  };
+
   render() {
     return (
         <div style={searchBarStyle}>
@@ -18,6 +24,7 @@ class SearchBar extends React.Component {
                     placeholder="Search.."
                     aria-label="Search"
                     id="search"
+                    onKeyPress={this.handleKeyPress}
                 />
                 <button
                     type="button"

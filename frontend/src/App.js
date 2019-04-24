@@ -1,23 +1,17 @@
 import React from 'react';
-
 import SearchBar from './components/SearchBar.js'
-import GraphView from './components/GraphView.js'
+import SBGNView from './components/SBGNView.js'
 import ImageView, {ImageDescription} from './components/ImageView.js'
 import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
-
 import {xml} from './components/demo.js'
-
 import './App.css';
-
 import 'font-awesome/css/font-awesome.min.css';
-
-//let convert = require('sbgnml-to-cytoscape');
-//let cyGraph = convert(xml);
+import starinformatics_logo from './logo_starinformatics.png';
+import sbgnviz from 'sbgnviz';
+import delphinai_logo from './logo_delphinai.png';
 
 const BASE_URL =  process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 const API_PATH =  process.env.REACT_APP_API_PATH || '';
-//const BASE_URL =  'https://bkw.starinformatics.com';
-//const API_PATH =  '/service';
 const SERVICE_URL  = BASE_URL + API_PATH;
 
 class App extends React.Component {
@@ -108,7 +102,7 @@ class App extends React.Component {
 		fetch(SERVICE_URL.concat('/api/pathway-to-sbgn/') + index)
 		  .then(response => {
 		    return response.text().then((text)=>{
-		      console.log(text);
+		      // console.log(text);
 		      this.setState({sbgn: text});
 		    });
 		  });
@@ -123,7 +117,12 @@ class App extends React.Component {
 
 		return (
 			<div className="container-fluid">
-                <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
+				<div className="row">
+                	<SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
+                	<img src={starinformatics_logo} alt=""/>
+                	<img src={delphinai_logo} alt=""/>
+                </div>
+
                 <div className="row">
                     <div className="col-sm-3">
                             <MondoList
@@ -140,13 +139,17 @@ class App extends React.Component {
                                 onClick={this.handlePathwayClick}
                             />
                     </div>
+                    
                     <div className="col-sm-6">
-                        <ImageView src={this.state.imgSrc} />
+                    	<SBGNView sbgn={this.state.sbgn}  />
                     </div>
+
+                    
                     <div className="col-sm-3">
                         <ImageDescription text={this.state.geneDescription} />
                     </div>
-										<GraphView sbgn={this.state.sbgn} />
+                    
+                    <ImageView src={this.state.imgSrc} />
 
                 </div>
             </div>
