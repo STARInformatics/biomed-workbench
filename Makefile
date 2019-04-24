@@ -39,6 +39,7 @@ project_settings:
 
 start-backend:
 	./venv/bin/gunicorn \
+		-b 0.0.0.0:5000 \
 		--preload \
 		--access-logfile - \
 		--error-logfile - \
