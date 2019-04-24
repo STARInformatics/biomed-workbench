@@ -46,3 +46,5 @@ libsbgnpy
 
 gunicorn
 gevent
+grequests
+cachetools
