@@ -4,6 +4,8 @@ import SBGNView from './components/SBGNView.js'
 import ImageView, {ImageDescription} from './components/ImageView.js'
 import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
 
+import update from 'react-addons-update';
+
 import {xml} from './components/demo.js'
 import './App.css';
 
@@ -35,7 +37,7 @@ class App extends React.Component {
 				{id: '1', name: 'No Search'}
 			],
 			list: [
-				{id: 'MONDO:0010863', text: 'No Search', 
+				{id: 'MONDO:0010863', text: 'No Search',
 					items: [
 						{id: 'MONDO:0012919',text: 'tiny 3'},
 						{id: 'MONDO:0012921',text: 'tiny 2'}
@@ -44,20 +46,9 @@ class App extends React.Component {
 
 			],
 			geneList: [
-				{id:1, name:'genelist1', items:[
-					{gene_id: 1, gene_symbol: 'gene1'},
-					{gene_id: 2, gene_symbol: 'gene2'},
-					{gene_id: 3, gene_symbol: 'gene3'},
-				]},
-				{id:2, name:'genelist2', items:[
-					{gene_id: 2, gene_symbol: 'gene2'},
-					{gene_id: 3, gene_symbol: 'gene3'},
-				]},
-				{id:3, name:'genelist3', items:[
-					{gene_id: 1, gene_symbol: 'gene1'},
-
-				]}
-					
+				{id:1, name:'mod0', items:[]},
+				{id:2, name:'mod1a', items:[]},
+				{id:3, name:'mod1e', items:[]}
 			],
 
 			biomodelList: [
@@ -96,24 +87,29 @@ class App extends React.Component {
 		});
 	};
 
-	
+
 	handleTextChange(e) {
 		this.setState({searchText : e.target.value});
 	}
 
 	handleMondoClick(mondoItem) {
 		this.setState({geneisLoading:true});
-		fetch(SERVICE_URL.concat('/api/disease-to-gene/').concat(mondoItem))
+		fetch(SERVICE_URL.concat('/api/workflow/mod0/').concat(mondoItem))
 			.then(response => response.json())
 			.then(data => {
                 if (data === undefined || data.length === 0) {
                     const newData = [
                         {gene_id: 1, gene_symbol: 'No Result'}
                     ];
-                    this.setState({ geneListlList: newData, geneisClickEnabled: false });
+                    this.setState({ geneList: newData, geneisClickEnabled: false });
                 }
                 else {
-                    this.setState({ geneList: data, geneisClickEnabled: true, geneisLoading:false});
+                    this.setState({
+                      geneList: update(this.state.geneList, {0 : {items: {$set: data}}}),
+                      geneisClickEnabled: true,
+                      geneisLoading:false,
+                    })
+                    // this.setState({ geneList: data, geneisClickEnabled: true, geneisLoading:false});
                 }
 			});
 	}
@@ -162,15 +158,16 @@ class App extends React.Component {
 	    console.log("\tSERVICE_URL:\t"+SERVICE_URL);
 
 		return (
-			
 
-               
+
+
             <div style={divStyle}>
-                <div className="container-fluid">   
+                <div className="container-fluid">
                     <SearchBar handleSearch={this.handleMondoSearch} handleTextChange={this.handleTextChange}/>
-             
+
                     <div className="row">
                         <div className="col-sm-3">
+
 							<MondoList
                                 mondoList={this.state.mondoList}
 								isClickEnabled={this.state.mondoisClickEnabled}
@@ -183,23 +180,23 @@ class App extends React.Component {
                                 onClick={this.handleGeneClick}/>
                             <BioModelList
                                 biomodelList={this.state.biomodelList}
-								isClickEnabled={this.state.bioisClickEnabled}
-								isLoading={this.state.bioisLoading}
-                                onClick={this.handleBiomodelClick}/>	
+                								isClickEnabled={this.state.bioisClickEnabled}
+                								isLoading={this.state.bioisLoading}
+                                onClick={this.handleBiomodelClick}
+                            />
                     	</div>
-                    
+
                     	<div className="col-sm-6">
                     		<SBGNView sbgn={this.state.sbgn}  />
                     	</div>
-
                     	<div className="col-sm-3">
                         	<ImageDescription text={this.state.geneDescription} />
                     	</div>
-                    
+
                     	<div/>
 							<ImageView src={this.state.imgSrc} />
 		           		</div>
-						
+
                 	</div>
                 </div>
         );

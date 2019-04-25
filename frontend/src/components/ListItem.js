@@ -41,7 +41,7 @@ export default class ListItem extends React.Component {
 					onClick={this.handleClick}>
 						{this.props.value}
 				</button>;
-		
+
 	}
 }
 
@@ -62,10 +62,10 @@ export function MondoList(props) {
 			<div className="container">
 				<h6> Disease Index </h6>
 				<MyLoader isLoading={props.isLoading}>
-					<div style={scrollStyle}>						
-							{listItems}						
+					<div style={scrollStyle}>
+							{listItems}
 					</div>
-				</MyLoader> 
+				</MyLoader>
 			</div>
 		);
 	} else {
@@ -73,10 +73,10 @@ export function MondoList(props) {
 			<div className="container">
 				<h6> Disease List </h6>
 				<MyLoader isLoading={props.isLoading}>
-					<div style={scrollStyle}>						
+					<div style={scrollStyle}>
 							<button className="list-group-item list-group-item-action disabled">
 								No Search
-							</button>						
+							</button>
 					</div>
 				</MyLoader>
 			</div>
@@ -89,13 +89,13 @@ export class AccordionList extends React.Component {
 	render() {
 		const listItems = this.props.geneList.map((item) =>
 			<ListItem
-				key={item.gene_symbol}
-				index={item.gene_id}
-				value={item.gene_symbol}
+				key={item.hit_symbol}
+				index={item.hit_id}
+				value={item.hit_symbol}
 				isClickEnabled={this.props.isClickEnabled}
 				onClick={this.props.onClick}/>
 		);
-				
+
 		return (
 			<Card>
 				<Card.Header>
@@ -106,12 +106,12 @@ export class AccordionList extends React.Component {
 				<Accordion.Collapse eventKey={this.props.index}>
 					<Card.Body>{listItems}</Card.Body>
 				</Accordion.Collapse>
-			</Card>			
+			</Card>
 		);
 	}
-	
-	
-} 
+
+
+}
 
 export function GeneList(props) {
 	const geneList = props.geneList;
@@ -138,7 +138,7 @@ export function GeneList(props) {
 				</div>
 			</div>
 		);
-		
+
 	} else {
 		return(
 			<div className="container">
@@ -172,8 +172,8 @@ export function BioModelList(props) {
 			<div className="container">
 				<h6> Biomodel List </h6>
 				<MyLoader isLoading={props.isLoading}>
-					<div style={scrollStyle}>						
-							{listItems}									
+					<div style={scrollStyle}>
+							{listItems}
 					</div>
 				</MyLoader>  >
 
@@ -184,7 +184,7 @@ export function BioModelList(props) {
 			<div className="container">
 				<h6> Biomodel List </h6>
 				<MyLoader isLoading={props.isLoading}>
-					<div style={scrollStyle}>						
+					<div style={scrollStyle}>
 							<button className="list-group-item list-group-item-action disabled">
 								No Search
 							</button>
