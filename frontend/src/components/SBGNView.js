@@ -4,14 +4,6 @@ import cytoscape from 'cytoscape';
 import cysbgn from 'cytoscape-for-sbgn';
 import sbgnStylesheet from 'cytoscape-sbgn-stylesheet';
 import convert from 'sbgnml-to-cytoscape';
-// import coseBilkent from 'cytoscape-cose-bilkent';
-// import cola from 'cytoscape-cola';
-// import filesaverjs from 'filesaverjs';
-// import fcose from 'cytoscape-fcose';
-
-// cytoscape.use( coseBilkent );
-// cytoscape.use( cola );
-// cytoscape.use( fcose);
 
 class SBGNView extends React.Component{
 
@@ -39,44 +31,51 @@ class SBGNView extends React.Component{
     		elements.nodes[key].data.width = tempW;
     	}
 
-    	// for (var key in elements.nodes) {
-    	// 	if (elements.nodes[key].class === "complex") elements.nodes[key].shape = "hexagon";
-    	// 	if (elements.nodes[key].class === "compartment" || elements.nodes[key].class === "macromolecule") elements.nodes[key].shape = "round rectangle";
-    	// 	if (elements.nodes[key].class === "subcompartment") elements.nodes[key].shape = "rectangle";
-    	// 	if (elements.nodes[key].class === "simple chemical") 
-    	// 		elements.nodes[key].shape = "ellipse";
-    		
-    	// }
+    	// Generate zIndex value for each node so that larger nodes have smaller values and vice versa
+    	// Nodes are set to be drawn in order of lowest to highest z-index value
+    	for (var key in elements.nodes) {
+    		var tempH = elements.nodes[key].data.bbox.h;
+    		var tempW = elements.nodes[key].data.bbox.w;  
+    		var tempProduct = tempW*tempH;
+    		var tempQuotient = 1/tempProduct;
+    		var product = tempQuotient*10000;
 
-    	// for (var key in elements.edges) {
-
-    	// }
+    		elements.nodes[key].data.zIndex = Math.floor(product);
+    	}
 
     	// Create Cytoscape instance
-    	this.cy = cytoscape({
+		this.cy = cytoscape({
     		container: document.getElementById('cy'),
     		boxSelectionEnabled: true,
     		elements: elements,
-    		style: sbgnStylesheet(cytoscape),
-
-    		// style: cytoscape.stylesheet()
-    		// 	.selector('node')
-    		// 		.css({
-    		// 			'width': 'data(width)',
-    		// 			'height': 'data(height)',
-    		// 			// 'shape': 'data(shape)'
-    		// 		}),
-    		
+    		// autounselectify: true,
+			style: sbgnStylesheet(cytoscape).selector('node').css({
+				'width': 'data(width)',
+    			'height': 'data(height)',
+    			'background-opacity': 0,
+    			'overlay-opacity': 0,
+    			'z-index-compare': 'manual',
+    			'z-index': 'data(zIndex)'
+    		}).selector('edge').css({
+    			'curve-style': 'taxi',
+    		}), 
     		layout: {
     			name: 'preset',
     		}
+    	})
+    	this.cy.on('mouseover', 'node', function(evt) {
+    		var node = evt.target;
+    		console.log( 'mouse on node' + node.data('label') );
+    	})
+    	this.cy.on('mouseover', 'node', function(evt) {
+    		var node = evt.target;
+    		console.log( 'mouse on node' + node.data('label') );
     	})
 
     	// for (var i; i < elements.nodes.length; i++) {
     	// 	console.log(elements.nodes[i]);
     	// }
     	console.log(elements);
-    	console.log(sbgnStylesheet(cytoscape));
     }
 
     renderSBGNVizElement(){
@@ -97,17 +96,44 @@ class SBGNView extends React.Component{
     		elements.nodes[key].data.height = tempH;
     		elements.nodes[key].data.width = tempW;
     	}
+
+    	// Generate zIndex value for each node so that larger nodes have smaller values and vice versa
+    	// Nodes are set to be drawn in order of lowest to highest z-index value
+    	for (var key in elements.nodes) {
+    		var tempH = elements.nodes[key].data.bbox.h;
+    		var tempW = elements.nodes[key].data.bbox.w;  
+    		var tempProduct = tempW*tempH;
+    		var tempQuotient = 1/tempProduct;
+    		var product = tempQuotient*10000;
+
+    		elements.nodes[key].data.zIndex = Math.floor(product);
+    	}
     	
     	this.cy = cytoscape({
     		container: document.getElementById('cy'),
     		boxSelectionEnabled: true,
-    		// autounselectify: true,
-    		style: sbgnStylesheet(cytoscape),
     		elements: elements,
+    		// autounselectify: true,
+			style: sbgnStylesheet(cytoscape).selector('node').css({
+				'width': 'data(width)',
+    			'height': 'data(height)',
+    			'background-opacity': 0,
+    			'overlay-opacity': 0,
+    			'z-index-compare': 'manual',
+    			'z-index': 'data(zIndex)'
+    		}).selector('edge').css({
+    			'curve-style': 'taxi',
+    		}), 
     		layout: {
     			name: 'preset',
     		}
     	})
+    	this.cy.on('mouseover', 'node', function(evt) {
+    		var node = evt.target;
+    		console.log( 'mouse on node' + node.data('label') );
+    	})
+    	console.log(elements);
+
     }
 
     componentDidMount(){
