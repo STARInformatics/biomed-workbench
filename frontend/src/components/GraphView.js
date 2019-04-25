@@ -15,9 +15,8 @@ class GraphView extends React.Component{
       this.cy.json({
         elements : elements,
         layout: {
-            name: 'breadthfirst',
-            directed: true,
-            padding: 10
+            name: 'cose',
+            // padding: 30
         }
       })
     }
@@ -26,14 +25,13 @@ class GraphView extends React.Component{
       var elements = convert(this.props.sbgn)
       this.cy = cytoscape({
           container: document.getElementById('cy'),
-          boxSelectionEnabled: false,
+          boxSelectionEnabled: true,
           autounselectify: true,
 					style: sbgnStylesheet(cytoscape),
           elements: elements,
           layout: {
-              name: 'breadthfirst',
-              directed: true,
-              padding: 10
+              name: 'cose',
+              // padding: 30
           }
       });
     }
@@ -45,9 +43,11 @@ class GraphView extends React.Component{
     render(){
 			let cyStyle = {
 		    height: '1000px',
-		    width: '1000px',
-		    margin: '20px 0px'
+		    width: '500px',
+		    margin: '20px 0px',
+        outline: "solid #F5F5F5"
 		  };
+
 
       return(
 				<div>
@@ -56,5 +56,7 @@ class GraphView extends React.Component{
       )
     }
 }
+
+
 
 export default GraphView;

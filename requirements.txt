@@ -43,4 +43,9 @@ watchdog==0.9.0
 Werkzeug==0.15.2
 yamldown==0.1.8
 libsbgnpy
+
+gunicorn
+gevent
 grequests
+cachetools
+bmt

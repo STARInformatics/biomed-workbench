@@ -35,3 +35,17 @@ project_settings:
 	@echo "Path to python3 ('PYTHON3_PATH') is specified to be located at path '${PYTHON3_PATH}'"
 	@echo "Path to pip3 ('PIP3_PATH') is specified to be located at path '${PIP3_PATH}'"
 	@echo "Override the these environment variables as needed, according to your site installation particulars"
+
+
+start-backend:
+	./venv/bin/gunicorn \
+		-b 0.0.0.0:5000 \
+		--preload \
+		--access-logfile - \
+		--error-logfile - \
+		--timeout 300 \
+		-w 5 \
+		backend:app
+
+start-frontend:
+	cd frontend && npm start

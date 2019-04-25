@@ -1,4 +1,5 @@
 import grequests
+import bmt
 
 db = {
     'http://34.229.55.225:7474' : ('neo4j', 'VQH39pWYopKIzmiv'),
@@ -21,18 +22,17 @@ def parse(d:dict):
     else:
         return d
 
-def get_statements(curie:str) -> dict:
-    # https://neo4j.com/docs/rest-docs/current/#rest-api-use-parameters
-    curie = curie.replace('`', '').replace('"', '').replace("'", '')
+def get_ncats_data(curie:str) -> dict:
+    """
+    Gets the concept identified by the given curie, as well as all statements
+    it is involved in.
+    """
     q = """
-    match (n)-[e]-(m) where
-        toLower(n.id) = toLower('{curie}')
-    return
-        n,
-        e,
-        m,
-        EXISTS((n)-[e]->(m)) as isSubject
-    limit 100;
+    match (n)
+    where toLower(n.id) = toLower('{curie}')
+    match (n)-[e]-(m)
+    with n, e, m limit 100
+    return n AS source, COLLECT({{edge:e, target:m, sourceIsSubject: EXISTS((n)-[e]->(m))}}) as edges
     """.format(curie=curie)
 
     print(q)
@@ -47,29 +47,70 @@ def get_statements(curie:str) -> dict:
     responses = grequests.map(requests)
 
     statements = []
+    sources = []
 
-    from pprint import pprint
     for response in responses:
         if response is None:
             continue
         data = response.json().get('data', [])
         data = [[parse(d) for d in record] for record in data]
-        for source, edge, target, isSourceSubject in data:
-            if isSourceSubject:
-                statements.append({
-                    'subject' : source,
-                    'edge' : edge,
-                    'object' : target,
-                })
-            else:
-                statements.append({
-                    'subject' : target,
-                    'edge' : edge,
-                    'object' : source,
-                })
-    return statements
+
+        for source, edges in data:
+            sources.append(source)
+            for relation in edges:
+                edge = parse(relation.get('edge', {}))
+                target = parse(relation.get('target', {}))
+                sourceIsSubject = relation.get('sourceIsSubject')
+
+                if sourceIsSubject is True:
+                    statements.append({
+                        'subject' : source,
+                        'edge' : edge,
+                        'object' : target,
+                    })
+                elif sourceIsSubject is False:
+                    statements.append({
+                        'subject' : target,
+                        'edge' : edge,
+                        'object' : source,
+                    })
+                else:
+                    raise Exception('Invalid value for sourceIsSubject: {}'.format(sourceIsSubject))
+
+    concept = {}
+    for source in sources:
+        for key, value in source.items():
+            if key not in concept:
+                concept[key] = value
+
+    for key, value in concept.items():
+        if isinstance(value, list):
+            concept[key] = list(set(value))
+
+    if 'category' not in concept:
+        category = []
+    elif isinstance(concept['category'], str):
+        category = [concept['category']]
+    elif isinstance(concept['category'], list):
+        category = concept['category']
+
+    for label in concept['labels']:
+        e = bmt.get_element(label)
+        if e is not None:
+            category.append(e.name)
+    concept['category'] = list(set(category))
+
+    return {
+        'concept' : concept,
+        'statements' : statements,
+    }
 
 
 if __name__ == '__main__':
     from pprint import pprint
-    pprint(get_statements('HP:0000212'))
+    d = get_ncats_data('HP:0000212')
+
+    print('Sources:')
+    pprint(d['sources'])
+    print('Statements (first five):')
+    pprint(d['statements'][:5])
