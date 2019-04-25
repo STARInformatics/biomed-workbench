@@ -1,7 +1,5 @@
 import React from 'react';
-import sbgnviz from 'sbgnviz'
 import cytoscape from 'cytoscape';
-import cysbgn from 'cytoscape-for-sbgn';
 import sbgnStylesheet from 'cytoscape-sbgn-stylesheet';
 import convert from 'sbgnml-to-cytoscape';
 
@@ -36,9 +34,7 @@ class SBGNView extends React.Component{
     	for (var key in elements.nodes) {
     		var tempH = elements.nodes[key].data.bbox.h;
     		var tempW = elements.nodes[key].data.bbox.w;  
-    		var tempProduct = tempW*tempH;
-    		var tempQuotient = 1/tempProduct;
-    		var product = tempQuotient*10000;
+    		var product = 10000/(tempW*tempH)
 
     		elements.nodes[key].data.zIndex = Math.floor(product);
     	}
@@ -62,10 +58,6 @@ class SBGNView extends React.Component{
     		layout: {
     			name: 'preset',
     		}
-    	})
-    	this.cy.on('mouseover', 'node', function(evt) {
-    		var node = evt.target;
-    		console.log( 'mouse on node' + node.data('label') );
     	})
     	this.cy.on('mouseover', 'node', function(evt) {
     		var node = evt.target;
@@ -102,9 +94,7 @@ class SBGNView extends React.Component{
     	for (var key in elements.nodes) {
     		var tempH = elements.nodes[key].data.bbox.h;
     		var tempW = elements.nodes[key].data.bbox.w;  
-    		var tempProduct = tempW*tempH;
-    		var tempQuotient = 1/tempProduct;
-    		var product = tempQuotient*10000;
+    		var product = 10000/(tempW*tempH)
 
     		elements.nodes[key].data.zIndex = Math.floor(product);
     	}
