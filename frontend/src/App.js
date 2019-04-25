@@ -171,7 +171,6 @@ class App extends React.Component {
              
                     <div className="row">
                         <div className="col-sm-3">
-							
 							<MondoList
                                 mondoList={this.state.mondoList}
 								isClickEnabled={this.state.mondoisClickEnabled}
@@ -186,21 +185,18 @@ class App extends React.Component {
                                 biomodelList={this.state.biomodelList}
 								isClickEnabled={this.state.bioisClickEnabled}
 								isLoading={this.state.bioisLoading}
-                                onClick={this.handleBiomodelClick}
-                            />
-							
+                                onClick={this.handleBiomodelClick}/>	
                     	</div>
                     
                     	<div className="col-sm-6">
                     		<SBGNView sbgn={this.state.sbgn}  />
                     	</div>
 
-                    
                     	<div className="col-sm-3">
                         	<ImageDescription text={this.state.geneDescription} />
                     	</div>
                     
-                    	<div />
+                    	<div/>
 							<ImageView src={this.state.imgSrc} />
 		           		</div>
 						
