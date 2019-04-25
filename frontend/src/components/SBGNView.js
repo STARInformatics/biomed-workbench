@@ -29,7 +29,7 @@ class SBGNView extends React.Component{
     		elements.nodes[key].data.width = tempW;
     	}
 
-    	// Generate zIndex value for each node so that larger nodes have smaller values and vice versa
+    	// Generate zIndex value for each node, larger nodes get smaller values
     	// Nodes are set to be drawn in order of lowest to highest z-index value
     	for (var key in elements.nodes) {
     		var tempH = elements.nodes[key].data.bbox.h;
@@ -51,7 +51,8 @@ class SBGNView extends React.Component{
     			'background-opacity': 0,
     			'overlay-opacity': 0,
     			'z-index-compare': 'manual',
-    			'z-index': 'data(zIndex)'
+    			'z-index': 'data(zIndex)',
+    			'font-size': 10,
     		}).selector('edge').css({
     			'curve-style': 'taxi',
     		}), 
@@ -89,7 +90,7 @@ class SBGNView extends React.Component{
     		elements.nodes[key].data.width = tempW;
     	}
 
-    	// Generate zIndex value for each node so that larger nodes have smaller values and vice versa
+    	// Generate zIndex value for each node, larger nodes get smaller values
     	// Nodes are set to be drawn in order of lowest to highest z-index value
     	for (var key in elements.nodes) {
     		var tempH = elements.nodes[key].data.bbox.h;
@@ -110,7 +111,8 @@ class SBGNView extends React.Component{
     			'background-opacity': 0,
     			'overlay-opacity': 0,
     			'z-index-compare': 'manual',
-    			'z-index': 'data(zIndex)'
+    			'z-index': 'data(zIndex)',
+    			'font-size': 10,
     		}).selector('edge').css({
     			'curve-style': 'taxi',
     		}), 
@@ -123,7 +125,6 @@ class SBGNView extends React.Component{
     		console.log( 'mouse on node' + node.data('label') );
     	})
     	console.log(elements);
-
     }
 
     componentDidMount(){
@@ -133,7 +134,7 @@ class SBGNView extends React.Component{
     render(){
     	let cyStyle = {
     		height: '500px',
-		    width: '800px',
+		    width: '650px',
 		    margin: '20px 0px',
         	outline: "solid #F5F5F5"
         };
