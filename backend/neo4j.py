@@ -1,4 +1,5 @@
 import grequests
+import bmt
 
 db = {
     'http://34.229.55.225:7474' : ('neo4j', 'VQH39pWYopKIzmiv'),
@@ -22,19 +23,10 @@ def parse(d:dict):
         return d
 
 def get_ncats_data(curie:str) -> dict:
-    # https://neo4j.com/docs/rest-docs/current/#rest-api-use-parameters
-    curie = curie.replace('`', '').replace('"', '').replace("'", '')
-    # q = """
-    # match (n)-[e]-(m) where
-    #     toLower(n.id) = toLower('{curie}')
-    # return
-    #     n,
-    #     e,
-    #     m,
-    #     EXISTS((n)-[e]->(m)) as isSubject
-    # limit 100;
-    # """.format(curie=curie)
-
+    """
+    Gets the concept identified by the given curie, as well as all statements
+    it is involved in.
+    """
     q = """
     match (n)
     where toLower(n.id) = toLower('{curie}')
@@ -85,8 +77,31 @@ def get_ncats_data(curie:str) -> dict:
                 else:
                     raise Exception('Invalid value for sourceIsSubject: {}'.format(sourceIsSubject))
 
+    concept = {}
+    for source in sources:
+        for key, value in source.items():
+            if key not in concept:
+                concept[key] = value
+
+    for key, value in concept.items():
+        if isinstance(value, list):
+            concept[key] = list(set(value))
+
+    if 'category' not in concept:
+        category = []
+    elif isinstance(concept['category'], str):
+        category = [concept['category']]
+    elif isinstance(concept['category'], list):
+        category = concept['category']
+
+    for label in concept['labels']:
+        e = bmt.get_element(label)
+        if e is not None:
+            category.append(e.name)
+    concept['category'] = list(set(category))
+
     return {
-        'sources' : sources,
+        'concept' : concept,
         'statements' : statements,
     }
 
