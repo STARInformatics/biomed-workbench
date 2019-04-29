@@ -140,7 +140,11 @@ class SBGNView extends React.Component{
         };
 
         return(
-        	<div style={cyStyle} id="cy"/>
+			<div>
+				<h6>Biomodel View</h6>
+				<div style={cyStyle} id="cy"/>
+			</div>
+        	
         	)
     }
 }

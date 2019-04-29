@@ -1,7 +1,7 @@
 import React from 'react';
 import SearchBar from './components/SearchBar.js'
 import SBGNView from './components/SBGNView.js'
-import ImageView, {ImageDescription} from './components/ImageView.js'
+import ImageDescription from './components/ImageView.js'
 import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
 
 import update from 'react-addons-update';
@@ -9,14 +9,7 @@ import update from 'react-addons-update';
 import {xml} from './components/demo.js'
 import './App.css';
 
-import { trackPromise } from 'react-promise-tracker';
-import { usePromiseTracker } from "react-promise-tracker";
-import Loader from 'react-loader-spinner';
-
 import 'font-awesome/css/font-awesome.min.css';
-import starinformatics_logo from './logo_starinformatics.png';
-import sbgnviz from 'sbgnviz';
-import delphinai_logo from './logo_delphinai.png';
 
 const BASE_URL =  process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 const API_PATH =  process.env.REACT_APP_API_PATH || '';
@@ -57,11 +50,14 @@ class App extends React.Component {
 			mondoisClickEnabled: false,
 			geneisClickEnabled: false,
 			bioisClickEnabled: false,
+
 			mondoisLoading:false,
 			geneisLoading:false,
 			bioisLoading:false,
+			descriptionIsLoading:false,
+
 			mondoSelected: '',
-            geneDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis varius ex.'
+      description: {}
 		};
 
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
@@ -72,7 +68,7 @@ class App extends React.Component {
 	}
 
 	handleMondoSearch = () => {
-		this.setState({mondoisLoading:true});
+		this.setState({mondoisLoading:true, geneDescriptionIsLoading:true});
 			fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText))
 				.then(response => response.json())
 				.then(data => {
@@ -84,7 +80,23 @@ class App extends React.Component {
 					} else {
 						this.setState({mondoList: data, mondoisClickEnabled: true, mondoisLoading:false});
 					}
-		});
+			})
+			.catch(error => {
+				this.setState({description:{concept:{category:['Not Found']}}});			
+				});
+			
+			fetch(SERVICE_URL.concat('/api/get-ncats-data/').concat(this.state.searchText))
+				.then(response => response.json())
+				.then(data => {
+					if (data !== undefined || data.length !== 0) {
+							this.setState({description:data});
+					}
+					this.setState({descriptionIsLoading:false})
+				})
+				.catch(error => {
+					this.setState({geneDescription:{category:'Not Found'}});			
+			});
+	
 	};
 
 
@@ -94,23 +106,29 @@ class App extends React.Component {
 
 	handleMondoClick(mondoItem) {
 		this.setState({geneisLoading:true});
+
+		//Load the workflow modules
 		fetch(SERVICE_URL.concat('/api/workflow/mod0/').concat(mondoItem))
 			.then(response => response.json())
 			.then(data => {
-                if (data === undefined || data.length === 0) {
-                    const newData = [
-                        {gene_id: 1, gene_symbol: 'No Result'}
-                    ];
-                    this.setState({ geneList: newData, geneisClickEnabled: false });
-                }
-                else {
-                    this.setState({
-                      geneList: update(this.state.geneList, {0 : {items: {$set: data}}}),
-                      geneisClickEnabled: true,
-                      geneisLoading:false,
-                    })
-                    // this.setState({ geneList: data, geneisClickEnabled: true, geneisLoading:false});
-                }
+        if (data === undefined || data.length === 0) {
+          const newData = [
+            {gene_id: 1, gene_symbol: 'No Result'}
+          ];
+            this.setState({ geneList: newData, geneisClickEnabled: false, geneisLoading:false });
+        }
+        else {
+          this.setState({
+            geneList: update(this.state.geneList, {0 : {items: {$set: data}}}),
+            geneisClickEnabled: true,
+            geneisLoading:false,
+        })
+			}})
+			.catch(error => {
+				const newData = [
+					{gene_id: 1, gene_symbol: 'No Result'}
+				];
+					this.setState({ geneList: newData, geneisClickEnabled: false, geneisLoading:false });
 			});
 	}
 
@@ -167,38 +185,35 @@ class App extends React.Component {
 
                     <div className="row">
                         <div className="col-sm-3">
-							<MondoList
-                                mondoList={this.state.mondoList}
-								isClickEnabled={this.state.mondoisClickEnabled}
-								isLoading={this.state.mondoisLoading}
-                                onClick={this.handleMondoClick}/>
-                            <GeneList
-                                geneList={this.state.geneList}
-								isClickEnabled={this.state.geneisClickEnabled}
-								isLoading={this.state.geneisLoading}
-                                onClick={this.handleGeneClick}/>
-                            <BioModelList
-                                biomodelList={this.state.biomodelList}
-                								isClickEnabled={this.state.bioisClickEnabled}
-                								isLoading={this.state.bioisLoading}
-                                onClick={this.handleBiomodelClick}
-                            />
-                    	</div>
+													<MondoList
+                            mondoList={this.state.mondoList}
+														isClickEnabled={this.state.mondoisClickEnabled}
+														isLoading={this.state.mondoisLoading}
+                            onClick={this.handleMondoClick}/>
+                          <GeneList
+                            geneList={this.state.geneList}
+														isClickEnabled={this.state.geneisClickEnabled}
+														isLoading={this.state.geneisLoading}
+                            onClick={this.handleGeneClick}/>
+                          <BioModelList
+                            biomodelList={this.state.biomodelList}
+                						isClickEnabled={this.state.bioisClickEnabled}
+                						isLoading={this.state.bioisLoading}
+                            onClick={this.handleBiomodelClick}
+                          />
+                    		</div>
 
-                    	<div className="row">
-                    		<SBGNView sbgn={this.state.sbgn}  />
-                    	</div>
+                    		<div className="col-sm-6">
+                    			<SBGNView sbgn={this.state.sbgn}  />
+                    		</div>
                     	
-                    	<div className="col-sm-3">
-                        	<ImageDescription text={this.state.geneDescription} />
-                    	</div>
-
-                    	<div/>
-							<ImageView src={this.state.imgSrc} />
-		           		</div>
-
+                    		<div className="col-sm-3">
+                        	<ImageDescription text={this.state.description} />
+                    		</div>
                 	</div>
                 </div>
+
+						</div>
         );
   }
 }
