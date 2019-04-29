@@ -14,6 +14,7 @@ from libsbgnpy import libsbgn, utils, render
 from .mondo import search
 import backend.workflow as workflow
 from .neo4j import get_ncats_data
+from .id_lookup import id_lookup
 
 path = os.path.dirname(os.path.abspath(__name__))
 app = Flask(__name__)
@@ -43,14 +44,15 @@ def index():
         '/api/data/HGNC:406',
         '/api/pathway-to-sbgn/R-HSA-389661',
         '/api/pathway-to-png/R-HSA-389661',
-        '/api/get-ncats-data/MONDO:0005148'
+        '/api/get-ncats-data/MONDO:0005148',
+        '/api/id-lookup/CFHR dimers bind C3b',
     ]
     return 'API workflow example:<br>' + '<br>'.join('<a href="{}">{}{}</a>'.format(e, SERVICE_URL, e) for e in endpoints)
 
-@app.route('/api/data/<string:id>')
+@app.route('/api/id-lookup/<string:name>')
 @cross_origin()
-def get_data(id):
-    return jsonify(get_statements(id))
+def id_lookup_endpoint(name):
+    return jsonify({'id' : id_lookup(name), 'name' : name})
 
 @app.route('/api/get-ncats-data/<string:id>')
 @cross_origin()
