@@ -46,9 +46,10 @@ class App extends React.Component {
 
 			],
 			geneList: [
-				{id:1, name:'mod0', items:[]},
-				{id:2, name:'mod1a', items:[]},
-				{id:3, name:'mod1e', items:[]}
+				{id:1, name:'mod0 - Gene Lookup', items:[]},
+				{id:2, name:'mod1a - Functional Similarity', items:[]},
+				{id:3, name:'mod1e - Gene Interactions', items:[]},
+        {id:4, name:'mod1b1 - Phenotype Similarity', items:[]},
 			],
 
 			biomodelList: [
@@ -95,23 +96,57 @@ class App extends React.Component {
 	handleMondoClick(mondoItem) {
 		this.setState({geneisLoading:true});
 		fetch(SERVICE_URL.concat('/api/workflow/mod0/').concat(mondoItem))
-			.then(response => response.json())
-			.then(data => {
-                if (data === undefined || data.length === 0) {
-                    const newData = [
-                        {gene_id: 1, gene_symbol: 'No Result'}
-                    ];
-                    this.setState({ geneList: newData, geneisClickEnabled: false });
-                }
-                else {
-                    this.setState({
-                      geneList: update(this.state.geneList, {0 : {items: {$set: data}}}),
-                      geneisClickEnabled: true,
-                      geneisLoading:false,
-                    })
-                    // this.setState({ geneList: data, geneisClickEnabled: true, geneisLoading:false});
-                }
-			});
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod0");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+          geneList: update(this.state.geneList, {0 : {items: {$set: data}}}),
+          geneisClickEnabled: true,
+          geneisLoading:false,
+        })
+    });
+    fetch(SERVICE_URL.concat('/api/workflow/mod1a/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod1a");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+          geneList: update(this.state.geneList, {1 : {items: {$set: data}}}),
+          geneisClickEnabled: true,
+          geneisLoading:false,
+        })
+    });
+    fetch(SERVICE_URL.concat('/api/workflow/mod1e/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod1e");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+          geneList: update(this.state.geneList, {2 : {items: {$set: data}}}),
+          geneisClickEnabled: true,
+          geneisLoading:false,
+        })
+    });
+    fetch(SERVICE_URL.concat('/api/workflow/mod1b1/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod1b1");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+          geneList: update(this.state.geneList, {3 : {items: {$set: data}}}),
+          geneisClickEnabled: true,
+          geneisLoading:false,
+        })
+    });
 	}
 
   	handleGeneClick(geneItem) {
