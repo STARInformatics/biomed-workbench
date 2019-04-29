@@ -1,7 +1,5 @@
 import React from 'react';
-import sbgnviz from 'sbgnviz'
 import cytoscape from 'cytoscape';
-import cysbgn from 'cytoscape-for-sbgn';
 import sbgnStylesheet from 'cytoscape-sbgn-stylesheet';
 import convert from 'sbgnml-to-cytoscape';
 
@@ -31,14 +29,12 @@ class SBGNView extends React.Component{
     		elements.nodes[key].data.width = tempW;
     	}
 
-    	// Generate zIndex value for each node so that larger nodes have smaller values and vice versa
+    	// Generate zIndex value for each node, larger nodes get smaller values
     	// Nodes are set to be drawn in order of lowest to highest z-index value
     	for (var key in elements.nodes) {
     		var tempH = elements.nodes[key].data.bbox.h;
     		var tempW = elements.nodes[key].data.bbox.w;  
-    		var tempProduct = tempW*tempH;
-    		var tempQuotient = 1/tempProduct;
-    		var product = tempQuotient*10000;
+    		var product = 10000/(tempW*tempH)
 
     		elements.nodes[key].data.zIndex = Math.floor(product);
     	}
@@ -55,17 +51,14 @@ class SBGNView extends React.Component{
     			'background-opacity': 0,
     			'overlay-opacity': 0,
     			'z-index-compare': 'manual',
-    			'z-index': 'data(zIndex)'
+    			'z-index': 'data(zIndex)',
+    			'font-size': 10,
     		}).selector('edge').css({
     			'curve-style': 'taxi',
     		}), 
     		layout: {
     			name: 'preset',
     		}
-    	})
-    	this.cy.on('mouseover', 'node', function(evt) {
-    		var node = evt.target;
-    		console.log( 'mouse on node' + node.data('label') );
     	})
     	this.cy.on('mouseover', 'node', function(evt) {
     		var node = evt.target;
@@ -97,14 +90,12 @@ class SBGNView extends React.Component{
     		elements.nodes[key].data.width = tempW;
     	}
 
-    	// Generate zIndex value for each node so that larger nodes have smaller values and vice versa
+    	// Generate zIndex value for each node, larger nodes get smaller values
     	// Nodes are set to be drawn in order of lowest to highest z-index value
     	for (var key in elements.nodes) {
     		var tempH = elements.nodes[key].data.bbox.h;
     		var tempW = elements.nodes[key].data.bbox.w;  
-    		var tempProduct = tempW*tempH;
-    		var tempQuotient = 1/tempProduct;
-    		var product = tempQuotient*10000;
+    		var product = 10000/(tempW*tempH)
 
     		elements.nodes[key].data.zIndex = Math.floor(product);
     	}
@@ -120,7 +111,8 @@ class SBGNView extends React.Component{
     			'background-opacity': 0,
     			'overlay-opacity': 0,
     			'z-index-compare': 'manual',
-    			'z-index': 'data(zIndex)'
+    			'z-index': 'data(zIndex)',
+    			'font-size': 10,
     		}).selector('edge').css({
     			'curve-style': 'taxi',
     		}), 
@@ -133,7 +125,6 @@ class SBGNView extends React.Component{
     		console.log( 'mouse on node' + node.data('label') );
     	})
     	console.log(elements);
-
     }
 
     componentDidMount(){
@@ -143,7 +134,7 @@ class SBGNView extends React.Component{
     render(){
     	let cyStyle = {
     		height: '500px',
-		    width: '800px',
+		    width: '650px',
 		    margin: '20px 0px',
         	outline: "solid #F5F5F5"
         };
