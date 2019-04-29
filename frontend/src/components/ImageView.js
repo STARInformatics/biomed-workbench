@@ -52,7 +52,7 @@ export default function ImageDescription(props) {
                 <p>Definition: {props.text.concept.definition}</p>
             </div>
         );
-    } else if (props.text.concept.category[1]==="gene") {
+    } else {
         return (
             <div>
                 <h6>Gene Details </h6>
@@ -60,11 +60,10 @@ export default function ImageDescription(props) {
                 <p>ID: {props.text.concept.id}</p>
                 <p>Chromosome: {props.text.concept.chromosome}</p>
                 <p>Location: {props.text.concept.location}</p>
-                <p>gene_faminly: {props.text.concept.gene_faminly[0]}</p>
+                <p>gene_faminly: {props.text.concept.gene_family[0]}</p>
             </div>
         );
     }
-
 }
 
 function isEmpty(obj) {
