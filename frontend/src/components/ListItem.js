@@ -97,16 +97,18 @@ export class AccordionList extends React.Component {
 		);
 
 		return (
-			<Card>
-				<Card.Header>
-					<Accordion.Toggle as={Button} variant="link" eventKey={this.props.index}>
-						{this.props.value}
-					</Accordion.Toggle>
-				</Card.Header>
-				<Accordion.Collapse eventKey={this.props.index}>
-					<Card.Body>{listItems}</Card.Body>
-				</Accordion.Collapse>
-			</Card>
+			<MyLoader isLoading={this.props.isLoading}>
+				<Card>
+					<Card.Header>
+						<Accordion.Toggle as={Button} variant="link" eventKey={this.props.index}>
+							{this.props.value}
+						</Accordion.Toggle>
+					</Card.Header>
+					<Accordion.Collapse eventKey={this.props.index}>
+						<Card.Body>{listItems}</Card.Body>
+					</Accordion.Collapse>
+				</Card>
+			</MyLoader>
 		);
 	}
 
@@ -122,6 +124,7 @@ export function GeneList(props) {
 			index={item.id}
 			value={item.name}
 			geneList={item.items}
+			isLoading={item.isLoading}
 			isClickEnabled={isClickEnabled}
 			onClick={props.onClick}/>
 	);
@@ -129,12 +132,10 @@ export function GeneList(props) {
 		return(
 			<div className="container">
 				<h6> Gene List </h6>
-				<div style={scrollStyle}>
-					<MyLoader isLoading={props.isLoading}>
-						<Accordion>
-							{accordionItems}
-						</Accordion>
-					</MyLoader>
+				<div style={scrollStyle}>					
+					<Accordion>
+						{accordionItems}
+					</Accordion>
 				</div>
 			</div>
 		);
@@ -144,11 +145,9 @@ export function GeneList(props) {
 			<div className="container">
 				<h6> Gene List </h6>
 				<div style={scrollStyle}>
-					<MyLoader isLoading={props.isLoading}>
-						<button className="list-group-item list-group-item-action disabled">
-							No Search
-						</button>
-					</MyLoader>
+					<button className="list-group-item list-group-item-action disabled">
+						No Search
+					</button>
 				</div>
 			</div>
 		);

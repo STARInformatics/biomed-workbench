@@ -27,7 +27,7 @@ export class ImageView extends React.Component {
 	}
 }
 
-export default function ImageDescription() {
+export default function ImageDescription(props) {
     if (isEmpty(props.text)){
         return (
             <div>
@@ -35,7 +35,15 @@ export default function ImageDescription() {
                 <p>No Search </p>
             </div>
         );
-    } else if (props.text.concept.category[0]==="disease"){
+    } else if (props.text.concept.category[0]==="Not Found"){
+        return (
+            <div>
+                <h6>Details </h6>
+                <p>No Result</p>
+            </div>
+        );
+    }
+    else if (props.text.concept.category[0]==="disease"){
         return (
             <div>
                 <h6>Disease Details </h6>

@@ -39,9 +39,10 @@ class App extends React.Component {
 
 			],
 			geneList: [
-				{id:1, name:'mod0', items:[]},
-				{id:2, name:'mod1a', items:[]},
-				{id:3, name:'mod1e', items:[]}
+				{id:1, name:'mod0 - Gene Lookup', isLoading:false, items:[]},
+				{id:2, name:'mod1a - Functional Similarity', isLoading:false, items:[]},
+				{id:3, name:'mod1e - Gene Interactions', isLoading:false, items:[]},
+        {id:4, name:'mod1b1 - Phenotype Similarity',isLoading:false, items:[]},
 			],
 
 			biomodelList: [
@@ -52,7 +53,6 @@ class App extends React.Component {
 			bioisClickEnabled: false,
 
 			mondoisLoading:false,
-			geneisLoading:false,
 			bioisLoading:false,
 			descriptionIsLoading:false,
 
@@ -82,10 +82,107 @@ class App extends React.Component {
 					}
 			})
 			.catch(error => {
-				this.setState({description:{concept:{category:['Not Found']}}});			
+				const data = [
+					{id: 1, name: 'No Result'}
+				];
+				this.setState({mondoList: data, mondoisClickEnabled: false});			
 				});
 			
-			fetch(SERVICE_URL.concat('/api/get-ncats-data/').concat(this.state.searchText))
+	};
+
+
+	handleTextChange(e) {
+		this.setState({searchText : e.target.value});
+	}
+
+	handleMondoClick(mondoItem) {
+		this.setState({geneisClickEnabled: true,
+			geneList: update(this.state.geneList, { 0: {isLoading: {$set: true}},
+																							1: {isLoading: {$set: true}},
+																							2: {isLoading: {$set: true}},
+																							3: {isLoading: {$set: true}}})
+			});
+
+		//Load mod0
+		fetch(SERVICE_URL.concat('/api/workflow/mod0/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod0");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+					geneList: update(this.state.geneList, {0 : {items: {$set: data},
+																											isLoading:{$set: false}}}),
+    
+				})})
+			.catch(error=> {
+				const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+				this.setState({
+					geneList: update(this.state.geneList, {0 : {items: {$set: data},
+																											isLoading:{$set: false}}}),
+			})});
+		
+		//Load mod1a
+    fetch(SERVICE_URL.concat('/api/workflow/mod1a/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod1a");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+					geneList: update(this.state.geneList, {1 : {items: {$set: data},
+																											isLoading:{$set:false}}}),
+        })
+		})
+		.catch(error=> {
+			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+			this.setState({
+				geneList: update(this.state.geneList, {1 : {items: {$set: data},
+																										isLoading:{$set:false}}}),
+		})});
+
+		//Load mod1e
+    fetch(SERVICE_URL.concat('/api/workflow/mod1e/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod1e");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+					geneList: update(this.state.geneList, {2 : {items: {$set: data},
+																											isLoading:{$set:false}}}),
+        })
+		})
+		.catch(error=> {
+			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+			this.setState({
+				geneList: update(this.state.geneList, {2 : {items: {$set: data},
+																										isLoading:{$set:false}}}),
+		})});
+
+		//Load mod1b1
+    fetch(SERVICE_URL.concat('/api/workflow/mod1b1/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod1b1");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+					geneList: update(this.state.geneList, {3 : {items: {$set: data},
+																											isLoading:{$set:false}}}),
+        })
+    }).catch(error=> {
+			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+			this.setState({
+				geneList: update(this.state.geneList, {3 : {items: {$set: data},
+																										isLoading:{$set:false}}}),
+		})});
+
+		fetch(SERVICE_URL.concat('/api/get-ncats-data/').concat(mondoItem))
 				.then(response => response.json())
 				.then(data => {
 					if (data !== undefined || data.length !== 0) {
@@ -96,44 +193,12 @@ class App extends React.Component {
 				.catch(error => {
 					this.setState({geneDescription:{category:'Not Found'}});			
 			});
-	
-	};
 
-
-	handleTextChange(e) {
-		this.setState({searchText : e.target.value});
-	}
-
-	handleMondoClick(mondoItem) {
-		this.setState({geneisLoading:true});
-
-		//Load the workflow modules
-		fetch(SERVICE_URL.concat('/api/workflow/mod0/').concat(mondoItem))
-			.then(response => response.json())
-			.then(data => {
-        if (data === undefined || data.length === 0) {
-          const newData = [
-            {gene_id: 1, gene_symbol: 'No Result'}
-          ];
-            this.setState({ geneList: newData, geneisClickEnabled: false, geneisLoading:false });
-        }
-        else {
-          this.setState({
-            geneList: update(this.state.geneList, {0 : {items: {$set: data}}}),
-            geneisClickEnabled: true,
-            geneisLoading:false,
-        })
-			}})
-			.catch(error => {
-				const newData = [
-					{gene_id: 1, gene_symbol: 'No Result'}
-				];
-					this.setState({ geneList: newData, geneisClickEnabled: false, geneisLoading:false });
-			});
 	}
 
   	handleGeneClick(geneItem) {
-		this.setState({bioisLoading:true});
+			this.setState({bioisLoading:true});
+
 			fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
 				.then(response => response.json())
 				.then(data => {
@@ -147,6 +212,20 @@ class App extends React.Component {
 						this.setState({ biomodelList: data, bioisClickEnabled: true, bioisLoading:false });
 					}
 				});
+
+			//Load gene description
+			fetch(SERVICE_URL.concat('/api/get-ncats-data/').concat(geneItem))
+			.then(response => response.json())
+			.then(data => {
+				if (data !== undefined || data.length !== 0) {
+						this.setState({description:data});
+				}
+				this.setState({descriptionIsLoading:false})
+			})
+			.catch(error => {
+				this.setState({geneDescription:{category:'Not Found'}});			
+	});
+		
   }
 
 	handleBiomodelClick(index) {
