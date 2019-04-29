@@ -2,7 +2,7 @@ import React from 'react';
 import SearchBar from './components/SearchBar.js'
 import SBGNView from './components/SBGNView.js'
 import ImageDescription from './components/ImageView.js'
-import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
+import {MondoList, GeneList, BioModelList,MyLoader} from './components/ListItem.js'
 
 import update from 'react-addons-update';
 
@@ -68,7 +68,7 @@ class App extends React.Component {
 	}
 
 	handleMondoSearch = () => {
-		this.setState({mondoisLoading:true, geneDescriptionIsLoading:true});
+		this.setState({mondoisLoading:true});
 			fetch(SERVICE_URL.concat('/api/disease/').concat(this.state.searchText))
 				.then(response => response.json())
 				.then(data => {
@@ -97,6 +97,7 @@ class App extends React.Component {
 
 	handleMondoClick(mondoItem) {
 		this.setState({geneisClickEnabled: true,
+			descriptionIsLoading:true,
 			geneList: update(this.state.geneList, { 0: {isLoading: {$set: true}},
 																							1: {isLoading: {$set: true}},
 																							2: {isLoading: {$set: true}},
@@ -191,13 +192,13 @@ class App extends React.Component {
 					this.setState({descriptionIsLoading:false})
 				})
 				.catch(error => {
-					this.setState({geneDescription:{category:'Not Found'}});			
+					this.setState({description:{concept:{category:'Not Found'}}});			
 			});
 
 	}
 
   	handleGeneClick(geneItem) {
-			this.setState({bioisLoading:true});
+			this.setState({bioisLoading:true, descriptionIsLoading:true});
 
 			fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
 				.then(response => response.json())
@@ -223,7 +224,7 @@ class App extends React.Component {
 				this.setState({descriptionIsLoading:false})
 			})
 			.catch(error => {
-				this.setState({geneDescription:{category:'Not Found'}});			
+				this.setState({description:{concept:{category:'Not Found'}}});			
 	});
 		
   }
@@ -287,7 +288,9 @@ class App extends React.Component {
                     		</div>
                     	
                     		<div className="col-sm-3">
-                        	<ImageDescription text={this.state.description} />
+													<MyLoader isLoading={this.state.descriptionIsLoading}>
+                        		<ImageDescription text={this.state.description} />
+													</MyLoader>
                     		</div>
                 	</div>
                 </div>
