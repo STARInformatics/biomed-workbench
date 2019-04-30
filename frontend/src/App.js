@@ -5,8 +5,6 @@ import ImageDescription from './components/ImageView.js'
 import {MondoList, GeneList, BioModelList,MyLoader} from './components/ListItem.js'
 
 import update from 'react-addons-update';
-
-import {xml} from './components/demo.js'
 import './App.css';
 
 import 'font-awesome/css/font-awesome.min.css';
@@ -23,7 +21,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			sbgn: xml,
+			sbgn: '',
 			imgSrc : null,
 			searchText : '',
 			mondoList: [
@@ -84,9 +82,9 @@ class App extends React.Component {
 				const data = [
 					{id: 1, name: 'No Result'}
 				];
-				this.setState({mondoList: data, mondoisClickEnabled: false});			
+				this.setState({mondoList: data, mondoisClickEnabled: false});
 				});
-			
+
 	};
 
 
@@ -113,7 +111,7 @@ class App extends React.Component {
         this.setState({
 					geneList: update(this.state.geneList, {0 : {items: {$set: data},
 																											isLoading:{$set: false}}}),
-    
+
 				})})
 			.catch(error=> {
 				const data = [{hit_id: 1, hit_symbol: 'No Result'}];
@@ -121,7 +119,7 @@ class App extends React.Component {
 					geneList: update(this.state.geneList, {0 : {items: {$set: data},
 																											isLoading:{$set: false}}}),
 			})});
-		
+
 
 		//Load mod1e
     fetch(SERVICE_URL.concat('/api/workflow/mod1e/').concat(mondoItem))
@@ -171,7 +169,7 @@ class App extends React.Component {
 					this.setState({descriptionIsLoading:false})
 				})
 				.catch(error => {
-					this.setState({description:{concept:{category:'Not Found'}}});			
+					this.setState({description:{concept:{category:'Not Found'}}});
 			});
 
 	}
@@ -203,9 +201,9 @@ class App extends React.Component {
 				this.setState({descriptionIsLoading:false})
 			})
 			.catch(error => {
-				this.setState({description:{concept:{category:'Not Found'}}});			
+				this.setState({description:{concept:{category:'Not Found'}}});
 	});
-		
+
   }
 
 	handleBiomodelClick(index) {
@@ -265,7 +263,7 @@ class App extends React.Component {
                     		<div className="col-sm-6">
                     			<SBGNView sbgn={this.state.sbgn}  />
                     		</div>
-                    	
+
                     		<div className="col-sm-3">
 													<MyLoader isLoading={this.state.descriptionIsLoading}>
                         		<ImageDescription text={this.state.description} />
