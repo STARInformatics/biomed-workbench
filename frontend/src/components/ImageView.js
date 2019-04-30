@@ -12,7 +12,7 @@ const scrollStyle = {
     height: "150px"
 };
 
-export default class ImageView extends React.Component {
+export class ImageView extends React.Component {
 	render() {
 		return (
             <div className="container-fluid">
@@ -26,13 +26,49 @@ export default class ImageView extends React.Component {
 	}
 }
 
-export class ImageDescription extends React.Component {
-    render() {
+export default function ImageDescription(props) {
+    if (isEmpty(props.text)){
         return (
             <div>
-                <h6>Gene/Drugs Details </h6>
-                <p>{this.props.text} </p>
+                <h6>Details </h6>
+                <p style={{minHeight:"400px"}}>No Search </p>
             </div>
-        )
+        );
+    } else if (props.text.concept.category[0]==="Not Found"){
+        return (
+            <div>
+                <h6>Details </h6>
+                <p style={{minHeight:"400px"}}>No Result</p>
+            </div>
+        );
     }
+    else if (props.text.concept.category[0]==="disease"){
+        return (
+            <div>
+                <h6>Disease Details </h6>
+                <p>Name: {props.text.concept.name}</p>
+                <p>ID: {props.text.concept.id}</p>
+                <p>Definition: {props.text.concept.definition}</p>
+            </div>
+        );
+    } else {
+        return (
+            <div>
+                <h6>Gene Details </h6>
+                <p>Name: {props.text.concept.name}</p>
+                <p>ID: {props.text.concept.id}</p>
+                <p>Chromosome: {props.text.concept.chromosome}</p>
+                <p>Location: {props.text.concept.location}</p>
+                <p>gene_faminly: {props.text.concept.gene_family[0]}</p>
+            </div>
+        );
+    }
+}
+
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
 }

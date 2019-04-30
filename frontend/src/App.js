@@ -1,22 +1,13 @@
 import React from 'react';
 import SearchBar from './components/SearchBar.js'
 import SBGNView from './components/SBGNView.js'
-import ImageView, {ImageDescription} from './components/ImageView.js'
-import {MondoList, GeneList, BioModelList} from './components/ListItem.js'
+import ImageDescription from './components/ImageView.js'
+import {MondoList, GeneList, BioModelList,MyLoader} from './components/ListItem.js'
 
 import update from 'react-addons-update';
-
-import {xml} from './components/demo.js'
 import './App.css';
 
-import { trackPromise } from 'react-promise-tracker';
-import { usePromiseTracker } from "react-promise-tracker";
-import Loader from 'react-loader-spinner';
-
 import 'font-awesome/css/font-awesome.min.css';
-import starinformatics_logo from './logo_starinformatics.png';
-import sbgnviz from 'sbgnviz';
-import delphinai_logo from './logo_delphinai.png';
 
 const BASE_URL =  process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
 const API_PATH =  process.env.REACT_APP_API_PATH || '';
@@ -30,7 +21,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			sbgn: xml,
+			sbgn: '',
 			imgSrc : null,
 			searchText : '',
 			mondoList: [
@@ -46,9 +37,9 @@ class App extends React.Component {
 
 			],
 			geneList: [
-				{id:1, name:'mod0', items:[]},
-				{id:2, name:'mod1a', items:[]},
-				{id:3, name:'mod1e', items:[]}
+				{id:1, name:'mod0 - Gene Lookup', isLoading:false, items:[]},
+				{id:2, name:'mod1e - Gene Interactions', isLoading:false, items:[]},
+        {id:3, name:'mod1b1 - Phenotype Similarity',isLoading:false, items:[]},
 			],
 
 			biomodelList: [
@@ -57,11 +48,13 @@ class App extends React.Component {
 			mondoisClickEnabled: false,
 			geneisClickEnabled: false,
 			bioisClickEnabled: false,
+
 			mondoisLoading:false,
-			geneisLoading:false,
 			bioisLoading:false,
+			descriptionIsLoading:false,
+
 			mondoSelected: '',
-            geneDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis varius ex.'
+      description: {}
 		};
 
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
@@ -84,7 +77,14 @@ class App extends React.Component {
 					} else {
 						this.setState({mondoList: data, mondoisClickEnabled: true, mondoisLoading:false});
 					}
-		});
+			})
+			.catch(error => {
+				const data = [
+					{id: 1, name: 'No Result'}
+				];
+				this.setState({mondoList: data, mondoisClickEnabled: false});
+				});
+
 	};
 
 
@@ -93,29 +93,90 @@ class App extends React.Component {
 	}
 
 	handleMondoClick(mondoItem) {
-		this.setState({geneisLoading:true});
-		fetch(SERVICE_URL.concat('/api/workflow/mod0/').concat(mondoItem))
-			.then(response => response.json())
-			.then(data => {
-                if (data === undefined || data.length === 0) {
-                    const newData = [
-                        {gene_id: 1, gene_symbol: 'No Result'}
-                    ];
-                    this.setState({ geneList: newData, geneisClickEnabled: false });
-                }
-                else {
-                    this.setState({
-                      geneList: update(this.state.geneList, {0 : {items: {$set: data}}}),
-                      geneisClickEnabled: true,
-                      geneisLoading:false,
-                    })
-                    // this.setState({ geneList: data, geneisClickEnabled: true, geneisLoading:false});
-                }
+		this.setState({geneisClickEnabled: true,
+			descriptionIsLoading:true,
+			geneList: update(this.state.geneList, { 0: {isLoading: {$set: true}},
+																							1: {isLoading: {$set: true}},
+																							2: {isLoading: {$set: true}}})
 			});
+
+		//Load mod0
+		fetch(SERVICE_URL.concat('/api/workflow/mod0/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod0");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+					geneList: update(this.state.geneList, {0 : {items: {$set: data},
+																											isLoading:{$set: false}}}),
+
+				})})
+			.catch(error=> {
+				const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+				this.setState({
+					geneList: update(this.state.geneList, {0 : {items: {$set: data},
+																											isLoading:{$set: false}}}),
+			})});
+
+
+		//Load mod1e
+    fetch(SERVICE_URL.concat('/api/workflow/mod1e/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod1e");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+					geneList: update(this.state.geneList, {1 : {items: {$set: data},
+																											isLoading:{$set:false}}}),
+        })
+		})
+		.catch(error=> {
+			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+			this.setState({
+				geneList: update(this.state.geneList, {1 : {items: {$set: data},
+																										isLoading:{$set:false}}}),
+		})});
+
+		//Load mod1b1
+    fetch(SERVICE_URL.concat('/api/workflow/mod1b1/').concat(mondoItem))
+      .then(response => response.json())
+      .then(data => {
+        console.log("FINISH: mod1b1");
+        if (data === undefined || data.length === 0) {
+          data = [{hit_id: 1, hit_symbol: 'No Result'}];
+        }
+        this.setState({
+					geneList: update(this.state.geneList, {2 : {items: {$set: data},
+																											isLoading:{$set:false}}}),
+        })
+    }).catch(error=> {
+			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+			this.setState({
+				geneList: update(this.state.geneList, {2 : {items: {$set: data},
+																										isLoading:{$set:false}}}),
+		})});
+
+		fetch(SERVICE_URL.concat('/api/get-ncats-data/').concat(mondoItem))
+				.then(response => response.json())
+				.then(data => {
+					if (data !== undefined || data.length !== 0) {
+							this.setState({description:data});
+					}
+					this.setState({descriptionIsLoading:false})
+				})
+				.catch(error => {
+					this.setState({description:{concept:{category:'Not Found'}}});
+			});
+
 	}
 
   	handleGeneClick(geneItem) {
-		this.setState({bioisLoading:true});
+			this.setState({bioisLoading:true, descriptionIsLoading:true});
+
 			fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
 				.then(response => response.json())
 				.then(data => {
@@ -129,6 +190,20 @@ class App extends React.Component {
 						this.setState({ biomodelList: data, bioisClickEnabled: true, bioisLoading:false });
 					}
 				});
+
+			//Load gene description
+			fetch(SERVICE_URL.concat('/api/get-ncats-data/').concat(geneItem))
+			.then(response => response.json())
+			.then(data => {
+				if (data !== undefined || data.length !== 0) {
+						this.setState({description:data});
+				}
+				this.setState({descriptionIsLoading:false})
+			})
+			.catch(error => {
+				this.setState({description:{concept:{category:'Not Found'}}});
+	});
+
   }
 
 	handleBiomodelClick(index) {
@@ -167,38 +242,37 @@ class App extends React.Component {
 
                     <div className="row">
                         <div className="col-sm-3">
-							<MondoList
-                                mondoList={this.state.mondoList}
-								isClickEnabled={this.state.mondoisClickEnabled}
-								isLoading={this.state.mondoisLoading}
-                                onClick={this.handleMondoClick}/>
-                            <GeneList
-                                geneList={this.state.geneList}
-								isClickEnabled={this.state.geneisClickEnabled}
-								isLoading={this.state.geneisLoading}
-                                onClick={this.handleGeneClick}/>
-                            <BioModelList
-                                biomodelList={this.state.biomodelList}
-                								isClickEnabled={this.state.bioisClickEnabled}
-                								isLoading={this.state.bioisLoading}
-                                onClick={this.handleBiomodelClick}
-                            />
-                    	</div>
+													<MondoList
+                            mondoList={this.state.mondoList}
+														isClickEnabled={this.state.mondoisClickEnabled}
+														isLoading={this.state.mondoisLoading}
+                            onClick={this.handleMondoClick}/>
+                          <GeneList
+                            geneList={this.state.geneList}
+														isClickEnabled={this.state.geneisClickEnabled}
+														isLoading={this.state.geneisLoading}
+                            onClick={this.handleGeneClick}/>
+                          <BioModelList
+                            biomodelList={this.state.biomodelList}
+                						isClickEnabled={this.state.bioisClickEnabled}
+                						isLoading={this.state.bioisLoading}
+                            onClick={this.handleBiomodelClick}
+                          />
+                    		</div>
 
-                    	<div className="row">
-                    		<SBGNView sbgn={this.state.sbgn}  />
-                    	</div>
-                    	
-                    	<div className="col-sm-3">
-                        	<ImageDescription text={this.state.geneDescription} />
-                    	</div>
+                    		<div className="col-sm-6">
+                    			<SBGNView sbgn={this.state.sbgn}  />
+                    		</div>
 
-                    	<div/>
-							<ImageView src={this.state.imgSrc} />
-		           		</div>
-
+                    		<div className="col-sm-3">
+													<MyLoader isLoading={this.state.descriptionIsLoading}>
+                        		<ImageDescription text={this.state.description} />
+													</MyLoader>
+                    		</div>
                 	</div>
                 </div>
+
+						</div>
         );
   }
 }
