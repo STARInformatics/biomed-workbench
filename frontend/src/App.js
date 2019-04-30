@@ -40,9 +40,8 @@ class App extends React.Component {
 			],
 			geneList: [
 				{id:1, name:'mod0 - Gene Lookup', isLoading:false, items:[]},
-				{id:2, name:'mod1a - Functional Similarity', isLoading:false, items:[]},
-				{id:3, name:'mod1e - Gene Interactions', isLoading:false, items:[]},
-        {id:4, name:'mod1b1 - Phenotype Similarity',isLoading:false, items:[]},
+				{id:2, name:'mod1e - Gene Interactions', isLoading:false, items:[]},
+        {id:3, name:'mod1b1 - Phenotype Similarity',isLoading:false, items:[]},
 			],
 
 			biomodelList: [
@@ -100,8 +99,7 @@ class App extends React.Component {
 			descriptionIsLoading:true,
 			geneList: update(this.state.geneList, { 0: {isLoading: {$set: true}},
 																							1: {isLoading: {$set: true}},
-																							2: {isLoading: {$set: true}},
-																							3: {isLoading: {$set: true}}})
+																							2: {isLoading: {$set: true}}})
 			});
 
 		//Load mod0
@@ -124,11 +122,12 @@ class App extends React.Component {
 																											isLoading:{$set: false}}}),
 			})});
 		
-		//Load mod1a
-    fetch(SERVICE_URL.concat('/api/workflow/mod1a/').concat(mondoItem))
+
+		//Load mod1e
+    fetch(SERVICE_URL.concat('/api/workflow/mod1e/').concat(mondoItem))
       .then(response => response.json())
       .then(data => {
-        console.log("FINISH: mod1a");
+        console.log("FINISH: mod1e");
         if (data === undefined || data.length === 0) {
           data = [{hit_id: 1, hit_symbol: 'No Result'}];
         }
@@ -144,26 +143,6 @@ class App extends React.Component {
 																										isLoading:{$set:false}}}),
 		})});
 
-		//Load mod1e
-    fetch(SERVICE_URL.concat('/api/workflow/mod1e/').concat(mondoItem))
-      .then(response => response.json())
-      .then(data => {
-        console.log("FINISH: mod1e");
-        if (data === undefined || data.length === 0) {
-          data = [{hit_id: 1, hit_symbol: 'No Result'}];
-        }
-        this.setState({
-					geneList: update(this.state.geneList, {2 : {items: {$set: data},
-																											isLoading:{$set:false}}}),
-        })
-		})
-		.catch(error=> {
-			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
-			this.setState({
-				geneList: update(this.state.geneList, {2 : {items: {$set: data},
-																										isLoading:{$set:false}}}),
-		})});
-
 		//Load mod1b1
     fetch(SERVICE_URL.concat('/api/workflow/mod1b1/').concat(mondoItem))
       .then(response => response.json())
@@ -173,13 +152,13 @@ class App extends React.Component {
           data = [{hit_id: 1, hit_symbol: 'No Result'}];
         }
         this.setState({
-					geneList: update(this.state.geneList, {3 : {items: {$set: data},
+					geneList: update(this.state.geneList, {2 : {items: {$set: data},
 																											isLoading:{$set:false}}}),
         })
     }).catch(error=> {
 			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
 			this.setState({
-				geneList: update(this.state.geneList, {3 : {items: {$set: data},
+				geneList: update(this.state.geneList, {2 : {items: {$set: data},
 																										isLoading:{$set:false}}}),
 		})});
 

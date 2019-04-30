@@ -1,6 +1,5 @@
 import React from 'react';
 import Zmage from 'react-zmage'
-import { isEmptyStatement } from '@babel/types';
 
 const imageViewStyle = {
     overflow: "auto",
@@ -31,15 +30,15 @@ export default function ImageDescription(props) {
     if (isEmpty(props.text)){
         return (
             <div>
-                <h6>Gene/Drugs Details </h6>
-                <p>No Search </p>
+                <h6>Details </h6>
+                <p style={{minHeight:"400px"}}>No Search </p>
             </div>
         );
     } else if (props.text.concept.category[0]==="Not Found"){
         return (
             <div>
                 <h6>Details </h6>
-                <p>No Result</p>
+                <p style={{minHeight:"400px"}}>No Result</p>
             </div>
         );
     }
