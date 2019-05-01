@@ -94,7 +94,7 @@ def get_ncats_data(curie:str) -> dict:
     elif isinstance(concept['category'], list):
         category = concept['category']
 
-    for label in concept['labels']:
+    for label in concept.get('labels', []):
         e = bmt.get_element(label)
         if e is not None:
             category.append(e.name)
