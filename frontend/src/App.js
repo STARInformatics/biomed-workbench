@@ -9,9 +9,8 @@ import './App.css';
 
 import 'font-awesome/css/font-awesome.min.css';
 
-const BASE_URL =  process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
-const API_PATH =  process.env.REACT_APP_API_PATH || '';
-const SERVICE_URL  = BASE_URL + API_PATH;
+const FRONTEND_URL =  process.env.REACT_APP_FRONTEND_URL;
+const SERVICE_URL =  process.env.REACT_APP_SERVICE_URL;
 
 const divStyle = {
     marginTop: "30px"
@@ -226,10 +225,8 @@ class App extends React.Component {
 	}
 
 	render() {
-
 	    console.log("Workbench Environmental Variables:");
-	    console.log("\tBASE_URL:\t"+BASE_URL);
-	    console.log("\tAPI_PATH:\t"+API_PATH);
+	    console.log("\tFRONTEND_URL:\t"+FRONTEND_URL);
 	    console.log("\tSERVICE_URL:\t"+SERVICE_URL);
 
 		return (

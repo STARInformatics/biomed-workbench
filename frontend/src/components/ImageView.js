@@ -52,14 +52,15 @@ export default function ImageDescription(props) {
             </div>
         );
     } else {
+      let gene_family = props.text.concept.gene_family
         return (
             <div>
                 <h6>Gene Details </h6>
-                <p>Name: {props.text.concept.name}</p>
-                <p>ID: {props.text.concept.id}</p>
-                <p>Chromosome: {props.text.concept.chromosome}</p>
-                <p>Location: {props.text.concept.location}</p>
-                <p>gene_faminly: {props.text.concept.gene_family[0]}</p>
+                <p>Name: {props.text.concept.name || 'None'}</p>
+                <p>ID: {props.text.concept.id || 'None'}</p>
+                <p>Chromosome: {props.text.concept.chromosome || 'None'}</p>
+                <p>Location: {props.text.concept.location || 'None'}</p>
+                <p>gene_faminly: {(gene_family && gene_family.length) ? gene_family[0] : 'None'}</p>
             </div>
         );
     }
