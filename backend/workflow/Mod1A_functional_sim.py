@@ -33,8 +33,9 @@ class FunctionalSimilarity(GenericSimilarity):
         }
 
     def metadata(self):
-        print("""Mod1A Functional Similarity metadata:""")
-        pprint(self.meta)
+        # print("""Mod1A Functional Similarity metadata:""")
+        # pprint(self.meta)
+        pass
 
     def load_input_object(self, input_object):
         self.input_object = input_object
@@ -68,7 +69,8 @@ class FunctionalSimilarity(GenericSimilarity):
                     gene_curie = gene['hit_id']
                     sim_input_curie = 'UniProtKB:{}'.format(mg_hit['hits'][0]['uniprot']['Swiss-Prot'])
                 except Exception as e:
-                    print(gene, e)
+                    # print(gene, e)
+                    pass
 
             self.gene_set.append({
                 'input_id': gene_curie,

@@ -28,8 +28,9 @@ class LookUp(object):
         }
 
     def metadata(self):
-        print("""Mod O DiseaseGeneLookup metadata:""")
-        pprint(self.meta)
+        # print("""Mod O DiseaseGeneLookup metadata:""")
+        # pprint(self.meta)
+        pass
 
     def load_input_object(self, input_object):
         input_object = self.blw.get_obj(obj_id=input_object['input'])

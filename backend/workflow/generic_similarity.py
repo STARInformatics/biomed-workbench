@@ -4,7 +4,6 @@ from ontobio.assoc_factory import AssociationSetFactory
 from ontobio.assocmodel import AssociationSet
 from typing import List, Union, TextIO
 from ontobio.analysis.semsim import jaccard_similarity
-from pprint import pprint
 
 
 class GenericSimilarity(object):

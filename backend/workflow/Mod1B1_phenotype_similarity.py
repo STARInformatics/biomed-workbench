@@ -28,8 +28,9 @@ class PhenotypeSimilarity(GenericSimilarity):
         }
 
     def metadata(self):
-        print("""Mod1B1 Phenotype Similarity metadata:""")
-        pprint(self.meta)
+        # print("""Mod1B1 Phenotype Similarity metadata:""")
+        # pprint(self.meta)
+        pass
 
     def load_input_object(self, input_object):
         self.input_object = input_object

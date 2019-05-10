@@ -12,12 +12,15 @@ import libsbgnpy.libsbgn as libsbgn
 from libsbgnpy import libsbgn, utils, render
 
 from .mondo import search
-import backend.workflow as workflow
 from .neo4j import get_ncats_data
 from .id_lookup import id_lookup
 
+from .workflow_runner import WorkflowRunner, Module
+
 path = os.path.dirname(os.path.abspath(__name__))
 app = Flask(__name__)
+
+workflow_runner = WorkflowRunner()
 
 def get(d:dict, *keys, default=None):
     try:
@@ -78,25 +81,140 @@ def disease(keywords):
 @app.route('/api/workflow/mod0/<string:mondo_id>')
 @cross_origin()
 def mod0(mondo_id):
-    return jsonify(workflow.mod0_disease_lookup(mondo_id))
+    return workflow_runner.run(mondo_id, Module.mod0)
+    # return jsonify(workflow.mod0_disease_lookup(mondo_id))
 
 @app.route('/api/workflow/mod1a/<string:mondo_id>')
 @cross_origin()
 def mod1a(mondo_id):
-    data = workflow.mod0_disease_lookup(mondo_id)
-    return jsonify(workflow.mod1a_functional_similarity(data))
+    return workflow_runner.run(mondo_id, Module.mod1a)
+    # data = workflow.mod0_disease_lookup(mondo_id)
+    # return jsonify(workflow.mod1a_functional_similarity(data))
+
+
+import time
+import threading
+from concurrent.futures import ProcessPoolExecutor
+
+import sys
+import threading
+import trace
+import time
+import kthread
+import multiprocessing
+import json
+
+@app.route('/api/test3')
+@cross_origin()
+def test_endpoint3():
+    finished = multiprocessing.Event()
+    result = None
+
+    def work(finished, connection):
+        result = workflow.mod0_disease_lookup('MONDO:0005148')
+        connection.send(result)
+        finished.set()
+
+    parent_connection, child_connection = multiprocessing.Pipe()
+    process = multiprocessing.Process(target=work, args=(finished, child_connection,))
+    process.start()
+
+    def stream():
+        try:
+            while not finished.wait(timeout=5):
+                yield ''
+            yield json.dumps(parent_connection.recv())
+        finally:
+            process.terminate()
+            parent_connection.close()
+            child_connection.close()
+            print('Process terminated: {}'.format(process.is_alive()))
+
+    return Response(stream(), mimetype='application/json')
+
+@app.route('/api/test2')
+@cross_origin()
+def test_endpoint2():
+    finished = threading.Event()
+    result = None
+
+    def work():
+        result = str(workflow.mod0_disease_lookup('MONDO:0005148'))
+        result = str(workflow.mod0_disease_lookup('MONDO:0005148'))
+        result = str(workflow.mod0_disease_lookup('MONDO:0005148'))
+        print(result)
+        finished.set()
+
+    thread = threading.Thread(target=work)
+    thread.daemon = True
+    thread.start()
+
+    def generate():
+        while not finished.wait(timeout=1):
+            print('.')
+            yield '.'
+        yield result
+
+    return Response(generate(), mimetype='application/json')
+
+@app.route('/api/test')
+@cross_origin()
+def test_endpoint():
+    def work():
+        s = str(workflow.mod0_disease_lookup('MONDO:0005148'))
+        print(s)
+        return s
+        # return workflow.mod1e_gene_interactions(data)
+
+    executor = ProcessPoolExecutor(max_workers=1)
+    future = executor.submit(work)
+
+    def generate():
+        try:
+            while not future.done():
+                print('.')
+                yield '.'
+                time.sleep(0.1)
+            yield future.result()
+        except:
+            while not future.cancel():
+                print('Trying to force finish')
+            print('------------------')
+            print('future is done: {}'.format(future.done()))
+
+    executor.shutdown(wait=False)
+
+    return Response(generate(), mimetype='application/json')
 
 @app.route('/api/workflow/mod1e/<string:mondo_id>')
 @cross_origin()
 def mod1e(mondo_id):
-    data = workflow.mod0_disease_lookup(mondo_id)
-    return jsonify(workflow.mod1e_gene_interactions(data))
+    return workflow_runner.run(mondo_id, Module.mod1e)
+    # finished = threading.Event()
+    # result = None
+    #
+    # def work():
+    #     data = workflow.mod0_disease_lookup(mondo_id)
+    #     result = workflow.mod1e_gene_interactions(data)
+    #     finished.set()
+    #
+    # thread = threading.Thread(target=work)
+    # thread.start()
+    #
+    # def generate():
+    #     while not finished.wait(timeout=1):
+    #         print('checking connection')
+    #         yield '.'
+    #     yield result
+    #
+    # return Response(generate(), mimetype='application/json')
 
 @app.route('/api/workflow/mod1b1/<string:mondo_id>')
 @cross_origin()
 def mod1b1(mondo_id):
-    data = workflow.mod0_disease_lookup(mondo_id)
-    return jsonify(workflow.mod1b1_phenotype_similarity(data))
+    return workflow_runner.run(mondo_id, Module.mod1b1)
+    # data = workflow.mod0_disease_lookup(mondo_id)
+    # return jsonify(workflow.mod1b1_phenotype_similarity(data))
 
 # @app.route('/api/disease-to-gene/<string:mondo_id>')
 # @cross_origin()
