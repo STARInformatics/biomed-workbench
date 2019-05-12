@@ -15,12 +15,16 @@ install:
 data:
 	mkdir -p backend/data/diagrams
 	mkdir -p backend/data/sbgn
+	# download data
 	cd backend/data ; \
 	    curl -O https://github.com/monarch-initiative/mondo/releases/download/current/mondo.json ; \
 	    curl -O https://reactome.org/download/current/diagrams.png.tgz ; \
 	    tar -xvzf diagrams.png.tgz --directory diagrams ; \
 	    curl -O https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz ; \
 	    tar -xvzf homo_sapiens.sbgn.tar.gz --directory sbgn
+	# Preprocess data
+	python scripts/build_id_mapping_csv -o backend/data/id_mapping.csv
+	python scripts/fix_sbgn.py
 
 .PHONY: web venv
 
@@ -36,6 +40,10 @@ project_settings:
 	@echo "Path to pip3 ('PIP3_PATH') is specified to be located at path '${PIP3_PATH}'"
 	@echo "Override the these environment variables as needed, according to your site installation particulars"
 
+start:
+	make start-backend
+	make start-workflow
+	make start-frontend
 
 start-backend:
 	./venv/bin/gunicorn \
@@ -47,5 +55,18 @@ start-backend:
 		-w 5 \
 		backend:app
 
+start-workflow:
+	./venv/bin/gunicorn \
+		-b 0.0.0.0:5000 \
+		--preload \
+		--access-logfile - \
+		--error-logfile - \
+		--timeout 300 \
+		-w 5 \
+		backend:app
+
 start-frontend:
 	cd frontend && npm start
+
+download-swagger:
+	wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.4.5/swagger-codegen-cli-2.4.5.jar -O swagger-codegen-cli.jar
