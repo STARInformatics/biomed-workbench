@@ -188,7 +188,7 @@ class App extends React.Component {
 						const newData = [
 							{pathway_id: 1, name: 'No Result'}
 						];
-						this.setState({ biomodelList: newData, bioisClickEnabled: false });
+						this.setState({ biomodelList: newData, bioisClickEnabled: false, bioisLoading:false });
 					}
 					else {
 						this.setState({ biomodelList: data, bioisClickEnabled: true, bioisLoading:false });

@@ -132,7 +132,7 @@ export function GeneList(props) {
 		return(
 			<div className="container">
 				<h6> Gene List </h6>
-				<div style={scrollStyle}>					
+				<div style={scrollStyle}>
 					<Accordion>
 						{accordionItems}
 					</Accordion>
@@ -166,7 +166,7 @@ export function BioModelList(props) {
 			isClickEnabled={isClickEnabled}
 		/>
 	);
-	if(isClickEnabled=== true) {
+	if(isClickEnabled === true) {
 		return (
 			<div className="container">
 				<h6> Biomodel List </h6>
