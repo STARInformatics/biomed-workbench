@@ -100,7 +100,6 @@ import sys
 import threading
 import trace
 import time
-import kthread
 import multiprocessing
 import json
 
