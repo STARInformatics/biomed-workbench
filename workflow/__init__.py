@@ -89,7 +89,7 @@ def mod1b1(mondo_id:str) -> Response:
     return build_worker(mondo_id, Module.mod1b1)
 
 @app.route('/api/workflow/mod1e/<string:mondo_id>')
-def mod1b1(mondo_id:str) -> Response:
+def mod1e(mondo_id:str) -> Response:
     return build_worker(mondo_id, Module.mod1e)
 
 def run():
