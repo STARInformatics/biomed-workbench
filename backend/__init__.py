@@ -15,12 +15,8 @@ from .mondo import search
 from .neo4j import get_ncats_data
 from .id_lookup import id_lookup
 
-from .workflow_runner import WorkflowRunner, Module
-
 path = os.path.dirname(os.path.abspath(__name__))
 app = Flask(__name__)
-
-workflow_runner = WorkflowRunner()
 
 def get(d:dict, *keys, default=None):
     try:
