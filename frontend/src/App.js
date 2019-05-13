@@ -9,8 +9,13 @@ import './App.css';
 
 import 'font-awesome/css/font-awesome.min.css';
 
+
+// import {xml} from './components/demoxml';
+// import {xml} from './components/demo';
+
 const FRONTEND_URL =  process.env.REACT_APP_FRONTEND_URL;
 const SERVICE_URL =  process.env.REACT_APP_SERVICE_URL;
+const WORKFLOW_URL =  process.env.REACT_APP_WORKFLOW_URL;
 
 const divStyle = {
     marginTop: "30px"
@@ -100,7 +105,7 @@ class App extends React.Component {
 			});
 
 		//Load mod0
-		fetch(SERVICE_URL.concat('/api/workflow/mod0/').concat(mondoItem))
+		fetch(WORKFLOW_URL.concat('/api/workflow/mod0/').concat(mondoItem))
       .then(response => response.json())
       .then(data => {
         console.log("FINISH: mod0");
@@ -121,7 +126,7 @@ class App extends React.Component {
 
 
 		//Load mod1e
-    fetch(SERVICE_URL.concat('/api/workflow/mod1e/').concat(mondoItem))
+    fetch(WORKFLOW_URL.concat('/api/workflow/mod1e/').concat(mondoItem))
       .then(response => response.json())
       .then(data => {
         console.log("FINISH: mod1e");
@@ -141,7 +146,7 @@ class App extends React.Component {
 		})});
 
 		//Load mod1b1
-    fetch(SERVICE_URL.concat('/api/workflow/mod1b1/').concat(mondoItem))
+    fetch(WORKFLOW_URL.concat('/api/workflow/mod1b1/').concat(mondoItem))
       .then(response => response.json())
       .then(data => {
         console.log("FINISH: mod1b1");
