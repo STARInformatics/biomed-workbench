@@ -24,6 +24,14 @@ const scrollStyle = {
     backgroundColor: "#F5F5F5"
 };
 
+function isArray(arr) {
+	if (!Array.isArray) {
+		return Object.prototype.toString.call(obj) === '[object Array]';
+	} else {
+		return Array.isArray(arr)
+	}
+}
+
 export default class ListItem extends React.Component {
 	constructor(props) {
 		super(props);
@@ -166,7 +174,7 @@ export function BioModelList(props) {
 			isClickEnabled={isClickEnabled}
 		/>
 	);
-	if(isClickEnabled === true || (Array.isArray(array) && biomodelList.length > 0)) {
+	if(isClickEnabled === true || (isArray(array) && biomodelList.length > 0)) {
 		return (
 			<div className="container">
 				<h6> Biomodel List </h6>
