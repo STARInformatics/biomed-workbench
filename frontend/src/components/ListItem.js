@@ -166,7 +166,7 @@ export function BioModelList(props) {
 			isClickEnabled={isClickEnabled}
 		/>
 	);
-	if(isClickEnabled === true) {
+	if(isClickEnabled === true || (Array.isArray(array) && biomodelList.length > 0)) {
 		return (
 			<div className="container">
 				<h6> Biomodel List </h6>
