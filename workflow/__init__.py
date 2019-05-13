@@ -67,7 +67,7 @@ def build_worker(mondo_id:str, module:Module) -> Response:
             client has closed, and we should terminate the process.
             """
             while not finished.wait(timeout=1):
-                yield '.'
+                yield ''
             if not queue.empty():
                 yield json.dumps(queue.get_nowait())
         finally:
