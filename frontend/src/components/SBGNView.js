@@ -151,7 +151,7 @@ class SBGNView extends React.Component {
       layout: layoutOptionsDict[this.state.layout],
     })
 
-    const label = this.props.highlightedLabel + ' Gene';
+    const label = this.props.highlightedLabel;
     this.cy.nodes().filter(function(element, i) {
       return label !== '' && element._private.data.label.indexOf(label) !== -1;
     }).css({'border-color' : 'red'});
