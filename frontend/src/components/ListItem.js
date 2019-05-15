@@ -92,7 +92,7 @@ export class AccordionList extends React.Component {
 			<ListItem
 				key={item.hit_symbol}
 				index={item.hit_id}
-				value={item.hit_symbol + ' ' + (('input_id' in item) ? item['input_id'] : '')}
+				value={item.hit_symbol + (('input_symbol' in item) ? ' (' + item['input_symbol'] + ')' : '')}
 				isClickEnabled={this.props.isClickEnabled}
 				onClick={this.props.onClick}/>
 		);
