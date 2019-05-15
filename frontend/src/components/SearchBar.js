@@ -27,12 +27,35 @@ class SearchBar extends React.Component {
 
   render() {
     return (
+        // <div style={searchBarStyle}>
+        //     <form className="form-inline" onkeypress={this.handleKeyPress}>
+        //         <input
+        //             type="search"
+        //             className="form-control mr-sm-2"
+        //             onChange={this.props.handleTextChange}
+        //             placeholder="Search.."
+        //             aria-label="Search"
+        //             id="search"
+        //             onKeyPress={this.handleKeyPress}
+        //         />
+        //         <button
+        //             type="button"
+        //             onClick={this.props.handleSearch}
+        //             className="btn btn-outline-success my-2 my-sm-0">
+        //             Search
+        //         </button>
+        //     </form>
+        // </div>
+
         <Form inline onSubmit={e => { e.preventDefault(); }} style={searchBarStyle}>
         <FormGroup>
           <InputGroup>
             <FormControl
+              id="search"
               placeholder="Disease keywords ..."
               type="input"
+              className="form-control mr-sm-2"
+              onChange={this.props.handleTextChange}
               onKeyPress={event => {
                 if (event.key === "Enter") {
                   this.props.handleSearch();
