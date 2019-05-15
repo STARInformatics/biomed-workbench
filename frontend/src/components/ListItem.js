@@ -94,7 +94,7 @@ export class AccordionList extends React.Component {
 				index={item.hit_id}
 				value={item.hit_symbol + (('input_symbol' in item) ? ' (' + item['input_symbol'] + ')' : '')}
 				isClickEnabled={this.props.isClickEnabled}
-				onClick={this.props.onClick}/>
+				onClick={() => this.props.onClick(item)}/>
 		);
 
 		return (

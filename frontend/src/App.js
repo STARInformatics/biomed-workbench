@@ -179,11 +179,12 @@ class App extends React.Component {
 	}
 
   	handleGeneClick(geneItem) {
+      let geneItem = item['hit_id']
 			this.setState({
         bioisLoading:true,
         descriptionIsLoading:true,
-        selected_gene:geneItem['hit_id'],
-    });
+        selected_gene:item['hit_symbol'],
+      });
 
 			fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
 				.then(response => response.json())
