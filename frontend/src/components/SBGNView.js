@@ -151,13 +151,14 @@ class SBGNView extends React.Component {
       layout: layoutOptionsDict[this.state.layout],
     })
 
+    const label = this.props.highlightedLabel;
     this.cy.nodes().filter(function(element, i) {
-      return element._private.data.label.indexOf(this.props.highlightedLabel) !== -1;
+      return label !== '' && element._private.data.label.indexOf(label) !== -1;
     }).css({'border-color' : 'red'});
 
     // this.cy.edges().filter(function(element, i) {
-    //   return (element._private.source._private.data.label == this.props.highlightedLabel) ||
-    //     (element._private.target._private.data.label == this.props.highlightedLabel);
+    //   return (element._private.source._private.data.label == label) ||
+    //     (element._private.target._private.data.label == label);
     // }).css({'border-color' : 'red'});
 
     this.cy.on('mouseover', 'node', function(evt) {
