@@ -267,7 +267,7 @@ class App extends React.Component {
                     		</div>
 
                     		<div className="col-sm-6">
-                    			<SBGNView sbgn={this.state.sbgn}  />
+                    			<SBGNView sbgn={this.state.sbgn} highlightedLabel={this.state.selected_gene} />
                     		</div>
 
                     		<div className="col-sm-3">
