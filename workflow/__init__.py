@@ -15,7 +15,7 @@ The module can be run directly:
     python -m workflow
 """
 
-
+from flask_cors import CORS, cross_origin
 from flask import Flask, Response
 from enum import Enum
 
@@ -77,18 +77,22 @@ def build_worker(mondo_id:str, module:Module) -> Response:
     return Response(stream(), mimetype='application/json')
 
 @app.route('/api/workflow/mod0/<string:mondo_id>')
+@cross_origin()
 def mod0(mondo_id:str) -> Response:
     return build_worker(mondo_id, Module.mod0)
 
 @app.route('/api/workflow/mod1a/<string:mondo_id>')
+@cross_origin()
 def mod1a(mondo_id:str) -> Response:
     return build_worker(mondo_id, Module.mod1a)
 
 @app.route('/api/workflow/mod1b1/<string:mondo_id>')
+@cross_origin()
 def mod1b1(mondo_id:str) -> Response:
     return build_worker(mondo_id, Module.mod1b1)
 
 @app.route('/api/workflow/mod1e/<string:mondo_id>')
+@cross_origin()
 def mod1e(mondo_id:str) -> Response:
     return build_worker(mondo_id, Module.mod1e)
 

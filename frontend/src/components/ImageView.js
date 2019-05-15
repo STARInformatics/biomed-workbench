@@ -60,7 +60,7 @@ export default function ImageDescription(props) {
                 <p>ID: {props.text.concept.id || 'None'}</p>
                 <p>Chromosome: {props.text.concept.chromosome || 'None'}</p>
                 <p>Location: {props.text.concept.location || 'None'}</p>
-                <p>gene_family: {(gene_family && gene_family.length) ? gene_family[0] : 'None'}</p>
+                <p>Gene Family: {(gene_family && gene_family.length) ? gene_family[0] : 'None'}</p>
             </div>
         );
     }

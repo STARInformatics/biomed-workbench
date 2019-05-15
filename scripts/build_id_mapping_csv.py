@@ -8,6 +8,7 @@ import pandas as pd
 COMPLEX = 'ComplexParticipantsPubMedIdentifiers_human.txt'
 PE = 'NCBI2Reactome_PE_All_Levels.txt'
 REACTIONS = 'NCBI2ReactomeReactions.txt'
+CHEMICALS = 'ChEBI2Reactome_PE_Reactions.txt'
 
 PREFIX = 'ncbigene'
 
@@ -21,7 +22,7 @@ def download(url:str, download_dir:str='') -> str:
     return path
 
 def download_files(download_dir, force_download=False):
-    filenames = [COMPLEX, PE, REACTIONS]
+    filenames = [COMPLEX, PE, REACTIONS, CHEMICALS]
     for filename in filenames:
         if os.path.exists(os.path.join(download_dir, filename)) and not force_download:
             continue
@@ -48,7 +49,7 @@ def main(download_dir, force_download, output):
     df['id'] = df[0].apply(lambda x: '{}:{}'.format(PREFIX, x))
     df['species'] = df[7]
 
-    df1 = df[df['species'] == 'Homo sapiens'][['id', 'name']]
+    df_genes = df[df['species'] == 'Homo sapiens'][['id', 'name']]
 
     path = os.path.join(download_dir, REACTIONS)
     print('Parsing {}'.format(path))
@@ -57,7 +58,7 @@ def main(download_dir, force_download, output):
     df['id'] = df[1]
     df['species'] = df[5]
 
-    df2 = df[df['species'] == 'Homo sapiens'][['id', 'name']]
+    df_reactions = df[df['species'] == 'Homo sapiens'][['id', 'name']]
 
     path = os.path.join(download_dir, COMPLEX)
     print('Parsing {}'.format(path))
@@ -65,9 +66,17 @@ def main(download_dir, force_download, output):
     df['name'] = df['name'].apply(lambda x: x.split('[', 1)[0].strip())
     df['id'] = df['identifier']
 
-    df3 = df[['id', 'name']]
+    df_complex = df[['id', 'name']]
 
-    df = pd.concat([df1, df2, df3])
+    path = os.path.join(download_dir, CHEMICALS)
+    print('Parsing {}'.format(path))
+    df = pd.read_csv(path, header=None, dtype=str, sep='\t')
+    df['name'] = df[2].apply(lambda x: x.split('[', 1)[0].strip())
+    df['id'] = df[0]
+
+    df_chemical = df[['id', 'name']]
+
+    df = pd.concat([df_complex, df_genes, df_reactions, df_chemical])
 
     df = df.drop_duplicates()
 

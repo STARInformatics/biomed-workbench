@@ -1,4 +1,6 @@
-import React from 'react';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Form, FormGroup, FormControl, InputGroup, Button } from "react-bootstrap";
 
 const searchBarStyle = {
     marginTop: "20px",
@@ -8,33 +10,44 @@ const searchBarStyle = {
 }
 
 class SearchBar extends React.Component {
-  handleKeyPress = event => {
-    if (event.key === 'Enter') {
+
+  constructor(props) {
+    super(props);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
+
+  handleKeyPress(event) {
+    if (event.key == 'Enter') {
       this.props.handleSearch();
+      return true;
+    } else {
+      return false;
     }
   };
 
   render() {
     return (
-        <div style={searchBarStyle}>
-            <form className="form-inline">
-                <input
-                    type="search"
-                    className="form-control mr-sm-2"
-                    onChange={this.props.handleTextChange}
-                    placeholder="Search.."
-                    aria-label="Search"
-                    id="search"
-                    onKeyPress={this.handleKeyPress}
-                />
-                <button
-                    type="button"
-                    onClick={this.props.handleSearch}
-                    className="btn btn-outline-success my-2 my-sm-0">
-                    Search
-                </button>
-            </form>
-        </div>
+        <Form inline onSubmit={e => { e.preventDefault(); }} style={searchBarStyle}>
+        <FormGroup>
+          <InputGroup>
+            <FormControl
+              placeholder="Disease keywords ..."
+              type="input"
+              onKeyPress={event => {
+                if (event.key === "Enter") {
+                  this.props.handleSearch();
+                }
+              }}
+            />
+          </InputGroup>
+          <button
+              type="button"
+              onClick={this.props.handleSearch}
+              className="btn btn-outline-success my-2 my-sm-0">
+              Search
+          </button>
+        </FormGroup>
+        </Form>
     );
   }
 }

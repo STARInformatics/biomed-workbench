@@ -87,11 +87,12 @@ export function MondoList(props) {
 export class AccordionList extends React.Component {
 
 	render() {
+
 		const listItems = this.props.geneList.map((item) =>
 			<ListItem
 				key={item.hit_symbol}
 				index={item.hit_id}
-				value={item.hit_symbol}
+				value={item.hit_symbol + ' ' + (('input_id' in item) ? item['input_id'] : '')}
 				isClickEnabled={this.props.isClickEnabled}
 				onClick={this.props.onClick}/>
 		);

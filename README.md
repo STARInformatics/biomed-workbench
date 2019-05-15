@@ -1,5 +1,10 @@
 # Biomedical Knowledge Workbench
 
+### Scripts
+
+- `python scripts/fix_sbgn.py`: fixes the sub-component relations between nodes in the Reactome SBGN files.
+- `python scripts/build_id_mapping_csv.py`: builds up a CSV mapping names of Reactome elements (which are used as the labels of nodes in the SBGN files) to identifiers.
+
 ## Getting Started
 
 This project resides in [this Github project repository](https://github.com/STARInformatics/biomed-workbench).

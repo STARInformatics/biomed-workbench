@@ -1,8 +1,10 @@
 import React from 'react';
-import {Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap';
+import {Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap';
 import cytoscape from 'cytoscape';
 import sbgnStylesheet from 'cytoscape-sbgn-stylesheet';
 import convert from 'sbgnml-to-cytoscape';
+
+import anywherePanning from 'cytoscape-anywhere-panning';
 
 import coseBilkent from 'cytoscape-cose-bilkent';
 import cola from 'cytoscape-cola';
@@ -60,7 +62,14 @@ class SBGNView extends React.Component {
     this.state = {
       isDropdownOpen : false,
       layout : Object.keys(layoutOptionsDict)[0],
+      isPanning : true,
     }
+
+    cytoscape.use(anywherePanning);
+
+		cytoscape.use(coseBilkent);
+    cytoscape.use(cola);
+    cytoscape.use(dagre);
   }
 
   toggleDropdown() {
@@ -76,8 +85,12 @@ class SBGNView extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    var same = (prevProps.sbgn === this.props.sbgn) && (prevState.layout === this.state.layout);
-    if (!same) {
+    var redraw =
+      (prevProps.sbgn === this.props.sbgn) &&
+      (prevState.layout === this.state.layout) &&
+      (prevState.isPanning) === (this.state.isPanning);
+
+    if (!redraw) {
       this.renderSBGNVizElement();
     }
   }
@@ -112,10 +125,6 @@ class SBGNView extends React.Component {
 			elements.nodes[key].parent = 'compartmentVertex_5460_17'
     }
 
-		cytoscape.use(coseBilkent);
-    cytoscape.use(cola);
-    cytoscape.use(dagre);
-
     this.cy = cytoscape({
       container: document.getElementById('cy'),
       boxSelectionEnabled: true,
@@ -131,17 +140,27 @@ class SBGNView extends React.Component {
         'font-size': 10,
       }).selector('edge').css({
         'curve-style': 'taxi',
-        "taxi-turn": 20,
+      }).selector('edge:selected')
+        .css({
+          'width': 5,
+          'line-color': 'orange',
+      }).selector('node:selected')
+        .css({
+          'border-color' : 'orange',
       }),
       layout: layoutOptionsDict[this.state.layout],
-      // {
-      //   name : this.state.layout,
-      // }
     })
+
     this.cy.on('mouseover', 'node', function(evt) {
       var node = evt.target;
       console.log('mouse on node' + node.data('label'));
     })
+
+    const isPanning = this.state.isPanning
+    this.cy.autoungrabify(isPanning);
+    this.cy.anywherePanning(function() {
+      return isPanning;
+    });
 
     console.log(elements);
   }
@@ -159,10 +178,6 @@ class SBGNView extends React.Component {
       align : 'top',
     };
 
-    console.log('laoytout product')
-    console.log(layoutOptionsDict)
-    console.log(layoutOptionsDict.keys)
-
     let layoutDropdownItems = Object.keys(layoutOptionsDict).map((layoutName) => (
       <DropdownItem
         onClick={() => this.chooseLayout(layoutName)}>
@@ -171,16 +186,20 @@ class SBGNView extends React.Component {
     ));
 
     return (
-      <div >
-
-      <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.toggleDropdown}>
-        <DropdownToggle caret>{'Layout: ' + this.state.layout}</DropdownToggle>
-        <DropdownMenu>
-          {layoutDropdownItems}
-        </DropdownMenu>
-      </Dropdown>
-
-      <div style = {cyStyle} id = "cy"/>
+      <div>
+        <div style={{'display':'flex'}}>
+          <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.toggleDropdown}>
+            <DropdownToggle caret>{'Layout: ' + this.state.layout}</DropdownToggle>
+            <DropdownMenu>
+              {layoutDropdownItems}
+            </DropdownMenu>
+          </Dropdown>
+          <Button
+            onClick={() => this.setState({isPanning : !this.state.isPanning})}>
+            {'Panning: ' + this.state.isPanning}
+          </Button>
+        </div>
+        <div style={cyStyle} id="cy"/>
       </div>
     );
   }

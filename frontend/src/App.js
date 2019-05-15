@@ -58,7 +58,8 @@ class App extends React.Component {
 			descriptionIsLoading:false,
 
 			mondoSelected: '',
-      description: {}
+      description: {},
+      selected_gene: '',
 		};
 
 		this.handleMondoSearch = this.handleMondoSearch.bind(this);
@@ -91,7 +92,6 @@ class App extends React.Component {
 
 	};
 
-
 	handleTextChange(e) {
 		this.setState({searchText : e.target.value});
 	}
@@ -118,7 +118,7 @@ class App extends React.Component {
 
 				})})
 			.catch(error=> {
-				const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+				const data = [{hit_id: 1, hit_symbol: 'Error'}];
 				this.setState({
 					geneList: update(this.state.geneList, {0 : {items: {$set: data},
 																											isLoading:{$set: false}}}),
@@ -139,7 +139,7 @@ class App extends React.Component {
         })
 		})
 		.catch(error=> {
-			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+			const data = [{hit_id: 1, hit_symbol: 'Error'}];
 			this.setState({
 				geneList: update(this.state.geneList, {1 : {items: {$set: data},
 																										isLoading:{$set:false}}}),
@@ -158,7 +158,7 @@ class App extends React.Component {
 																											isLoading:{$set:false}}}),
         })
     }).catch(error=> {
-			const data = [{hit_id: 1, hit_symbol: 'No Result'}];
+			const data = [{hit_id: 1, hit_symbol: 'Error'}];
 			this.setState({
 				geneList: update(this.state.geneList, {2 : {items: {$set: data},
 																										isLoading:{$set:false}}}),
@@ -173,13 +173,17 @@ class App extends React.Component {
 					this.setState({descriptionIsLoading:false})
 				})
 				.catch(error => {
-					this.setState({description:{concept:{category:'Not Found'}}});
+					this.setState({description:{concept:{category:'Error'}}});
 			});
 
 	}
 
   	handleGeneClick(geneItem) {
-			this.setState({bioisLoading:true, descriptionIsLoading:true});
+			this.setState({
+        bioisLoading:true,
+        descriptionIsLoading:true,
+        selected_gene:geneItem['hit_id'],
+    });
 
 			fetch(SERVICE_URL.concat('/api/gene-to-pathway/').concat(geneItem).concat('?size=5'))
 				.then(response => response.json())
