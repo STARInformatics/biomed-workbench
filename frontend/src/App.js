@@ -178,8 +178,8 @@ class App extends React.Component {
 
 	}
 
-  	handleGeneClick(geneItem) {
-      let geneItem = item['hit_id']
+  	handleGeneClick(item) {
+      const geneItem = item['hit_id'];
 			this.setState({
         bioisLoading:true,
         descriptionIsLoading:true,
