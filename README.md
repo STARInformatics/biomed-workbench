@@ -24,7 +24,7 @@ The application should now be visible at http://localhost:8080.
 
 ### Production Deployment
 
-For deployment on a production web site, additional steps are required. 
+For deployment on a production web site, additional steps are required before starting up the application (i.e. before the  'nohup' comamnds above are run). 
 
 In particular, the ```frontend/.env``` configuration settings likely need to be overridden.
 
