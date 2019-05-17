@@ -1,5 +1,7 @@
 import grequests
-import bmt
+from bmt import Toolkit
+
+toolkit = Toolkit()
 
 db = {
     'http://34.229.55.225:7474' : ('neo4j', 'VQH39pWYopKIzmiv'),
@@ -95,7 +97,7 @@ def get_ncats_data(curie:str) -> dict:
         category = concept['category']
 
     for label in concept.get('labels', []):
-        e = bmt.get_element(label)
+        e = toolkit.get_element(label)
         if e is not None:
             category.append(e.name)
     concept['category'] = list(set(category))

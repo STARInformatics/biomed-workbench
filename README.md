@@ -1,5 +1,25 @@
 # Biomedical Knowledge Workbench
 
+### Quickstart
+
+The following commands will get the application running:
+
+```
+virtualenv -p python3.6 venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+cd frontend
+npm install
+cd ..
+
+make data
+
+nohup make start-frontend &
+nohup make start-backend &
+nohup make start-workflow &
+```
+
 ### Scripts
 
 - `python scripts/fix_sbgn.py`: fixes the sub-component relations between nodes in the Reactome SBGN files.

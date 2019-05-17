@@ -16,12 +16,6 @@ def isContainedIn(a, b) -> bool:
     c4 = (a.y + a.h) < (b.y + b.h)
     return c1 and c2 and c3 and c4
 
-@click.command()
-@click.option('--download-dir', '-d', default='backend/data')
-@click.option('--force-download', '-f', is_flag=True)
-@click.option('--output', '-o', default='backend/data/id_mapping.csv')
-def main(download_dir, force_download, output):
-
 if __name__ == '__main__':
     records = set()
     files = os.listdir(INPUT_DIR)

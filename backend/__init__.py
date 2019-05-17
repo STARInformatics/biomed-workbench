@@ -40,7 +40,7 @@ def index():
         # '/api/workflow/mod1e/MONDO:0005148',
         # '/api/workflow/mod1b1/MONDO:0005148',
         '/api/gene-to-pathway/HGNC:406',
-        '/api/data/HGNC:406',
+        '/api/get-ncats-data/HGNC:406',
         '/api/pathway-to-sbgn/R-HSA-389661',
         '/api/pathway-to-png/R-HSA-389661',
         '/api/get-ncats-data/MONDO:0005148',
