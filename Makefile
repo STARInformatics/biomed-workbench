@@ -23,7 +23,7 @@ data:
 	    curl -O https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz ; \
 	    tar -xvzf homo_sapiens.sbgn.tar.gz --directory sbgn
 	# Preprocess data
-	python scripts/build_id_mapping_csv -o backend/data/id_mapping.csv
+	python scripts/build_id_mapping_csv.py -o backend/data/id_mapping.csv
 	python scripts/fix_sbgn.py
 
 .PHONY: web venv
@@ -57,13 +57,13 @@ start-backend:
 
 start-workflow:
 	./venv/bin/gunicorn \
-		-b 0.0.0.0:5000 \
+		-b 0.0.0.0:8080 \
 		--preload \
 		--access-logfile - \
 		--error-logfile - \
 		--timeout 300 \
 		-w 5 \
-		backend:app
+		workflow:app
 
 start-frontend:
 	cd frontend && npm start
