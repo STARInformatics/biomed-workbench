@@ -2,7 +2,7 @@
 
 ### Quickstart
 
-The following commands will get the application running:
+The following commands will get the application running locally on a given machine (check first the existence of various  dependencies on your system, see below):
 
 ```
 virtualenv -p python3.6 venv
@@ -20,12 +20,34 @@ nohup make start-backend &
 nohup make start-workflow &
 ```
 
+The application should now be visible at http://localhost:8080.
+
+### Production Deployment
+
+For deployment on a production web site, additional steps are required. 
+
+In particular, the ```frontend/.env``` configuration settings likely need to be overridden.
+
+The React.js web configuration variables in the *.env* file are default values which should work with a local deployment 
+of the application.  For a "production" deployment, it is better  NOT to directly override this file (which is stored in the 
+git repository) but rather, configure using operating system declarartion of these variables, for example (under Linux bash):
+
+```
+export REACT_APP_FRONTEND_URL=https://bkw.mydomain.com
+export REACT_APP_SERVICE_URL=https://bkw.mydomain.com/service
+export REACT_APP_SERVICE_URL=https://bkw.mydomain.com/workflow
+```
+
+These environment variables can be set globally on your operating system (see applicable documentation about  your system). For example, under Ubuntu Linux, placing these export statements in a shell script under  ```/etc/profile.d``` folder will achieve this.
+
+See below for other customisation options (e.g. *https://*  configuration).
+
 ### Scripts
 
 - `python scripts/fix_sbgn.py`: fixes the sub-component relations between nodes in the Reactome SBGN files.
 - `python scripts/build_id_mapping_csv.py`: builds up a CSV mapping names of Reactome elements (which are used as the labels of nodes in the SBGN files) to identifiers.
 
-## Getting Started
+## System Dependencies
 
 This project resides in [this Github project repository](https://github.com/STARInformatics/biomed-workbench).
 
