@@ -38,7 +38,7 @@ export REACT_APP_SERVICE_URL=https://bkw.mydomain.com/service
 export REACT_APP_SERVICE_URL=https://bkw.mydomain.com/workflow
 ```
 
-Obviously, change _mydomain.com_to your actual producdtion site domain name. These environment variables can be set globally on your operating system (see applicable documentation about  your system). For example, under Ubuntu Linux, placing these export statements in a shell script under  ```/etc/profile.d``` folder will achieve this.
+Obviously, change *mydomain.com* to your actual producdtion site domain name. These environment variables can be set globally on your operating system (see applicable documentation about  your system). For example, under Ubuntu Linux, placing these export statements in a shell script under  ```/etc/profile.d``` folder will achieve this.
 
 See below for other customisation options (e.g. *https://*  configuration).
 
