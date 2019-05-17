@@ -42,11 +42,6 @@ Obviously, change *mydomain.com* to your actual producdtion site domain name. Th
 
 See below for other customisation options (e.g. *https://*  configuration).
 
-### Scripts
-
-- `python scripts/fix_sbgn.py`: fixes the sub-component relations between nodes in the Reactome SBGN files.
-- `python scripts/build_id_mapping_csv.py`: builds up a CSV mapping names of Reactome elements (which are used as the labels of nodes in the SBGN files) to identifiers.
-
 ## System Dependencies
 
 This project resides in [this Github project repository](https://github.com/STARInformatics/biomed-workbench).
@@ -212,6 +207,13 @@ The virtual environment may be deactivated as follows:
 ```
 deactivate
 ```
+
+### Scripts
+
+These scripts are called in the makefile by the **make data** target but could be run independently if necessary.
+
+- `python scripts/fix_sbgn.py`: fixes the sub-component relations between nodes in the Reactome SBGN files.
+- `python scripts/build_id_mapping_csv.py`: builds up a CSV mapping names of Reactome elements (which are used as the labels of nodes in the SBGN files) to identifiers.
 
 ### Configuring to Run the Application Behind a Hostname
 
