@@ -278,7 +278,7 @@ class App extends React.Component {
                     		</div>
                 	</div>
                 </div>
-
+                <b>Links:</b> <a target="_blank" href="https://sbgn.github.io/learning">Learning SBGN</a>, <a target="_blank" href="https://sbgn.github.io/images/learning/PD_L1V1.3.png">SBGN Reference Card</a>, <a target="_blank" href="https://github.com/STARInformatics/biomed-workbench">Documentation</a>.
 						</div>
         );
   }

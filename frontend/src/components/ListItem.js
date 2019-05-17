@@ -175,7 +175,7 @@ export function BioModelList(props) {
 					<div style={scrollStyle}>
 							{listItems}
 					</div>
-				</MyLoader>  >
+				</MyLoader>
 
 			</div>
 		);
