@@ -17,7 +17,7 @@ data:
 	mkdir -p backend/data/sbgn
 	# download data
 	cd backend/data ; \
-	    curl -O https://github.com/monarch-initiative/mondo/releases/download/current/mondo.json ; \
+	    wget https://github.com/monarch-initiative/mondo/releases/download/current/mondo.json ; \
 	    curl -O https://reactome.org/download/current/diagrams.png.tgz ; \
 	    tar -xvzf diagrams.png.tgz --directory diagrams ; \
 	    curl -O https://reactome.org/download/current/homo_sapiens.sbgn.tar.gz ; \
