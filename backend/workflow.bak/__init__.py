@@ -6,7 +6,7 @@ import pandas as pd
 from os import makedirs
 from html3.html3 import XHTML
 
-from .Mod0_disease_gene_lookup import LookUp
+from .Mod0_lookups import LookUp
 from .Mod1A_functional_sim import FunctionalSimilarity
 from .Mod1B1_phenotype_similarity import PhenotypeSimilarity
 from .Mod1E_interactions import GeneInteractions

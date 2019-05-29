@@ -12,8 +12,8 @@ import libsbgnpy.libsbgn as libsbgn
 from libsbgnpy import libsbgn, utils, render
 
 from .mondo import search
+import backend.workflow as workflow
 from .neo4j import get_ncats_data
-from .id_lookup import id_lookup
 
 path = os.path.dirname(os.path.abspath(__name__))
 app = Flask(__name__)
@@ -31,27 +31,62 @@ BKW_BASE_URL = os.getenv('BKW_BASE_URL', "http://localhost:5000")
 BKW_API_PATH = os.getenv('BKW_API_PATH', "")
 SERVICE_URL = BKW_BASE_URL + BKW_API_PATH
 
+providerMap = {
+    "disease": ["MONDO"],
+    "gene": ["HGNC"]
+}
+
 @app.route("/")
 def index():
     endpoints = [
         '/api/disease/diabetes mellitus',
-        # '/api/workflow/mod0/MONDO:0005148',
-        # '/api/workflow/mod1a/MONDO:0005148',
-        # '/api/workflow/mod1e/MONDO:0005148',
-        # '/api/workflow/mod1b1/MONDO:0005148',
+        '/api/workflow/mod0/MONDO:0005148',
+        '/api/workflow/mod1a/MONDO:0005148',
+        '/api/workflow/mod1e/MONDO:0005148',
+        '/api/workflow/mod1b1/MONDO:0005148',
         '/api/gene-to-pathway/HGNC:406',
-        '/api/get-ncats-data/HGNC:406',
+        '/api/data/HGNC:406',
         '/api/pathway-to-sbgn/R-HSA-389661',
         '/api/pathway-to-png/R-HSA-389661',
-        '/api/get-ncats-data/MONDO:0005148',
-        '/api/id-lookup/CFHR dimers bind C3b',
+        '/api/get-ncats-data/MONDO:0005148'
     ]
     return 'API workflow example:<br>' + '<br>'.join('<a href="{}">{}{}</a>'.format(e, SERVICE_URL, e) for e in endpoints)
 
-@app.route('/api/id-lookup/<string:name>')
+def gatherGenes(identifiers):
+    # dispatch based on ID in list
+    for identifier in identifiers:
+        identifier = identifier.split(":")
+        identifier = {
+            "curie": identifier[0],
+            "id": identifier[1]
+        }
+
+        # TODO: makes assumption that curies map completely onto their category
+        if identifier["curie"] in providerMap["disease"]:
+            # TODO: create a bunch of DiseaseAssociationGeneSet tasks on the event stack
+            size = request.args.get('size')
+            diseases = search(identifier["curie"]+":"+identifier["key"])
+            if size is not None:
+                size = int(size)
+                diseases = diseases[:size]
+            data = diseases
+            data = diseases
+        elif identifier["curie"] in providerMap["gene"]:
+            # TODO: create a bunch of GeneSet tasks on the event stack
+            genes = []
+            data = genes
+
+    return data
+
+@app.route('/api/data/<string:id>')
 @cross_origin()
-def id_lookup_endpoint(name):
-    return jsonify({'id' : id_lookup(name), 'name' : name})
+def get_data(id):
+    identifiers = request.args.get('identifiers')
+    geneList = gatherGenes(identifiers)
+    output = json.dumps(geneList)
+    response = Response(output, status=200, mimetype='application/json')
+    return response
+
 
 @app.route('/api/get-ncats-data/<string:id>')
 @cross_origin()
@@ -73,6 +108,32 @@ def disease(keywords):
     response = Response(data, status=200, mimetype='application/json')
     return response
     # return jsonify(search(keywords))
+
+@app.route('/api/workflow/mod0/<string:mondo_id>')
+@cross_origin()
+def mod0(mondo_id):
+    return jsonify(workflow.mod0_disease_lookup(mondo_id))
+
+@app.route('/api/workflow/mod1a/<string:mondo_id>')
+@cross_origin()
+def mod1a(identifiers):
+    identifiers = request.args.get('identifiers')
+    geneList = gatherGenes(identifiers)
+    return jsonify(workflow.mod1a_functional_similarity(identifiers))
+
+@app.route('/api/workflow/mod1e/<string:mondo_id>')
+@cross_origin()
+def mod1e(identifiers):
+    identifiers = request.args.get('identifiers')
+    geneList = gatherGenes(identifiers)
+    return jsonify(workflow.mod1e_gene_interactions(identifiers))
+
+@app.route('/api/workflow/mod1b1/<string:mondo_id>')
+@cross_origin()
+def mod1b1(identifiers):
+    identifiers = request.args.get('identifiers')
+    geneList = gatherGenes(identifiers)
+    return jsonify(workflow.mod1b1_phenotype_similarity(identifiers))
 
 # @app.route('/api/disease-to-gene/<string:mondo_id>')
 # @cross_origin()

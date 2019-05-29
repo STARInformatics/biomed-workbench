@@ -1,12 +1,12 @@
-VENV?=venv
-PYTHON3_PATH?=${VENV}/bin/python3
-PIP3_PATH?=${VENV}/bin/pip3
+#VENV?=venv
+#PYTHON3_PATH?=${VENV}/bin/python3
+#PIP3_PATH?=${VENV}/bin/pip3
 
 install:
 	#
 	# Configure Python Flask back end
 	#
-	${PIP3_PATH} install -r requirements.txt
+	pip install -r requirements.txt
 	#
 	# Configure node.js web application
 	#
@@ -46,7 +46,7 @@ start:
 	make start-frontend
 
 start-backend:
-	./venv/bin/gunicorn \
+	gunicorn \
 		-b 0.0.0.0:5000 \
 		--preload \
 		--access-logfile - \
@@ -56,7 +56,7 @@ start-backend:
 		backend:app
 
 start-workflow:
-	./venv/bin/gunicorn \
+	gunicorn \
 		-b 0.0.0.0:8080 \
 		--preload \
 		--access-logfile - \

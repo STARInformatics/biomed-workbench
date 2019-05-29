@@ -3,7 +3,7 @@ from pprint import pprint
 from mygene import MyGeneInfo
 
 
-class GeneInteractions(object):
+class OwlsimSimilarity(object):
     def __init__(self):
         self.blw = BioLinkWrapper()
         self.gene_set = []
@@ -21,9 +21,9 @@ class GeneInteractions(object):
             },
 
             'source': 'Monarch Biolink',
-            'predicate': ['blm:interacts with']
+            'predicate': ['blm:similar_to']
         }
-        print("""Mod1E Interaction Network metadata:""")
+        print("""Mod1B OwlSim Phenotype Similarity metadata:""")
         pprint(self.meta)
 
     def load_input_object(self, input_object):
@@ -37,20 +37,20 @@ class GeneInteractions(object):
                 'input_symbol': gene['hit_symbol']
             })
 
-    def get_interactions(self):
+    def calculate_similarity(self):
         results = []
-        for gene in self.gene_set:
-            interactions = self.blw.gene_interactions(gene_curie=gene['sim_input_curie'])
-            for assoc in interactions['associations']:
-                interaction = self.blw.parse_association(input_id=gene['sim_input_curie'],
-                                                          input_label=gene['input_symbol'],
-                                                          association=assoc)
-                results.append({
-                    'input_id': interaction['input_id'],
-                    'input_symbol': interaction['input_symbol'],
-                    'hit_symbol': interaction['hit_symbol'],
-                    'hit_id': interaction['hit_id'],
-                    'score': 0,
-                })
+        for index, gene in enumerate(self.gene_set):
+            try:
+                owlsim = self.blw.compute_owlsim(gene['sim_input_curie'])
+                for match in owlsim['matches']:
+                    if match['type'] == 'gene':
+                        results.append({
+                            'input_id': gene['input_id'],
+                            'input_symbol': gene['input_symbol'],
+                            'hit_symbol': match['label'],
+                            'hit_id': match['id'],
+                            'score': match['score'],
+                        })
+            except Exception as e:
+                print(match['id'], e)
         return results
-

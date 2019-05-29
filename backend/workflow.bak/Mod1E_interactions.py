@@ -1,4 +1,4 @@
-from BioLink.biolink_client import BioLinkWrapper
+from .biolink_client import BioLinkWrapper
 from pprint import pprint
 from mygene import MyGeneInfo
 
@@ -23,8 +23,6 @@ class GeneInteractions(object):
             'source': 'Monarch Biolink',
             'predicate': ['blm:interacts with']
         }
-        print("""Mod1E Interaction Network metadata:""")
-        pprint(self.meta)
 
     def load_input_object(self, input_object):
         self.input_object = input_object
@@ -53,4 +51,3 @@ class GeneInteractions(object):
                     'score': 0,
                 })
         return results
-
