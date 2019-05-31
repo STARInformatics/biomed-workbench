@@ -7,7 +7,7 @@ testData = {
 }
 
 testSet = {
-	"profile": True,
+	"profile": False,
 	"print": True,
 	"async": False
 }
@@ -40,12 +40,13 @@ def workflow2_sync(testData):
 
 	"""
 
-	print("mod0")
-	data0 = workflow.mod0_disease_lookup(testData["id"])
-	if testSet["profile"]:
-		cProfile.run('workflow.mod0_disease_lookup(testData["id"])')
-	if testSet["print"]:
-		print(data0)
+
+	# print("mod0")
+	# data0 = workflow.mod0_disease_lookup(testData["id"])
+	# if testSet["profile"]:
+	# 	cProfile.run('workflow.mod0_disease_lookup(testData["id"])')
+	# if testSet["print"]:
+	# 	print(data0)
 
 	"""
 	print("mod1a")
@@ -56,13 +57,15 @@ def workflow2_sync(testData):
 		print(data1a)
 
 	"""
+
+	"""
 	print("mod1b1")
 	data1b = workflow.mod1b1_phenotype_similarity(geneSet)
 	if testSet["profile"]:
 		cProfile.run('workflow.mod1b1_phenotype_similarity(geneSet)')
 	if testSet["print"]:
 		print(data1b)
-
+	"""
 
 	print("mod1e")
 	data1e = workflow.mod1e_gene_interactions(geneSet)
@@ -72,9 +75,9 @@ def workflow2_sync(testData):
 		print(data1e)
 
 	results = {
-		"mod0": data0,
+		#"mod0": data0,
 		#"mod1a": data1a,
-		"mod1b": data1b,
+		#"mod1b": data1b,
 		"mod1e": data1e
 	}
 
@@ -107,7 +110,7 @@ def workflow2_async(testData):
 	if testSet["print"]:
 		print(data1b)
 
-	"""
+
 	print("mod1e")
 	print("async TODO")
 	data1e = workflow_async.mod1e_gene_interactions(geneSet)
@@ -115,7 +118,7 @@ def workflow2_async(testData):
 		cProfile.run('workflow_async.mod1e_gene_interactions(geneSet)')
 	if testSet["print"]:
 		print(data1e)
-	"""
+
 
 	results = {
 		"mod0": data0,

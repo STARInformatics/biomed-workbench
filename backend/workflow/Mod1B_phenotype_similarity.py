@@ -1,7 +1,7 @@
 import pandas as pd
 from BioLink import biolink_client
 from SimSearch.simsearch_client import SimSearchWrapper
-from Modules.generic_similarity import GenericSimilarity
+from .generic_similarity import GenericSimilarity
 from typing import List, Union, TextIO
 from pprint import pprint
 
@@ -25,11 +25,14 @@ class PhenotypeSimilarity(GenericSimilarity):
 
     def __init__(self, **args) -> None:
         super(PhenotypeSimilarity, self).__init__(**args)
+
         self.b = biolink_client.BioLinkWrapper()
         self.ssw = SimSearchWrapper()
+
         self.gene_set = None
         self.taxon = None
         self.input_object = ''
+
         self.meta = {
             'input_type': {
                 'complexity': 'set',

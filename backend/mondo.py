@@ -29,14 +29,14 @@ def load_mondo():
                     curie = node['id'].replace(MONDO, 'MONDO:')
                     # import pudb; pu.db
                     results[curie] = {
-                        'iri' : node['id'],
-                        'definition' : get(node, 'meta', 'definition', 'val'),
-                        'synonoms' : synonoms,
-                        'name' : node['lbl'].lower(),
+                        'iri': node['id'],
+                        'definition': get(node, 'meta', 'definition', 'val'),
+                        'synonoms': synonoms,
+                        'name': node['lbl'].lower(),
                     }
         return results
 
-def search(keywords:List[str]) -> List[dict]:
+def diseaseSearch(keywords:List[str]) -> List[dict]:
     if isinstance(keywords, str):
         keywords = keywords.lower().split()
     elif isinstance(keywords, (list, tuple, set)):

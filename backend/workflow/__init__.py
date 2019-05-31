@@ -1,7 +1,7 @@
 from cachetools import cached, LRUCache
 from threading import RLock
 
-from .biolink_client import BioLinkWrapper
+from BioLink.biolink_client import BioLinkWrapper
 import pandas as pd
 from os import makedirs
 from html3.html3 import XHTML
@@ -11,26 +11,10 @@ from .Mod1A_functional_sim import FunctionalSimilarity
 from .Mod1B1_phenotype_similarity import PhenotypeSimilarity
 from .Mod1E_interactions import GeneInteractions
 
-def load_genes(model, data, threshold):
-    # Module specification
-    inputParameters = {
-        'input': data,
-        'parameters': {
-            'taxon': 'human',
-            'threshold': threshold,
-        },
-    }
-    # Load the computation parameters
-    model.load_input_object(inputParameters)
-    model.load_gene_set()
+from collections import namedtuple
 
-def similarity(model, data, threshold=0.75):
-    load_genes(model, data, threshold)
-    model.load_associations()
-
-    # Perform the comparison
-    results = model.compute_similarity()
-    return results
+# these structs are too small to be a class, but too common not to schematize throughout the application
+SimilarityModel = namedtuple('SimilarityModel', ['taxon', 'threshold'])
 
 def remove_duplicates(results:list) -> list:
     """
@@ -46,15 +30,13 @@ def remove_duplicates(results:list) -> list:
     return l
 
 @cached(cache=LRUCache(maxsize=32), lock=RLock())
-def mod0_disease_lookup(mondo_id):
+def mod0_disease_gene_lookup(mondo_id, threshold=0.0):
     lu = LookUp()
     input_object = {
         'input': mondo_id,
-        'parameters': {
-            'taxon': 'human',
-            'threshold': None,
-        },
+        'parameters': SimilarityModel('human', threshold)
     }
+
     lu.load_input_object(input_object=input_object)
     # get genes associated with disease from Biolink
     disease_associated_genes = lu.disease_geneset_lookup()
@@ -66,23 +48,15 @@ def mod0_disease_lookup(mondo_id):
         d['input_id'] = mondo_id
     return input_curie_set
 
-def mod1a_functional_similarity(data, threshold=0.75, duplicates=False):
-    results = similarity(
-        FunctionalSimilarity(),
-        data,
-        threshold,
-    )
+def mod1a_functional_similarity(geneSet, threshold=0.0, duplicates=False):
+    results = FunctionalSimilarity('human', threshold).compute_similarity(geneSet)
     if not duplicates:
         return remove_duplicates(results)
     else:
         return results
 
-def mod1b1_phenotype_similarity(data, threshold=0.50, duplicates=False):
-    results = similarity(
-        PhenotypeSimilarity(),
-        data,
-        threshold,
-    )
+def mod1b1_phenotype_similarity(geneSet, threshold=0.0, duplicates=False):
+    results = PhenotypeSimilarity('human', threshold).compute_similarity(geneSet)
     if not duplicates:
         return remove_duplicates(results)
     else:
@@ -104,7 +78,7 @@ def mod1e_gene_interactions(data, duplicates=False):
 
 if __name__ == '__main__':
     from pprint import pprint
-    input_object, disease_associated_genes, input_curie_set = mod0_disease_lookup('MONDO:0019391')
+    input_object, disease_associated_genes, input_curie_set = mod0_disease_gene_lookup('MONDO:0019391')
     # Mod1A_results = mod1a_jaccard_similarity(input_curie_set)
     # Mod1B_results = mod1b1_phenotype_similarity(input_curie_set)
     Mod1E_results = mod1e_gene_interactions(input_curie_set)
