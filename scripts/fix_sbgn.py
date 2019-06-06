@@ -1,6 +1,7 @@
 # Good test file: R-HSA-8936459.sbgn
 
 import os
+import logging
 import click
 from libsbgnpy import utils
 
@@ -22,8 +23,15 @@ if __name__ == '__main__':
     print('Processing {} many files'.format(len(files)))
     with click.progressbar(files, label='building label list') as bar:
         for filename in bar:
-            path = INPUT_DIR + filename
-            sbgn = utils.read_from_file(path)
+            sbgn_file = INPUT_DIR + filename
+
+            try:
+                sbgn = utils.read_from_file(sbgn_file)
+            except UnicodeEncodeError as uee:
+                logging.error(uee)
+                continue
+            else:
+                logging.info("Original SBGN file "+sbgn_file+"read in successfully")
 
             m = sbgn.get_map()
             glyphs = m.get_glyph()
@@ -35,5 +43,10 @@ if __name__ == '__main__':
                     if isContainedIn(a.bbox, b.bbox):
                         a.compartmentRef = b.id
                         break
+            try:
+                sbgn.write_file(sbgn_file)
+            except UnicodeEncodeError as uee:
+                logging.error(uee)
+            else:
+                logging.info("Cleaned up SBGN file "+sbgn_file+" written out successfully")
 
-            sbgn.write_file(INPUT_DIR + filename)
