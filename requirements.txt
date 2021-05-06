@@ -7,7 +7,7 @@ Click==7.0
 dataclasses==0.6
 decorator==4.4.0
 Flask==1.0.2
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 html3==1.17
 idna==2.8
 isodate==0.6.0
