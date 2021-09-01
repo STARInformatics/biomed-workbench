@@ -38,7 +38,7 @@
     "sbgn-renderer": "^1.1.1",
     "sbgnml-to-cytoscape": "^4.0.4",
     "sbgnviz": "^4.2.0",
-    "tar": "^4.4.8",
+    "tar": "^4.4.18",
     "typescript": "^3.4.3"
   },
   "scripts": {
