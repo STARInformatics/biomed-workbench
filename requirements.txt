@@ -1,7 +1,7 @@
 argh==0.26.2
 biothings-client==0.2.0
 cachier==1.2.5
-certifi==2019.3.9
+certifi==2022.12.7
 chardet==3.0.4
 Click==7.0
 dataclasses==0.6
